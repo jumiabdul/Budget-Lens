@@ -1,5 +1,14 @@
+import { useSelector } from "react-redux"
+import AddIncome from "./AddIncome"
+import AddExpense from "./AddExpense"
 
 export default function Dashboard() {
+    const transactions = useSelector((state) => state.transactions)
+
+    const income = transactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
+    const expense = transactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
+    const balance = income - expense;
+
     return (
 
         <div className="min-h-screen space-y-6 p-6 bg-linear-to-br from-indigo-100 to-purple-100">
@@ -8,15 +17,15 @@ export default function Dashboard() {
             <div className="grid grid-cols-3 gap-4">
                 <div className="bg-white rounded-xl shadow p-4">
                     <p className="text-sm text-gray-500">Total Balance</p>
-                    <p className="text-2xl font-bold mt-2">₹</p>
+                    <p className="text-2xl font-bold mt-2">₹{balance}</p>
                 </div>
                 <div className="bg-white rounded-xl shadow p-4">
                     <p className="text-sm text-gray-500">Income</p>
-                    <p className="text-2xl font-bold text-green-500 mt-2">₹</p>
+                    <p className="text-2xl font-bold text-green-500 mt-2">₹{income}</p>
                 </div>
                 <div className="bg-white rounded-xl shadow p-4">
                     <p className="text-sm text-gray-500">Expenses</p>
-                    <p className="text-2xl font-bold text-red-500 mt-2">₹</p>
+                    <p className="text-2xl font-bold text-red-500 mt-2">₹{expense}</p>
                 </div>
             </div>
 
@@ -60,6 +69,20 @@ export default function Dashboard() {
                                 View Transactions
                             </button>
                         </div>
+                        <ul className="mt-3 space-y-3">
+                            {transactions.slice(-5).reverse().map((t) => (
+                                <li key={t.id} className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm font-medium">{t.category}</p>
+                                        <p className="text-xs text-gray-600">{t.date}</p>
+                                    </div>
+                                    <p className={`text-sm ${t.type === "income" ? "text-green-600" : "text-red-600"}`}>
+                                        {t.type === "income" ? "+" : "-"}₹{t.amount}</p>
+
+                                </li>
+                            )
+                            )}
+                        </ul>
                     </div>
                 </div>
             </div>

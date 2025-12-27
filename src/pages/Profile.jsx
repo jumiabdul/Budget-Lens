@@ -5,7 +5,7 @@ export default function Profile() {
 
                 <h1 className="text-2xl text-pink-600 font-bold">Profile</h1>
                 <div className="flex justify-between mt-7">
-                    <img src="" alt="Profile Pic"
+                    <img src="null" alt="Profile Pic"
                         className="w-24 h-24 rounded-full border-3 border-purple-700" />
                     <div className="space-y-6">
                         <div className="flex justify-around items-center">
