@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux"
 import AddIncome from "./AddIncome"
 import AddExpense from "./AddExpense"
+import DoughnutChart from "../components/DoughnutChart";
 
 export default function Dashboard() {
     const transactions = useSelector((state) => state.transactions)
@@ -39,6 +40,7 @@ export default function Dashboard() {
                             <h2 className="text-lg font-semibold">Spending Categories</h2>
                             <p className="text-sm text-gray-500">This month</p>
                         </div>
+                        <DoughnutChart/>
                     </div>
                 </div>
 
