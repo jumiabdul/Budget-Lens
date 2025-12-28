@@ -53,11 +53,12 @@ export default function DoughnutChart() {
             },
         },
     }
-}
+    return (
+        <div className="w-full h-64 sm:h-72 md:h-96">
+            <Doughnut data={data} options={options} />
+        </div>
+    )
     
+}
 
-return (
-    <div className="w-full h-64 sm:h-72 md:h-96">
-        <Doughnut data={data} options={options}   />
-    </div>
-)
+

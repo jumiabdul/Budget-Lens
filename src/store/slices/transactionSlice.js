@@ -8,10 +8,10 @@ const transactionSlice = createSlice({
             state.push(action.payload);
         },
         deleteTransaction: (state, action) => {
-            return state.filter((t)=>t.id !== action.payload)
+            return state.filter((t) => t.id !== action.payload)
         },
     },
 });
 
-export const { addTransaction,deleteTransaction } = transactionSlice.actions;
+export const { addTransaction, deleteTransaction } = transactionSlice.actions;
 export default transactionSlice.reducer; 
