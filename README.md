@@ -47,12 +47,15 @@ I built this project to practice React, Redux, and Tailwind CSS while creating a
 git clone https://github.com/jumiabdul/Budget-Lens.git
 
 2.Navigate to project directory
+```bash
 cd budget-lens
 
 3. Install dependencies
+```bash
 npm install
 
 3. Start development server
+```bash
 npm run dev
 
 4. Open http://localhost:5173 in your browser
