@@ -1,16 +1,98 @@
-# React + Vite
+# [Budget Lens(Budget Insights and Expense Tracker)]
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🔗 Live Demo
+    https://vercel.com/ayishath-jumaila-ks-projects/budget-lens
 
-Currently, two official plugins are available:
+## 📖 Description
+Budget Lens is a responsive budget management dashboard built with React, Redux, and Tailwind CSS. It helps users track income, expenses, and savings through interactive charts, progress bars, and detailed reports. Designed for individuals, students, and professionals, it provides monthly budget planning,
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
+- Transaction Management: Add, delete, and filter transactions by category, month, and year.
+- Interactive Charts: Visualize spending with Doughnut, Bar, and Line charts powered by Chart.js.
+- Budget Planning: Set monthly budgets and track allocations with progress bars.
+- Reports Export: Download financial summaries as CSV or styled PDF with embedded charts.
+- Saving Suggestions: AI‑powered tips to highlight overspending and recommend smarter saving strategies.
+- Quick Actions: One‑click buttons for adding income, expenses, and viewing reports.
+- Recent Activity: Snapshot of the latest transactions for instant visibility.
+- Responsive design for all devices
 
-## React Compiler
+## 🎯 Project Goals
+I built this project to practice React, Redux, and Tailwind CSS while creating a useful budget planner. My goal was to help users track income, expenses, and savings with clear charts and reports. Through this, I learned how to manage state, build responsive layouts, and add features like CSV/PDF export and saving tips and adding charts.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Technologies Used
+- **Frontend Framework**: React+Vite
+- **State Management**: Redux Toolkit
+- **Styling**: Tailwind CSS (responsive, utility‑first design)
+- **Charts & Visualization**: Chart.js (Doughnut, Bar, Line charts)
+- **Data Export**: react‑csv for CSV downloads, jsPDF + jspdf‑autotable for styled PDF reports
+- **Routing**: React Router 
+- **Utilities**: UUID for unique transaction IDs, heroicons for icons
+- **Deployment:** Vercel
 
-## Expanding the ESLint configuration
+## 🤖 AI Integration (Optional)
+- **AI Tool/API Used**: I implemented a custom rule‑based suggestion generator in React (no external API). It analyzes transactions against budgets and produces dynamic saving tips that feel “AI‑powered.”
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **How It Enhances User Experience**: Users receive personalized saving suggestions whenever they add expenses or budgets. This makes the dashboard more insightful, helping them spot overspending and discover practical ways to save money instead of just viewing static charts.
+
+
+## 🚀 Setup Instructions
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+
+### ⚙️ Installation Step
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/jumiabdul/Budget-Lens.git
+   
+2. Navigate to project directory
+   - cd budget-lens
+   
+4. Install dependencies
+   - npm install
+   
+6. Start development server
+   - npm run dev
+   
+8. Open in browser
+   - Go to http://localhost:5173
+
+## 📱 Responsive Design
+   - This application is fully responsive and tested on:
+     - Mobile devices (375px and up)
+     - Tablets (768px and up)
+     - Desktop (1024px and up)
+
+## 📸 Screenshots
+
+## 🎨 Design Choices
+   - Referred this figma site for design : https://cycle-offset-54984065.figma.site/
+
+## 🐛 Known Issues
+- **Data Persistence**: Transactions and budgets are stored only in local state/Redux. Refreshing the page clears data unless connected to a backend or localStorage.
+- **Saving Suggestions**: Currently rule‑based; tips may feel repetitive or too generic without more advanced AI logic.
+- **Export Features**: CSV/PDF export works, but styling and formatting may vary depending on browser and dataset size.
+
+## 🔮 Future Enhancements
+- **Data Persistence**: Connect to a backend (Node/Express + MongoDB) or localStorage so budgets and transactions are saved permanently.
+- **Authentication**: Add user login and multi‑user support to keep data private and personalized.
+- **Advanced AI Suggestions**: Use machine learning or GPT APIs to generate smarter, more personalized saving tips.
+
+## 👤 Author
+-  Name: Ayishath Jumaila K
+-  GitHub: https://github.com/jumiabdul
+-  LinkedIn: https://www.linkedin.com/in/ayishath-jumaila-k/
+-  Email: jumiabdul@gmail.com
+
+## 📄 License
+- This project is open source and available under the MIT License.
+
+## 🙏 Acknowledgments
+-  Thanks to my mentor Ajmal Sir, Entri app , youtube videos for resources
+-  Icons from HeroIcons
+
+---
+
+
