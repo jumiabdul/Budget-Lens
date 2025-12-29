@@ -66,6 +66,9 @@ I built this project to practice React, Redux, and Tailwind CSS while creating a
      - Desktop (1024px and up)
 
 ## 📸 Screenshots
+<img width="1071" height="602" alt="Screenshot 1" src="https://github.com/user-attachments/assets/ba169714-764f-43e5-a561-1eaf61601acb" />
+<img width="1294" height="647" alt="Screenshot 2" src="https://github.com/user-attachments/assets/71fcb892-8593-4b3f-81fb-7cf458e425fa" />
+<img width="1108" height="623" alt="Screenshot 3" src="https://github.com/user-attachments/assets/8960df80-8720-4010-81b5-11ef5833aa7b" />
 
 ## 🎨 Design Choices
    - Referred this figma site for design : https://cycle-offset-54984065.figma.site/
