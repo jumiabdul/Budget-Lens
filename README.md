@@ -62,9 +62,9 @@ I built this project to practice React, Redux, and Tailwind CSS while creating a
 
 ## 📱 Responsive Design
    - This application is fully responsive and tested on:
-     - ● Mobile devices (375px and up)
-     - ● Tablets (768px and up)
-     - ● Desktop (1024px and up)
+     - Mobile devices (375px and up)
+     - Tablets (768px and up)
+     - Desktop (1024px and up)
 
 ## 📸 Screenshots
 
@@ -83,16 +83,16 @@ I built this project to practice React, Redux, and Tailwind CSS while creating a
 
 ## 👤 Author
 - Ayishath Jumaila K
-- ● GitHub: https://github.com/jumiabdul
-- ● LinkedIn: https://www.linkedin.com/in/ayishath-jumaila-k/
-- ● Email: jumiabdul@gmail.com
+-  GitHub: https://github.com/jumiabdul
+-  LinkedIn: https://www.linkedin.com/in/ayishath-jumaila-k/
+-  Email: jumiabdul@gmail.com
 
 ## 📄 License
 - This project is open source and available under the MIT License.
 
 ## 🙏 Acknowledgments
-- ● Thanks to my mentor Ajmal Sir, Entri app , youtube videos for resources
-- ● Icons from HeroIcons
+-  Thanks to my mentor Ajmal Sir, Entri app , youtube videos for resources
+-  Icons from HeroIcons
 
 ---
 
