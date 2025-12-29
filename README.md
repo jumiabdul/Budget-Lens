@@ -41,24 +41,26 @@ I built this project to practice React, Redux, and Tailwind CSS while creating a
 - Node.js (v14 or higher)
 - npm or yarn
 
-### Installation Steps
+### ⚙️ Installation Step
+
 1. Clone the repository
-```bash
-git clone https://github.com/jumiabdul/Budget-Lens.git
-
-2.Navigate to project directory
-```bash
-cd budget-lens
-
-3. Install dependencies
-```bash
-npm install
-
-3. Start development server
-```bash
-npm run dev
-
-4. Open http://localhost:5173 in your browser
+   ```bash
+   git clone https://github.com/jumiabdul/Budget-Lens.git
+   
+2. Navigate to project directory
+   bash
+   cd budget-lens
+   
+4. Install dependencies
+   bash
+   npm install
+   
+6. Start development server
+   bash
+   npm run dev
+   
+8. Open in browser
+   Go to http://localhost:5173
 
 📱 Responsive Design
 This application is fully responsive and tested on:
