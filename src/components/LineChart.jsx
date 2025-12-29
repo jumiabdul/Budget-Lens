@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import React, { forwardRef } from "react";
 import { Line } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -16,7 +17,7 @@ function getWeek(dateString) {
     return Math.ceil(day / 7)
 }
 
-export default function LineChart() {
+const LineChart = forwardRef((props, ref) => {
     const transactions = useSelector((state) => state.transactions);
 
     //group transactions by week
@@ -87,7 +88,9 @@ export default function LineChart() {
 
     return (
         <div className="w-full h-64 sm:h-72 md:h-96 mt-5">
-            <Line data={data} options={options} />
+            <Line ref={ref} data={data} options={options} />
         </div>
-    )
-}
+    );
+});
+
+export default LineChart;

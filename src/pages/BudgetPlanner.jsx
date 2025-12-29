@@ -13,7 +13,7 @@ export default function BudgetPlanner() {
         <div className="min-h-screen space-y-6 p-6 bg-linear-to-br from-indigo-100 to-purple-100">
             <h1 className=" text-2xl text-center text-pink-600 font-bold mb-2">Budget Planner</h1>
 
-            <div className="flex justify-between">
+            <div className="flex items-center justify-around mt-5 bg-white rounded-xl shadow-md p-4">
                 {/*Month field*/}
                 <div>
                     <label className="text-sm text-left font-medium text-gray-700 block">Category</label>

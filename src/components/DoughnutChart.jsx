@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import React, { forwardRef } from "react";
 import { Doughnut } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -9,7 +10,7 @@ ChartJS.register(
     ArcElement, Tooltip, Legend
 )
 
-export default function DoughnutChart() {
+const DoughnutChart = forwardRef((props, ref) => {
     const transactions = useSelector((state) => state.transactions);
 
     //group transactions by category
@@ -55,10 +56,11 @@ export default function DoughnutChart() {
     }
     return (
         <div className="w-full h-64 sm:h-72 md:h-96">
-            <Doughnut data={data} options={options} />
+            <Doughnut ref={ref} data={data} options={options} />
         </div>
-    )
-    
-}
+    );
+});
+
+export default DoughnutChart;
 
 

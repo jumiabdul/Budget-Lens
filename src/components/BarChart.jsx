@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import React, { forwardRef } from "react";
 import { Bar } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -16,7 +17,8 @@ function getWeek(dateString) {
     return Math.ceil(day / 7)
 }
 
-export default function BarChart() {
+const BarChart = forwardRef((props, ref) => {
+
     const transactions = useSelector((state) => state.transactions);
 
     //group transactions by week
@@ -83,7 +85,9 @@ export default function BarChart() {
 
     return (
         <div className="w-full h-64 sm:h-72 md:h-96 mt-5">
-            <Bar data={data} options={options} />
+            <Bar ref={ref} data={data} options={options} />
         </div>
-    )
-}
+    );
+});
+
+export default BarChart;

@@ -113,6 +113,12 @@ export default function Transactions() {
                                     </td>
                                 </tr>
                             ))}
+                            {filteredTransactions.length === 0 && (
+                                <tr>
+                                    <td colSpan="6" className="text-gray-600 text-center">No Transactions Found</td>
+                                </tr>
+                            )}
+
                         </tbody>
                     </table>
                 </div>
