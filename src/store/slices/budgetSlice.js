@@ -7,8 +7,11 @@ const budgetSlice = createSlice({
         setBudget: (state, action) => {
             state.push(action.payload);
         },
+        resetBudgets: () => {
+            return [];
+        }
     },
 });
 
-export const { setBudget } = budgetSlice.actions;
+export const { setBudget, resetBudgets } = budgetSlice.actions;
 export default budgetSlice.reducer; 
