@@ -77,6 +77,9 @@ const LineChart = forwardRef((props, ref) => {
                 position: "bottom",
             },
         },
+        animation: {
+            duration: 2500, easing: "easeOutQuart",
+        },
         scales: {
             y: {
                 Ticks: {

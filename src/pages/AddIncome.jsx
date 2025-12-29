@@ -94,7 +94,7 @@ export default function AddIncome() {
 
                 {/*Save Button */}
                 <button type="submit"
-                    className="w-full px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90">
+                    className="w-full px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90 hover:cursor-pointer">
                     Save Income
                 </button>
             </form>

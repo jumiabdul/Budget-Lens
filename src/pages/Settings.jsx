@@ -17,7 +17,7 @@ export default function Settings() {
 
                 <h1 className="text-2xl text-pink-600 font-bold">Settings</h1>
                 <button type="submit" onClick={handleReset}
-                    className=" mt-7 w-50 px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90">
+                    className=" mt-7 w-50 px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90 hover:cursor-pointer">
                     Reset Data
                 </button>
 

@@ -40,13 +40,13 @@ export default function Transactions() {
                 <h1 className="text-2xl text-center text-pink-600 font-bold">Transaction History</h1>
 
                 {/*Seaching and Filtering of transactions */}
-                <div className="flex items-center justify-around mt-5 bg-white rounded-xl shadow-md p-4">
+                <div className="flex flex-col sm:flex-row sm:justify-around gap-4 mt-5 bg-white rounded-xl shadow-md p-4">
 
                     {/*Seaching by category */}
                     <input value={searchCategory}
                         onChange={(e) => setSearchCategory(e.target.value)}
                         type="text" placeholder="Search for transactions by categories..."
-                        className="mt-1 w-1/3 rounded-xl border border-gray-300 px-4 py-2 text-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                        className="mt-1  rounded-xl border border-gray-300 px-4 py-2 text-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
 
                     {/*Filtering by month  */}
                     <select value={filterMonth}
@@ -79,14 +79,15 @@ export default function Transactions() {
                         }
                     </select>
 
+                    {/*Clearing all filters */}
                     <button onClick={handleClearFilters}
-                        className="px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90 ">
+                        className="px-4 py-2 w-full sm:w-auto bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90 hover:cursor-pointer ">
                         Clear Filter</button>
 
                 </div>
                 {/*Table showing transactions */}
-                <div className="bg-white rounded-xl shadow-md p-4">
-                    <table className="mt-5 w-full ">
+                <div className="bg-white rounded-xl shadow-md p-4 overflow-x-auto">
+                    <table className="mt-5 w-full min-w-150 ">
                         <thead>
                             <tr className="mt-5 border-2 border-purple-900 ">
                                 <th className="p-3">Date </th>
@@ -107,7 +108,6 @@ export default function Transactions() {
                                         {t.type === "income" ? "+" : "-"}{t.amount}</td>
                                     <td >{t.mode}</td>
                                     <td>
-                                        <button className="mr-2 hover:cursor-pointer">✎</button>
                                         <button onClick={() => handleDelete(t.id)}
                                             className=" hover:cursor-pointer">🗑️</button>
                                     </td>

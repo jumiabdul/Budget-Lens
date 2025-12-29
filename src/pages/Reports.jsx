@@ -103,26 +103,26 @@ export default function Reports() {
             <h1 className=" text-2xl text-center text-pink-600 font-bold mb-2">Reports and Analytics</h1>
 
             {/*Download reports as csv and pdf*/}
-            <div className="flex space-x-5 items-end justify-end">
+            <div className="flex flex-col sm:flex-row gap-4 items-center sm:justify-end">
                 <CSVLink data={csvData} filename="Transactions.csv"
                     className="px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90">
                     Download CSV</CSVLink>
                 <button onClick={exportPDF}
-                    className="px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90">Download PDF</button>
+                    className="px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90 hover:cursor-pointer">Download PDF</button>
             </div>
 
             <div className="text-md text-purple-900 font-semibold">Monthly View</div>
 
-            <div className="mt-3 flex space-x-5">
+            <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-5">
 
                 {/*Doughnut Chart that shows expenses*/}
-                <div className="bg-white w-1/2 rounded-xl shadow p-4">
+                <div className="bg-white rounded-xl shadow p-4">
                     <h2 className="text-lg font-semibold">Spending Breakdown</h2>
                     <DoughnutChart ref={doughnutRef} />
                 </div>
 
                 {/*Bar Chart that compare expense and income*/}
-                <div className="bg-white w-1/2 rounded-xl shadow p-4">
+                <div className="bg-white rounded-xl shadow p-4">
                     <h2 className="text-lg font-semibold">Income v/s Expense</h2>
                     <BarChart ref={barRef} />
                 </div>

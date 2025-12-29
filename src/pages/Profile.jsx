@@ -19,9 +19,14 @@ export default function Profile() {
                     </div>
                 </div>
                 <button type="submit"
-                    className=" mt-7 w-50 px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90">
+                    className=" mt-7 w-50 px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90 hover:cursor-pointer">
                     Change Password
                 </button>
+                <button type="submit"
+                    className=" mt-7 w-50 px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90 hover:cursor-pointer">
+                    Log Out
+                </button>
+
             </div>
         </div>
     )
