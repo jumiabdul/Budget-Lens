@@ -82,7 +82,7 @@ I built this project to practice React, Redux, and Tailwind CSS while creating a
 - **Advanced AI Suggestions**: Use machine learning or GPT APIs to generate smarter, more personalized saving tips.
 
 ## 👤 Author
-- Ayishath Jumaila K
+- Name: Ayishath Jumaila K
 -  GitHub: https://github.com/jumiabdul
 -  LinkedIn: https://www.linkedin.com/in/ayishath-jumaila-k/
 -  Email: jumiabdul@gmail.com
