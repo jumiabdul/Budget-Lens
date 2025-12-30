@@ -9,27 +9,49 @@ ChartJS.register(
     ArcElement, Tooltip, Legend
 );
 
-export default function BudgetChart({ budgets = [], selectedMonth }) {
+export default function BudgetChart({ budgets, selectedMonth, selectedYear, viewMode }) {
     const transactions = useSelector((state) => state.transactions);
 
-    //filter budgets for selected month
-    const monthBudgets = budgets.filter((b) => b.month === selectedMonth);
+    //filter budgets by viewmode
+    let filteredBudgets = []
 
-    //convert array to object
-    const budgetObj = monthBudgets.reduce((acc, b) => {
+    if (viewMode == "monthly") {
+        filteredBudgets = budgets.filter((b) =>
+            (!selectedMonth || b.month === selectedMonth) &&
+            (!selectedYear || b.year === selectedYear));
+
+    } else if (viewMode == "yearly") {
+        filteredBudgets = budgets.filter((b) =>
+            !selectedYear || b.year === selectedYear);
+    }
+
+    //convert budget array to object
+    const budgetObj = filteredBudgets.reduce((acc, b) => {
         acc[b.category] = b.amount;
         return acc;
     }, {});
 
-    //filter transactions for that month
-    const monthTransactions = transactions.filter((t) => {
-        const onlyMonth = new Date(t.date).toLocaleString("default", { month: "long" });
-        return onlyMonth === selectedMonth && t.type === "expense";
+    //filter transactions based on viewmode
+    let filteredTransactions = [];
+    if (viewMode === "monthly") {
+        filteredTransactions = transactions.filter((t) => {
+            const onlyMonth = new Date(t.date).toLocaleString("default", { month: "long" });
+            const onlyYear = new Date(t.date).getFullYear().toString();
+            return (
+                (!selectedMonth || onlyMonth === selectedMonth) &&
+                (!selectedYear || onlyYear === selectedYear) && t.type === "expense"
+            )
+        }
+        )
+    } else if (viewMode === "yearly") {
+        filteredTransactions = transactions.filter((t) => {
+            const onlyYear = new Date(t.date).getFullYear().toString();
+            return (!selectedYear || onlyYear === selectedYear) && t.type === "expense"
+        })
     }
-    );
 
     //calculate expenses by category
-    const categoryTotals = monthTransactions.reduce((obj, t) => {
+    const categoryTotals = filteredTransactions.reduce((obj, t) => {
         obj[t.category] = (obj[t.category] || 0) + Number(t.amount);
         return obj;
     }, {});
@@ -73,8 +95,8 @@ export default function BudgetChart({ budgets = [], selectedMonth }) {
         },
     }
 
-    if (monthBudgets.length === 0) {
-        return <p className="text-gray-500">No budget data {selectedMonth}</p>
+    if (filteredBudgets.length === 0) {
+        return <p className="text-gray-500">No budget data {viewMode === "monthly" ? selectedMonth : selectedYear}</p>
     }
     return (
         <div className="w-full h-64 sm:h-72 md:h-96">

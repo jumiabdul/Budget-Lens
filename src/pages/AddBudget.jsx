@@ -7,6 +7,7 @@ export default function AddBudget() {
     const [category, setCategory] = useState("");
     const [amount, setAmount] = useState("");
     const [month, setMonth] = useState("");
+    const [year, setYear] = useState("");
     const dispatch = useDispatch();
 
     const handleSubmit = (e) => {
@@ -16,17 +17,19 @@ export default function AddBudget() {
             amount: Number(amount),
             category,
             month,
+            year,
         }
         dispatch(setBudget(newBudget));
         setCategory("");
         setAmount("");
         setMonth("");
+        setYear("");
 
     }
 
     return (
         <div className="min-h-screen p-4 bg-linear-to-br from-indigo-100 to-purple-100">
-           
+
             {/*Form to add budget */}
             <form onSubmit={handleSubmit}
                 className=" bg-white rounded-2xl shadow-xl p-8 w-full mb-4 max-w-md mx-auto text-center space-y-6 border border-gray-100">
@@ -37,7 +40,7 @@ export default function AddBudget() {
                 {/*Category*/}
                 <div>
                     <label className="text-sm text-left font-medium text-gray-700 block">Category</label>
-                    <select required value={category}
+                    <select value={category}
                         onChange={(e) => setCategory(e.target.value)}
                         className="mt-1 w-full rounded-xl border border-gray-300 px-4 py-2 text-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400" >
                         <option value="">Select Category</option>
@@ -56,8 +59,8 @@ export default function AddBudget() {
 
                 {/*Month field*/}
                 <div>
-                    <label className="text-sm text-left font-medium text-gray-700 block">Category</label>
-                    <select required value={month}
+                    <label className="text-sm text-left font-medium text-gray-700 block">Month</label>
+                    <select value={month}
                         onChange={(e) => setMonth(e.target.value)}
                         className="mt-1 w-full rounded-xl border border-gray-300 px-4 py-2 text-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400" >
                         <option value="">Select Month</option>
@@ -76,6 +79,19 @@ export default function AddBudget() {
                     </select>
                 </div>
 
+                {/*Year field*/}
+                <div>
+                    <label className="text-sm text-left font-medium text-gray-700 block">Year</label>
+                    <select value={year}
+                        onChange={(e) => setYear(e.target.value)}
+                        className="mt-1 w-full rounded-xl border border-gray-300 px-4 py-2 text-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400" >
+                        <option value="">Select Year</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                </div>
+
                 {/*Amount field */}
                 <div>
                     <label className="text-sm text-left font-medium text-gray-700 block">Amount</label>
@@ -91,7 +107,7 @@ export default function AddBudget() {
                     Save Budget
                 </button>
 
-            </form>
-        </div>
+            </form >
+        </div >
     )
 }
