@@ -110,9 +110,7 @@ export default function Reports() {
                 <button onClick={exportPDF}
                     className="px-4 py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90 hover:cursor-pointer">Download PDF</button>
             </div>
-
-            <div className="text-md text-purple-900 font-semibold">Monthly View</div>
-
+            
             <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-5">
 
                 {/*Doughnut Chart that shows expenses*/}

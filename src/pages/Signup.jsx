@@ -1,4 +1,8 @@
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"
+import { auth, db } from "../firebase";
+import { setDoc, doc } from "firebase/firestore/lite";
 
 const Signup = () => {
     const [name, setName] = useState("");
@@ -8,31 +12,30 @@ const Signup = () => {
     const [agree, setAgree] = useState(false);
     const [errors, setErrors] = useState({});
 
-    const validate = () => {
+    const navigate = useNavigate();
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+
         const newErrors = {};
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
         if (!name.trim()) {
             newErrors.name = "Full name is required";
-
         } else if (name.length < 3) {
             newErrors.name = "Name must be atleast 3 characters";
-
         }
 
         if (!email.trim()) {
             newErrors.email = "Email is required";
-
         } else if (emailRegex.test(email) === false) {
             newErrors.email = "Please provide proper valid email";
-
         }
 
         if (!password.trim()) {
             newErrors.password = "Password is required";
-
         } else if (password.length < 8) {
             newErrors.password = "Password must be atleast 8 characters";
-
         }
 
         if (confirmPassword !== password) {
@@ -44,29 +47,41 @@ const Signup = () => {
         }
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    }
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (validate()) {
-            alert(`SignUp Successfull!\n Name : ${name} \n Email : ${email}`)
 
-            setName("");
-            setEmail("");
-            setPassword("");
-            setConfirmPassword("");
-            setAgree(false);
-            setErrors({});
+        if (Object.keys(newErrors).length > 0) return
+
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            const user = auth.currentUser;
+            console.log(user)
+            if (user) {
+                await setDoc(doc(db, "Users", user.uid), {
+                    email: user.email,
+                    fullName: name,
+                });
+            }
+            console.log("User Registered Successfully !!")
+        } catch (error) {
+            console.log(error.message);
         }
-    }
 
+        alert(`Signup Successfull!\n Email : ${email}`)
+
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setAgree(false);
+        setErrors({});
+        navigate("/")
+    }
 
     return (
 
         <div className="p-4 bg-linear-to-br from-indigo-100 to-purple-100">
 
             {/*Form to create account */}
-            <form onSubmit={handleSubmit}
+            <form onSubmit={handleRegister}
                 className=" bg-white rounded-2xl shadow-xl p-8 w-full mb-4 max-w-md mx-auto text-center space-y-6 border border-gray-100">
                 <div className="space-y-1">
                     <h1 className="text-2xl text-pink-600 font-bold">Sign Up</h1>

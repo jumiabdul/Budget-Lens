@@ -1,5 +1,7 @@
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
+import { auth } from "../firebase";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -8,37 +10,39 @@ const Login = () => {
 
     const navigate = useNavigate();
 
-    const validate = () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
         const newErrors = {};
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
         if (!email.trim()) {
             newErrors.email = "Email is required";
-
         } else if (emailRegex.test(email) === false) {
             newErrors.email = "Please provide proper valid email";
-
         }
 
         if (!password.trim()) {
             newErrors.password = "Password is required";
-
         } else if (password.length < 8) {
             newErrors.password = "Password must be atleast 8 characters";
+        }
 
-        }
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    }
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (validate()) {
-            alert(`Login Successfull!\n Email : ${email}`)
-            //call firebase auth
-            setEmail("");
-            setPassword("");
-            setErrors({});
+        if (Object.keys(newErrors).length > 0) return
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            console.log("User logged in successfully!!")
+        } catch (error) {
+            console.log(error.message);
         }
+        alert(`Login Successfull!\n Email : ${email}`)
+
+        setEmail("");
+        setPassword("");
+        setErrors({});
+        navigate("/dashboard")
     }
 
     return (
@@ -65,11 +69,11 @@ const Login = () => {
                             className=" mt-1 px-4 py-2 w-full border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400" />
                         {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
                     </div>
-                    <button type="submit" onClick={()=>navigate("/dashboard")}
+                    <button type="submit"
                         className="w-full py-2 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-md font-semibold hover:opacity-90 hover:cursor-pointer">
                         Login
                     </button>
-                    <button type="button" onClick={()=>navigate("/signup")}
+                    <button type="button" onClick={() => navigate("/signup")}
                         className="w-full py-2 bg-gray-200 text-violet-800 rounded-md font-semibold hover:bg-gray-300 hover:cursor-pointer">
                         Create Account
                     </button>
