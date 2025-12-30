@@ -80,7 +80,6 @@ I built this project to practice React, Redux, and Tailwind CSS while creating a
 
 ## 🔮 Future Enhancements
 - **Data Persistence**: Connect to a backend (Node/Express + MongoDB) or localStorage so budgets and transactions are saved permanently.
-- **Authentication**: Add user login and multi‑user support to keep data private and personalized.
 - **Advanced AI Suggestions**: Use machine learning or GPT APIs to generate smarter, more personalized saving tips.
 
 ## 👤 Author
