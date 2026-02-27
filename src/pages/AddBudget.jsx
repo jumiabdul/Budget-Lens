@@ -35,7 +35,7 @@ export default function AddBudget() {
 
                 {/* Header */}
                 <h1 className="text-3xl text-center font-bold">
-                    Add Expense
+                    Add Budget
                 </h1>
 
                 {/*Category*/}

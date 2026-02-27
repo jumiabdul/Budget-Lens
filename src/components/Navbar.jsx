@@ -8,7 +8,7 @@ const Navbar = () => {
         <nav className="relative z-50 bg-[#0b0720]/80 backdrop-blur-xl border-b border-[#2dfbd4]/10 text-white px-8 py-4 flex items-center justify-between shadow-lg">
 
             {/* Subtle Top Glow Line */}
-            <div className="absolute top-0 left-0 w-full h-0.5 bg-linear-to-r from-transparent via-[#2dfbd4] to-transparent opacity-70"></div>
+            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-linear-to-r from-transparent via-[#2dfbd4] to-transparent opacity-70"></div>
 
             {/*App Name or header */}
             <div className="font-bold text-2xl tracking-wide">

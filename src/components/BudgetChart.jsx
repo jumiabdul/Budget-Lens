@@ -21,8 +21,8 @@ export default function BudgetChart({ budgets, selectedMonth, selectedYear, view
     if (viewMode === "monthly") {
         filteredBudgets = budgets.filter(
             (b) =>
-                (!selectedMonth || b.month === selectedMonth) &&
-                (!selectedYear || b.year === selectedYear)
+                (!selectedMonth || b.month === selectedMonth)
+            // && (!selectedYear || b.year === selectedYear)
         );
     } else if (viewMode === "yearly") {
         filteredBudgets = budgets.filter(
@@ -31,7 +31,7 @@ export default function BudgetChart({ budgets, selectedMonth, selectedYear, view
     }
 
     const budgetObj = filteredBudgets.reduce((acc, b) => {
-        acc[b.category] = b.amount;
+        acc[b.category] = (acc[b.category] || 0) + b.amount;
         return acc;
     }, {});
 
@@ -43,10 +43,10 @@ export default function BudgetChart({ budgets, selectedMonth, selectedYear, view
             const onlyMonth = new Date(t.date).toLocaleString("default", {
                 month: "long",
             });
-            const onlyYear = new Date(t.date).getFullYear().toString();
+            //  const onlyYear = new Date(t.date).getFullYear().toString();
             return (
                 (!selectedMonth || onlyMonth === selectedMonth) &&
-                (!selectedYear || onlyYear === selectedYear) &&
+                // (!selectedYear || onlyYear === selectedYear) &&
                 t.type === "expense"
             );
         });
@@ -97,6 +97,7 @@ export default function BudgetChart({ budgets, selectedMonth, selectedYear, view
             grad.addColorStop(1, "#4f46e5");
         }
         setGradient(grad);
+        chart.update();
     }, [totalBudget, totalExpense, isOverspent]);
 
     const data = {
@@ -108,7 +109,7 @@ export default function BudgetChart({ budgets, selectedMonth, selectedYear, view
                     totalExpense
                 ],
                 backgroundColor: [
-                    gradient || "#6366f1",
+                    gradient ?? (isOverspent ? "#ef4444" : "#6366f1"),
                     isOverspent ? "#ef4444" : "#475569",
                 ],
                 borderColor: "#141625",

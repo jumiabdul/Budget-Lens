@@ -20,12 +20,10 @@ export default function BudgetPlanner() {
             const onlyMonth = dateObj.toLocaleString("default", { month: "long" });
             const onlyYear = dateObj.getFullYear().toString();
 
-            const monthMatch =
-                viewMode === "monthly" ? (!selectedMonth || onlyMonth === selectedMonth) : true;
-            const yearMatch =
-                viewMode === "yearly" ? (!selectedYear || onlyYear === selectedYear) : true;
+            const monthMatch = !selectedMonth || onlyMonth === selectedMonth;
+            const yearMatch = !selectedYear || onlyYear === selectedYear;
 
-            if (monthMatch && yearMatch) {
+            if (viewMode === "monthly" ? monthMatch : yearMatch) {
                 obj[t.category] = (obj[t.category] || 0) + Number(t.amount);
             }
             return obj;
@@ -46,22 +44,47 @@ export default function BudgetPlanner() {
                             : true)
                 )?.amount || 0;
 
+            const percentage = budget ? Math.round((amount / budget) * 100) : 0;
+            const remaining = budget - amount;
+
             if (budget && amount > budget) {
-                tips.push(
-                    `Overspent on ${category} by ₹${amount - budget}. Consider reducing this category.`
-                );
+                // 🔴 Overspent
+                tips.push({
+                    level: "danger",
+                    icon: "🔴",
+                    message: `Overspent on ${category} by ₹${amount - budget} (${percentage}% of budget used). Consider reducing this category.`,
+                });
+            } else if (budget && percentage >= 80) {
+                // 🟡 Near limit
+                tips.push({
+                    level: "warning",
+                    icon: "🟡",
+                    message: `${category} is at ${percentage}% of your budget. Only ₹${remaining} remaining — spend carefully!`,
+                });
+            } else if (budget && amount > 0) {
+                // 🟢 Under budget
+                tips.push({
+                    level: "success",
+                    icon: "🟢",
+                    message: `${category} looks good! ₹${remaining} remaining (${100 - percentage}% of budget left).`,
+                });
             } else if (amount > 0) {
-                tips.push(
-                    `${category} spending is ₹${amount}. Saving 10% gives ₹${Math.round(
-                        amount * 0.1
-                    )}.`
-                );
+                // 💡 No budget set
+                tips.push({
+                    level: "info",
+                    icon: "💡",
+                    message: `${category} spending is ₹${amount}. No budget set — saving 10% gives ₹${Math.round(amount * 0.1)}.`,
+                });
             }
         }
 
+        // Sort: danger → warning → success → info
+        const order = { danger: 0, warning: 1, success: 2, info: 3 };
+        tips.sort((a, b) => order[a.level] - order[b.level]);
+
         return tips.length
             ? tips
-            : [`Great job 🎉 No overspending detected this ${viewMode}.`];
+            : [{ level: "success", icon: "🎉", message: `Great job 🎉 No overspending detected this ${viewMode}.` }];
     }
 
     return (
@@ -182,8 +205,17 @@ export default function BudgetPlanner() {
                         <li
                             key={i}
                             className="bg-gray-900/60 p-3 rounded-lg border border-purple-800 text-gray-300"
+                            style={{
+                                borderLeft: `4px solid ${tip.level === "danger" ? "#ef4444" :
+                                        tip.level === "warning" ? "#f59e0b" :
+                                            tip.level === "success" ? "#10b981" : "#6366f1"
+                                    }`,
+                                borderTop: "1px solid rgba(139, 92, 246, 0.2)",
+                                borderRight: "1px solid rgba(139, 92, 246, 0.2)",
+                                borderBottom: "1px solid rgba(139, 92, 246, 0.2)",
+                            }}
                         >
-                            {tip}
+                            {tip.icon} {tip.message}
                         </li>
                     ))}
                 </ul>

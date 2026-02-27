@@ -7,8 +7,9 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
     let filteredBudgets = [];
     if (viewMode == "monthly") {
         filteredBudgets = budgets.filter((b) =>
-            (!selectedMonth || b.month === selectedMonth) &&
-            (!selectedYear || b.year === selectedYear));
+            !selectedMonth || b.month === selectedMonth
+            // && (!selectedYear || b.year === selectedYear)
+        );
 
     } else if (viewMode == "yearly") {
         filteredBudgets = budgets.filter((b) =>
@@ -17,7 +18,7 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
 
     //convert budget array to object
     const budgetObj = filteredBudgets.reduce((acc, b) => {
-        acc[b.category] = b.amount;
+        acc[b.category] = (acc[b.category] || 0) + b.amount;
         return acc;
     }, {});
 
@@ -26,10 +27,10 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
     if (viewMode === "monthly") {
         filteredTransactions = transactions.filter((t) => {
             const onlyMonth = new Date(t.date).toLocaleString("default", { month: "long" });
-            const onlyYear = new Date(t.date).getFullYear().toString();
+            //  const onlyYear = new Date(t.date).getFullYear().toString();
             return (
-                (!selectedMonth || onlyMonth === selectedMonth) &&
-                (!selectedYear || onlyYear === selectedYear) && t.type === "expense"
+                (!selectedMonth || onlyMonth === selectedMonth) && t.type === "expense"
+                // && (!selectedYear || onlyYear === selectedYear) 
             )
         }
         )
