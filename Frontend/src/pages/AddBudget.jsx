@@ -1,29 +1,50 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
-import { setBudget } from "../store/slices/budgetSlice"
-import { v4 as uuidv4 } from "uuid"
+import { addBudget } from "../store/slices/budgetSlice"
+//import { v4 as uuidv4 } from "uuid"
+import axiosInstance from "../utils/axiosInstance.js";
+import { useNavigate } from "react-router-dom"
 
 export default function AddBudget() {
     const [category, setCategory] = useState("");
     const [amount, setAmount] = useState("");
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
+    const [errors, setErrors] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const newBudget = {
-            id: uuidv4(),
-            amount: Number(amount),
-            category,
-            month,
-            year,
+        setErrors("");
+        try {
+            setLoading(true);
+            const newBudget = {
+                // id: uuidv4(),
+                amount: Number(amount),
+                category,
+                month,
+                year,
+            }
+
+            // save to MongoDB
+            const response = await axiosInstance.post("/budgets/add-budget", newBudget);
+
+            // update Redux with response from backend
+            dispatch(addBudget(response.data.data));
+            setCategory("");
+            setAmount("");
+            setMonth("");
+            setYear("");
+            navigate("/budget-planner");
+
+        } catch (error) {
+            setErrors(error.response?.data?.message || "Failed to save budget");
+        } finally {
+            setLoading(false);
         }
-        dispatch(setBudget(newBudget));
-        setCategory("");
-        setAmount("");
-        setMonth("");
-        setYear("");
     }
 
     return (
@@ -37,6 +58,13 @@ export default function AddBudget() {
                 <h1 className="text-3xl text-center font-bold">
                     Add Budget
                 </h1>
+
+                {/* Error display */}
+                {errors && (
+                    <p className="text-red-400 text-sm text-center bg-red-500/10 rounded-xl p-3">
+                        {errors}
+                    </p>
+                )}
 
                 {/*Category*/}
                 <div>
@@ -110,10 +138,11 @@ export default function AddBudget() {
 
                 {/*Save Button */}
                 <button type="submit"
-                    className="w-full py-3 rounded-xl font-semibold bg-linear-to-r from-[#00f5c4] to-[#8b5cf6] text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-emerald-500/30" >
-                    Save Budget
+                    disabled={loading}
+                    className="w-full py-3 rounded-xl font-semibold bg-linear-to-r from-[#00f5c4] to-[#8b5cf6] text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-emerald-500/30 disabled:opacity-50" >
+                    {loading ? "Saving..." : "Save Budget →"}
                 </button>
-
+                
             </form >
         </div >
     )

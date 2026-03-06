@@ -1,8 +1,6 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
-import { auth, db } from "../firebase";
-import { setDoc, doc } from "firebase/firestore/lite";
+import axiosInstance from "../utils/axiosInstance";
 
 const Signup = () => {
     const [name, setName] = useState("");
@@ -11,6 +9,7 @@ const Signup = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [agree, setAgree] = useState(false);
     const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -51,29 +50,23 @@ const Signup = () => {
         if (Object.keys(newErrors).length > 0) return
 
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            const user = auth.currentUser;
-            console.log(user)
-            if (user) {
-                await setDoc(doc(db, "Users", user.uid), {
-                    email: user.email,
-                    fullName: name,
-                });
-            }
-            console.log("User Registered Successfully !!")
+            setLoading(true);
+            await axiosInstance.post("/users/register-user", { name, email, password });
+            // alert(`Signup Successfull!\n Email : ${email}`)
+
+            setName("");
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
+            setAgree(false);
+            setErrors({});
+            navigate("/")
+
         } catch (error) {
-            console.log(error.message);
+            setErrors({ api: error.response?.data?.message || "Registration failed" });
+        } finally {
+            setLoading(false);
         }
-
-        alert(`Signup Successfull!\n Email : ${email}`)
-
-        setName("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-        setAgree(false);
-        setErrors({});
-        navigate("/")
     }
 
     return (
@@ -92,6 +85,13 @@ const Signup = () => {
                         Manage your wealth in the dark.
                     </p>
                 </div>
+
+                {/* API Error */}
+                {errors.api && (
+                    <p className="text-red-400 text-sm text-center bg-red-500/10 rounded-xl p-3 mb-4">
+                        {errors.api}
+                    </p>
+                )}
 
                 {/* Full Name */}
                 <div>
@@ -181,10 +181,10 @@ const Signup = () => {
 
                 {/* Button */}
                 <button
-                    disabled={!agree}
+                    disabled={!agree || loading}
                     type="submit"
                     className="w-full py-3 rounded-xl font-semibold bg-linear-to-r from-[#00f5c4] to-[#8b5cf6] text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-emerald-500/30 disabled:opacity-50" >
-                    Sign Up →
+                    {loading ? "Creating account..." : "Sign Up →"}
                 </button>
 
                 {/* Login link */}
@@ -199,7 +199,6 @@ const Signup = () => {
             </form>
         </div>
     );
-
 }
 
 export default Signup;

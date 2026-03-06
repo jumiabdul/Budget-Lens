@@ -1,9 +1,33 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import DoughnutChart from "../components/DoughnutChart";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { setTransactions } from "../store/slices/transactionSlice";
+import { setBudgets } from "../store/slices/budgetSlice";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function Dashboard() {
     const transactions = useSelector((state) => state.transactions);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    // Load data from MongoDB on startup
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const txRes = await axiosInstance.get("/transactions/get-all-transactions");
+                dispatch(setTransactions(txRes.data.data));
+
+                const budgetRes = await axiosInstance.get("/budgets/get-all-budgets");
+                dispatch(setBudgets(budgetRes.data.data));
+            } catch (error) {
+                console.error("Failed to load data:", error.message);
+            }
+        };
+        loadData();
+    }, [dispatch]);
+
 
     const income = transactions
         .filter((t) => t.type === "income")
@@ -14,7 +38,6 @@ export default function Dashboard() {
         .reduce((sum, t) => sum + t.amount, 0);
 
     const balance = income - expense;
-    const navigate = useNavigate();
     const isNegative = balance < 0;
 
     return (
@@ -121,7 +144,7 @@ export default function Dashboard() {
                             <ul className="space-y-3">
                                 {transactions.slice(-5).reverse().map((t) => (
                                     <li
-                                        key={t.id}
+                                        key={t._id}
                                         className="flex items-center justify-between border-b border-white/10 pb-2"
                                     >
                                         <div>

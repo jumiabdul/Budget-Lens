@@ -7,9 +7,11 @@ import { useNavigate } from "react-router-dom";
 export default function BudgetPlanner() {
     const budgets = useSelector((state) => state.budgets);
     const transactions = useSelector((state) => state.transactions);
+
     const [viewMode, setViewMode] = useState("monthly");
     const [selectedMonth, setSelectedMonth] = useState("");
     const [selectedYear, setSelectedYear] = useState("");
+
     const navigate = useNavigate();
 
     function generateSavingTips(budgets, transactions, viewMode, selectedMonth, selectedYear) {
@@ -33,15 +35,14 @@ export default function BudgetPlanner() {
 
         for (const [category, amount] of Object.entries(categoryTotals)) {
             const budget =
-                budgets.find(
-                    (b) =>
-                        b.category === category &&
-                        (viewMode === "monthly"
-                            ? !selectedMonth || b.month === selectedMonth
-                            : true) &&
-                        (viewMode === "yearly"
-                            ? !selectedYear || b.year === selectedYear
-                            : true)
+                budgets.find((b) =>
+                    b.category === category &&
+                    (viewMode === "monthly"
+                        ? !selectedMonth || b.month === selectedMonth
+                        : true) &&
+                    (viewMode === "yearly"
+                        ? !selectedYear || b.year === selectedYear
+                        : true)
                 )?.amount || 0;
 
             const percentage = budget ? Math.round((amount / budget) * 100) : 0;
@@ -207,8 +208,8 @@ export default function BudgetPlanner() {
                             className="bg-gray-900/60 p-3 rounded-lg border border-purple-800 text-gray-300"
                             style={{
                                 borderLeft: `4px solid ${tip.level === "danger" ? "#ef4444" :
-                                        tip.level === "warning" ? "#f59e0b" :
-                                            tip.level === "success" ? "#10b981" : "#6366f1"
+                                    tip.level === "warning" ? "#f59e0b" :
+                                        tip.level === "success" ? "#10b981" : "#6366f1"
                                     }`,
                                 borderTop: "1px solid rgba(139, 92, 246, 0.2)",
                                 borderRight: "1px solid rgba(139, 92, 246, 0.2)",
@@ -223,3 +224,5 @@ export default function BudgetPlanner() {
         </div>
     );
 }
+
+

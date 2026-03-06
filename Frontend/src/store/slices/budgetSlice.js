@@ -4,8 +4,18 @@ const budgetSlice = createSlice({
     name: "budgets",
     initialState: [],
     reducers: {
-        setBudget: (state, action) => {
+        setBudgets: (state, action) => {
+            return action.payload;
+        },
+        addBudget: (state, action) => {
             state.push(action.payload);
+        },
+        deleteBudget: (state, action) => {
+            return state.filter((t) => t._id !== action.payload)
+        },
+        editBudget: (state, action) => {
+            const index = state.findIndex((b) => b._id === action.payload._id);
+            if (index !== -1) state[index] = action.payload;
         },
         resetBudgets: () => {
             return [];
@@ -13,5 +23,5 @@ const budgetSlice = createSlice({
     },
 });
 
-export const { setBudget, resetBudgets } = budgetSlice.actions;
+export const { setBudgets, addBudget, deleteBudget, editBudget, resetBudgets } = budgetSlice.actions;
 export default budgetSlice.reducer; 

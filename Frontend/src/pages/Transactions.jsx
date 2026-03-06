@@ -1,18 +1,77 @@
 import { useSelector, useDispatch } from "react-redux"
 import { useState } from "react";
-import { deleteTransaction } from "../store/slices/transactionSlice"
+import { deleteTransaction, editTransaction } from "../store/slices/transactionSlice"
+import axiosInstance from "../utils/axiosInstance";
+
+const EXPENSE_CATEGORIES = [
+    "Food", "Housing", "Savings", "Utilities", "Transport",
+    "Healthcare", "Education", "Shopping", "Entertainment", "Miscellaneous"
+];
+
+const INCOME_CATEGORIES = [
+    "Salary", "Investment", "Business", "Others"
+];
 
 export default function Transactions() {
     const transactions = useSelector((state) => state.transactions);
+
     const dispatch = useDispatch();
 
     const [searchCategory, setSearchCategory] = useState("");
     const [filterMonth, setFilterMonth] = useState("");
     const [filterYear, setFilterYear] = useState("");
 
-    const handleDelete = (id) => {
-        dispatch(deleteTransaction(id));
-    }
+    // Edit modal state
+    const [editModal, setEditModal] = useState(false);
+    const [editData, setEditData] = useState(null);
+    const [editLoading, setEditLoading] = useState(false);
+    const [editError, setEditError] = useState("");
+
+    // Delete from MongoDB + Redux
+    const handleDelete = async (id) => {
+        try {
+            await axiosInstance.delete(`/transactions/delete-transaction/${id}`);
+            if (window.confirm("Are you sure you want to delete transaction ?")) {
+                dispatch(deleteTransaction(id));
+            }
+        } catch (error) {
+            console.error("Failed to delete:", error.message);
+        }
+    };
+
+    // Open edit modal
+    const handleEditOpen = (t) => {
+        setEditData({ ...t });
+        setEditError("");
+        setEditModal(true);
+    };
+
+    // Save edit to MongoDB + Redux
+    const handleEditSave = async () => {
+        if (!editData.category || !editData.amount || !editData.date) return;
+        try {
+            setEditLoading(true);
+            const response = await axiosInstance.put(
+                `/transactions/edit-transaction/${editData._id}`,
+                {
+                    type: editData.type,
+                    category: editData.category,
+                    amount: Number(editData.amount),
+                    date: editData.date,
+                    mode: editData.mode,
+                    note: editData.note,
+                }
+            );
+            dispatch(editTransaction(response.data.data));
+            setEditModal(false);
+            setEditData(null);
+            
+        } catch (error) {
+            setEditError(error.response?.data?.message || "Failed to update transaction");
+        } finally {
+            setEditLoading(false);
+        }
+    };
 
     const handleClearFilters = () => {
         setSearchCategory("");
@@ -121,7 +180,7 @@ export default function Transactions() {
                         <tbody>
                             {filteredTransactions.slice().reverse().map((t) => (
                                 <tr
-                                    key={t.id}
+                                    key={t._id}
                                     className="border-b border-purple-900/20 hover:bg-purple-900/10 transition-all">
                                     <td className="p-3">
                                         {new Date(t.date).toLocaleDateString("en-IN")}
@@ -139,10 +198,17 @@ export default function Transactions() {
 
                                     <td>{t.mode}</td>
 
-                                    <td>
+                                    <td className="flex gap-3 p-3">
+                                        {/* ✅ Edit button */}
                                         <button
-                                            onClick={() => handleDelete(t.id)}
-                                            className="text-red-400 hover:text-red-300 transition duration-200">
+                                            onClick={() => handleEditOpen(t)}
+                                            className="text-blue-400 hover:text-blue-300 cursor-pointer transition duration-200">
+                                            ✏️
+                                        </button>
+
+                                        <button
+                                            onClick={() => handleDelete(t._id)}
+                                            className="text-red-400 hover:text-red-300 cursor-pointer transition duration-200">
                                             🗑️
                                         </button>
                                     </td>
@@ -157,11 +223,131 @@ export default function Transactions() {
                                     </td>
                                 </tr>
                             )}
+
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            {/* Edit Modal */}
+            {editModal && editData && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+                    <div className="bg-[#1a1333] border border-purple-700/40 rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4 text-white">
+
+                        {/* Modal Header */}
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                                Edit Transaction
+                            </h2>
+                            <button onClick={() => setEditModal(false)}
+                                className="text-gray-400 hover:text-white text-xl transition">✕</button>
+                        </div>
+
+                        {/* Error */}
+                        {editError && (
+                            <p className="text-red-400 text-sm bg-red-500/10 rounded-xl p-3">
+                                {editError}
+                            </p>
+                        )}
+
+                        {/* Type */}
+                        <div>
+                            <label className="text-sm text-gray-300 block mb-1">Type</label>
+                            <select
+                                value={editData.type}
+                                onChange={(e) => setEditData({
+                                    ...editData, type: e.target.value,
+                                    category: e.target.value === "income" ? "Salary" : "Food"
+                                })}
+                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <option value="expense" className="bg-gray-900">Expense</option>
+                                <option value="income" className="bg-gray-900">Income</option>
+                            </select>
+                        </div>
+
+                        {/* Category */}
+                        <div>
+                            <label className="text-sm text-gray-300 block mb-1">Category</label>
+                            <select
+                                value={editData.category}
+                                onChange={(e) => setEditData({ ...editData, category: e.target.value })}
+                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+
+                                {(editData.type === "income" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES).map((c) => (
+                                    <option key={c} value={c} className="bg-gray-900">{c}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Amount */}
+                        <div>
+                            <label className="text-sm text-gray-300 block mb-1">Amount</label>
+                            <input
+                                type="number"
+                                value={editData.amount}
+                                onChange={(e) => setEditData({ ...editData, amount: e.target.value })}
+                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                            />
+                        </div>
+
+                        {/* Date */}
+                        <div>
+                            <label className="text-sm text-gray-300 block mb-1">Date</label>
+                            <input
+                                type="date"
+                                value={editData.date}
+                                onChange={(e) => setEditData({ ...editData, date: e.target.value })}
+                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                            />
+                        </div>
+
+                        {/* Mode */}
+                        <div>
+                            <label className="text-sm text-gray-300 block mb-1">Mode</label>
+                            <select
+                                value={editData.mode}
+                                onChange={(e) => setEditData({ ...editData, mode: e.target.value })}
+                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <option value="Cash" className="bg-gray-900">💵 Cash</option>
+                                <option value="Card" className="bg-gray-900">💳 Card</option>
+                                <option value="UPI" className="bg-gray-900">📱 UPI</option>
+                                <option value="NetBanking" className="bg-gray-900">🌐 Net Banking</option>
+                                <option value="Cheque" className="bg-gray-900">📝 Cheque</option>
+                            </select>
+                        </div>
+
+                        {/* Note */}
+                        <div>
+                            <label className="text-sm text-gray-300 block mb-1">Note (Optional)</label>
+                            <input
+                                type="text"
+                                value={editData.note || ""}
+                                onChange={(e) => setEditData({ ...editData, note: e.target.value })}
+                                placeholder="Add a note..."
+                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="flex gap-3 pt-2">
+                            <button
+                                onClick={() => setEditModal(false)}
+                                className="flex-1 py-3 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition font-medium">
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleEditSave}
+                                disabled={editLoading}
+                                className="flex-1 py-3 rounded-xl bg-linear-to-r from-purple-600 to-emerald-400 text-white font-semibold hover:scale-105 transition shadow-lg disabled:opacity-50">
+                                {editLoading ? "Saving..." : "Save Changes"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
-
 }
+
+
+

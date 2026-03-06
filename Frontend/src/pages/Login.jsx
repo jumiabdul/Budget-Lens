@@ -1,12 +1,12 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
-import { auth } from "../firebase";
+import axiosInstance from "../utils/axiosInstance.js";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -32,17 +32,27 @@ const Login = () => {
         if (Object.keys(newErrors).length > 0) return
 
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            console.log("User logged in successfully!!")
-        } catch (error) {
-            console.log(error.message);
-        }
-        alert(`Login Successfull!\n Email : ${email}`)
+            setLoading(true);
+            const response = await axiosInstance.post("/users/login-user", {
+                email: email,
+                password: password
+            });
+            if (response.data && response.data.accessToken) {
+                //console.log("Logged in successfully..!!", response.data.token);
+                localStorage.setItem("token", response.data.accessToken);
 
-        setEmail("");
-        setPassword("");
-        setErrors({});
-        navigate("/dashboard")
+                // console.log("User logged in successfully!!")
+                // alert(`Login Successfull!\n Email : ${email}`)
+                setEmail("");
+                setPassword("");
+                setErrors({});
+                navigate("/dashboard")
+            }
+        } catch (error) {
+            setErrors({ api: error.response?.data?.message || "Invalid email or password" });
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -59,6 +69,13 @@ const Login = () => {
                         Manage your wealth in the dark.
                     </p>
                 </div>
+
+                {/* API Error */}
+                {errors.api && (
+                    <p className="text-red-400 text-sm text-center bg-red-500/10 rounded-xl p-3 mb-4">
+                        {errors.api}
+                    </p>
+                )}
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -108,8 +125,9 @@ const Login = () => {
                     {/* Login Button */}
                     <button
                         type="submit"
-                        className="w-full py-3 rounded-xl font-semibold bg-linear-to-r from-[#00f5c4] to-[#8b5cf6] text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-emerald-500/30" >
-                        Sign In →
+                        disabled={loading}
+                        className="w-full py-3 rounded-xl font-semibold bg-linear-to-r from-[#00f5c4] to-[#8b5cf6] text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-emerald-500/30 disabled:opacity-50" >
+                        {loading ? "Signing in..." : "Sign In →"}
                     </button>
 
                     {/* Create Account */}
