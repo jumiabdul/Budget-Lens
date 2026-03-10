@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import axiosInstance from "../utils/axiosInstance.js";
+import toast from "react-hot-toast"
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -40,16 +41,15 @@ const Login = () => {
             if (response.data && response.data.accessToken) {
                 //console.log("Logged in successfully..!!", response.data.token);
                 localStorage.setItem("token", response.data.accessToken);
+                toast.success("Welcome back! 👋");
 
-                // console.log("User logged in successfully!!")
-                // alert(`Login Successfull!\n Email : ${email}`)
                 setEmail("");
                 setPassword("");
                 setErrors({});
                 navigate("/dashboard")
             }
         } catch (error) {
-            setErrors({ api: error.response?.data?.message || "Invalid email or password" });
+            toast.error(error.response?.data?.message || "Invalid email or password");
         } finally {
             setLoading(false);
         }

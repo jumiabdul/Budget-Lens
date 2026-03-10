@@ -3,7 +3,8 @@ import { useDispatch } from "react-redux"
 import { addTransaction } from "../store/slices/transactionSlice"
 //import { v4 as uuidv4 } from "uuid"
 import axiosInstance from "../utils/axiosInstance.js";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast"
 
 export default function AddIncome() {
     const [amount, setAmount] = useState("");
@@ -35,6 +36,8 @@ export default function AddIncome() {
             const response = await axiosInstance.post("/transactions/add-transaction", newIncome);
 
             dispatch(addTransaction(response.data.data));
+            toast.success("Income saved! 💰");
+
             setAmount("");
             setCategory("Salary");
             setMode("Cash");
@@ -43,7 +46,7 @@ export default function AddIncome() {
             navigate("/dashboard");
 
         } catch (error) {
-            setErrors(error.response?.data?.message || "Failed to save income");
+            toast.error(error.response?.data?.message || "Failed to save income");
         } finally {
             setLoading(false);
         }

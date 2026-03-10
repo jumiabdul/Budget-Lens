@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import axiosInstance from "../utils/axiosInstance";
+import toast from "react-hot-toast"
 
 const Signup = () => {
     const [name, setName] = useState("");
@@ -52,7 +53,7 @@ const Signup = () => {
         try {
             setLoading(true);
             await axiosInstance.post("/users/register-user", { name, email, password });
-            // alert(`Signup Successfull!\n Email : ${email}`)
+            toast.success("Account created successfully! 🎉");
 
             setName("");
             setEmail("");
@@ -63,7 +64,7 @@ const Signup = () => {
             navigate("/")
 
         } catch (error) {
-            setErrors({ api: error.response?.data?.message || "Registration failed" });
+            toast.error(error.response?.data?.message || "Registration failed");
         } finally {
             setLoading(false);
         }

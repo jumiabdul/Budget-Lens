@@ -75,4 +75,14 @@ router.delete("/delete-transaction/:id", authenticateToken, async (req, res, nex
     }
 });
 
+//Deleting all transactions
+router.delete("/delete-all", authenticateToken, async (req, res, next) => {
+    try {
+        await transactionModel.deleteMany({ userId: req.user._id });
+        res.json({ success: true, message: "All transactions deleted" });
+    } catch (error) {
+        next(error);
+    }
+});
+
 export default router;

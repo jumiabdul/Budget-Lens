@@ -75,4 +75,14 @@ router.delete("/delete-budget/:id", authenticateToken, async (req, res, next) =>
     }
 });
 
+//Deleting all budgets
+router.delete("/delete-all", authenticateToken, async (req, res, next) => {
+    try {
+        await budgetModel.deleteMany({ userId: req.user._id });
+        res.json({ success: true, message: "All budgets deleted" });
+    } catch (error) {
+        next(error);
+    }
+});
+
 export default router;

@@ -3,6 +3,7 @@ import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 import { authenticateToken } from "../middlewares/authMiddleware.js";
+import validator from "validator"
 
 const router = Router();
 
@@ -12,12 +13,19 @@ router.post("/register-user", async (req, res, next) => {
     console.log({ email, password, name });
 
     try {
+        //validation
         if (!email || !password || !name) {
             return res.status(400).json({ message: "All fields are required", success: false })
         }
+        if (!validator.isEmail(email)) {
+            throw new Error("Email not valid...!!")
+        }
+        if (!validator.isStrongPassword(password)) {
+            throw new Error("Strong Password required");
+        }
 
-        //chack if user already exists
-        const isAlreadyExisting = await userModel.findOne({ email })
+        //check if user already exists
+        const isAlreadyExisting = await userModel.exists({ email })
         if (isAlreadyExisting) {
             return res.status(400).json({ message: "User already exists", success: false })
         }
@@ -33,7 +41,7 @@ router.post("/register-user", async (req, res, next) => {
             password: hashedPassword
         });
 
-        const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE, });
+        const accessToken = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_EXPIRE, });
 
         return res.json({ success: true, user, accessToken, message: "Registration Successful", });
 
@@ -64,7 +72,7 @@ router.post("/login-user", async (req, res, next) => {
             return res.status(400).json({ message: "Invalid Credentials", success: false });
         }
 
-        const accessToken = jwt.sign({ id: userInfo._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE, });
+        const accessToken = jwt.sign({ id: userInfo._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_EXPIRE, });
 
         return res.json({ success: true, message: "Login Successful", email, accessToken, });
 

@@ -14,6 +14,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import Support from './pages/Support'
+import ProtectedRoutes from './components/protectedRoutes'
+import { Toaster } from "react-hot-toast"
 
 function GlobalComponent({ children }) {
   return (
@@ -38,52 +40,98 @@ function App() {
     },
     {
       path: "/dashboard",
-      element: <GlobalComponent><Dashboard /></GlobalComponent>,
+      element: <ProtectedRoutes>
+        <GlobalComponent><Dashboard /></GlobalComponent>
+      </ProtectedRoutes>,
     },
     {
       path: "/add-budget",
-      element: <GlobalComponent><AddBudget /></GlobalComponent>,
+      element: <ProtectedRoutes>
+        <GlobalComponent><AddBudget /></GlobalComponent>
+      </ProtectedRoutes>,
     },
     {
       path: "/add-income",
-      element: <GlobalComponent><AddIncome /></GlobalComponent>,
+      element: <ProtectedRoutes>
+        <GlobalComponent><AddIncome /></GlobalComponent>
+      </ProtectedRoutes>,
     },
     {
       path: "/add-expense",
-      element: <GlobalComponent><AddExpense /></GlobalComponent>,
+      element: <ProtectedRoutes>
+        <GlobalComponent><AddExpense /></GlobalComponent>
+      </ProtectedRoutes>,
     },
     {
       path: "/transactions",
-      element: <GlobalComponent><Transactions /></GlobalComponent>,
+      element: <ProtectedRoutes>
+        <GlobalComponent><Transactions /></GlobalComponent>
+      </ProtectedRoutes>,
     },
     {
       path: "/reports",
-      element: <GlobalComponent><Reports /></GlobalComponent>,
+      element: <ProtectedRoutes>
+        <GlobalComponent><Reports /></GlobalComponent>
+      </ProtectedRoutes>,
     },
     {
       path: "/budget-planner",
-      element: <GlobalComponent><BudgetPlanner /></GlobalComponent>,
+      element: <ProtectedRoutes>
+        <GlobalComponent><BudgetPlanner /></GlobalComponent>
+      </ProtectedRoutes>,
     },
     {
       path: "/profile",
-      element: <GlobalComponent><Profile /></GlobalComponent>,
+      element: <ProtectedRoutes>
+        <GlobalComponent><Profile /></GlobalComponent>
+      </ProtectedRoutes>,
     },
     {
       path: "/settings",
-      element: <GlobalComponent><Settings /></GlobalComponent>,
+      element: <ProtectedRoutes>
+        <GlobalComponent><Settings /></GlobalComponent>
+      </ProtectedRoutes>,
     },
     {
-      path: "/support" ,
-      element: <GlobalComponent><Support /></GlobalComponent>,
+      path: "/support",
+      element: <ProtectedRoutes>
+        <GlobalComponent><Support /></GlobalComponent>
+      </ProtectedRoutes>,
     }
   ]);
 
   return (
     <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#1a1333',
+            color: '#e2e8f0',
+            border: '1px solid rgba(139,92,246,0.3)',
+            borderRadius: '12px',
+            fontSize: '13px',
+          },
+          success: {
+            iconTheme: {
+              primary: '#34d399',
+              secondary: '#1a1333',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#f87171',
+              secondary: '#1a1333',
+            },
+          },
+        }}
+      />
+
       <RouterProvider router={router} />
     </>
   )
 }
 
-export default App
+export default App;
 

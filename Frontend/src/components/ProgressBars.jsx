@@ -2,6 +2,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { deleteBudget, editBudget } from "../store/slices/budgetSlice";
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
+import toast from "react-hot-toast";
+import ConfirmModal from "./ConfirmModal";
 
 export default function ProgressBars({ budgets = [], selectedMonth, selectedYear, viewMode }) {
     const transactions = useSelector((state) => state.transactions);
@@ -13,15 +15,32 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
     const [editLoading, setEditLoading] = useState(false);
     const [editError, setEditError] = useState("");
 
+    // Delete modal States
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+
+    // Open delete modal
+    const handleDeleteOpen = (id) => {
+        setDeleteId(id);
+        setDeleteModal(true);
+    };
+
     // delete budget
-    const handleDelete = async (id) => {
+    const handleDeleteConfirm = async () => {
         try {
-            await axiosInstance.delete(`/budgets/delete-budget/${id}`);
-            if (window.confirm("Are you sure you want to delete budget ?")) {
-                dispatch(deleteBudget(id));
-            }
+            setDeleteLoading(true);
+            await axiosInstance.delete(`/budgets/delete-budget/${deleteId}`);
+
+            dispatch(deleteBudget(deleteId));
+            toast.success("Budget deleted!");
+            setDeleteModal(false);
+            setDeleteId(null);
+
         } catch (error) {
-            console.error("Failed to delete budget:", error.message);
+            toast.error("Failed to delete budget");
+        } finally {
+            setDeleteLoading(false);
         }
     };
 
@@ -44,10 +63,12 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
                 year: editData.year,
             });
             dispatch(editBudget(response.data.data));
+            toast.success("Budget updated! ✅");
+
             setEditModal(false);
             setEditData(null);
         } catch (error) {
-            setEditError(error.response?.data?.message || "Failed to update budget");
+            toast.error(error.response?.data?.message || "Failed to update budget");
         } finally {
             setEditLoading(false);
         }
@@ -133,16 +154,16 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
                                         ✏️
                                     </button>
                                 )}
-                                
+
                                 {/* delete button */}
                                 {budgetItem && (
                                     <button
-                                        onClick={() => handleDelete(budgetItem._id)}
+                                        onClick={() => handleDeleteOpen(budgetItem._id)}
                                         className="text-red-400 hover:text-red-300 cursor-pointer transition text-xs">
                                         🗑️
                                     </button>
                                 )}
-                                
+
                             </div>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
@@ -240,6 +261,19 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
                     </div>
                 </div>
             )}
+
+            {/* Delete Modal */}
+            <ConfirmModal
+                isOpen={deleteModal}
+                onClose={() => { setDeleteModal(false); setDeleteId(null); }}
+                onConfirm={handleDeleteConfirm}
+                title="Delete Budget?"
+                message="Are you sure you want to delete this budget? This action cannot be undone."
+                confirmText="Yes, Delete"
+                confirmColor="red"
+                loading={deleteLoading}
+            />
+
         </div>
     );
 }

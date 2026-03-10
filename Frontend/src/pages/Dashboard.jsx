@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { setTransactions } from "../store/slices/transactionSlice";
 import { setBudgets } from "../store/slices/budgetSlice";
 import axiosInstance from "../utils/axiosInstance";
+import toast from "react-hot-toast"
 
 export default function Dashboard() {
     const transactions = useSelector((state) => state.transactions);
@@ -22,7 +23,7 @@ export default function Dashboard() {
                 const budgetRes = await axiosInstance.get("/budgets/get-all-budgets");
                 dispatch(setBudgets(budgetRes.data.data));
             } catch (error) {
-                console.error("Failed to load data:", error.message);
+                toast.error("Failed to load data. Please refresh !!");
             }
         };
         loadData();

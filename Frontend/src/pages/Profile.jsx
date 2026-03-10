@@ -4,6 +4,7 @@ import axiosInstance from "../utils/axiosInstance";
 import { useDispatch } from "react-redux";
 import { resetTransactions } from "../store/slices/transactionSlice";
 import { resetBudgets } from "../store/slices/budgetSlice";
+import toast from "react-hot-toast"
 
 export default function Profile() {
     const [userDetails, setUserDetails] = useState(null);
@@ -20,7 +21,7 @@ export default function Profile() {
                 const res = await axiosInstance.get("/users/get-user");
                 setUserDetails(res.data.user);
             } catch (err) {
-                setErrors("Failed to load profile");
+                toast.error("Failed to load profile");
             } finally {
                 setLoading(false);
             }
@@ -33,6 +34,7 @@ export default function Profile() {
         localStorage.removeItem("token");
         dispatch(resetTransactions());
         dispatch(resetBudgets());
+        toast.success("Logged out successfully!");
         navigate("/");
     };
 

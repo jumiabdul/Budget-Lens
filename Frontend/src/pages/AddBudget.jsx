@@ -4,6 +4,7 @@ import { addBudget } from "../store/slices/budgetSlice"
 //import { v4 as uuidv4 } from "uuid"
 import axiosInstance from "../utils/axiosInstance.js";
 import { useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
 
 export default function AddBudget() {
     const [category, setCategory] = useState("");
@@ -34,6 +35,8 @@ export default function AddBudget() {
 
             // update Redux with response from backend
             dispatch(addBudget(response.data.data));
+            toast.success("Budget created! 📊");
+
             setCategory("");
             setAmount("");
             setMonth("");
@@ -41,7 +44,7 @@ export default function AddBudget() {
             navigate("/budget-planner");
 
         } catch (error) {
-            setErrors(error.response?.data?.message || "Failed to save budget");
+            toast.error(error.response?.data?.message || "Failed to save budget");
         } finally {
             setLoading(false);
         }

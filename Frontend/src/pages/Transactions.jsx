@@ -2,6 +2,8 @@ import { useSelector, useDispatch } from "react-redux"
 import { useState } from "react";
 import { deleteTransaction, editTransaction } from "../store/slices/transactionSlice"
 import axiosInstance from "../utils/axiosInstance";
+import toast from "react-hot-toast";
+import ConfirmModal from "../components/ConfirmModal";
 
 const EXPENSE_CATEGORIES = [
     "Food", "Housing", "Savings", "Utilities", "Transport",
@@ -21,23 +23,40 @@ export default function Transactions() {
     const [filterMonth, setFilterMonth] = useState("");
     const [filterYear, setFilterYear] = useState("");
 
-    // Edit modal state
+    // Edit modal states
     const [editModal, setEditModal] = useState(false);
     const [editData, setEditData] = useState(null);
     const [editLoading, setEditLoading] = useState(false);
     const [editError, setEditError] = useState("");
 
-    // Delete from MongoDB + Redux
-    const handleDelete = async (id) => {
-        try {
-            await axiosInstance.delete(`/transactions/delete-transaction/${id}`);
-            if (window.confirm("Are you sure you want to delete transaction ?")) {
-                dispatch(deleteTransaction(id));
-            }
-        } catch (error) {
-            console.error("Failed to delete:", error.message);
-        }
+    // Delete modal States
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+
+    // Open delete modal
+    const handleDeleteOpen = (id) => {
+        setDeleteId(id);
+        setDeleteModal(true);
     };
+
+    // Confirm delete from MongoDB + Redux
+    const handleDeleteConfirm = async () => {
+        try {
+            setDeleteLoading(true);
+            await axiosInstance.delete(`/transactions/delete-transaction/${deleteId}`);
+
+            dispatch(deleteTransaction(deleteId));
+            toast.success("Transaction deleted!");
+            setDeleteModal(false);
+            setDeleteId(null);
+
+        } catch (error) {
+            toast.error("Failed to delete transaction");
+        } finally {
+            setDeleteLoading(false);
+        }
+    }
 
     // Open edit modal
     const handleEditOpen = (t) => {
@@ -63,11 +82,13 @@ export default function Transactions() {
                 }
             );
             dispatch(editTransaction(response.data.data));
+            toast.success("Transaction updated! ✅");
+
             setEditModal(false);
             setEditData(null);
-            
+
         } catch (error) {
-            setEditError(error.response?.data?.message || "Failed to update transaction");
+            toast.error(error.response?.data?.message || "Failed to update transaction");
         } finally {
             setEditLoading(false);
         }
@@ -207,7 +228,7 @@ export default function Transactions() {
                                         </button>
 
                                         <button
-                                            onClick={() => handleDelete(t._id)}
+                                            onClick={() => handleDeleteOpen(t._id)}
                                             className="text-red-400 hover:text-red-300 cursor-pointer transition duration-200">
                                             🗑️
                                         </button>
@@ -345,6 +366,19 @@ export default function Transactions() {
                     </div>
                 </div>
             )}
+
+            {/*Delete Modal*/}
+            <ConfirmModal
+                isOpen={deleteModal}
+                onClose={() => { setDeleteModal(false); setDeleteId(null); }}
+                onConfirm={handleDeleteConfirm}
+                title="Delete Transaction?"
+                message="Are you sure you want to delete this transaction? This action cannot be undone."
+                confirmText="Yes, Delete"
+                confirmColor="red"
+                loading={deleteLoading}
+            />
+
         </div>
     );
 }

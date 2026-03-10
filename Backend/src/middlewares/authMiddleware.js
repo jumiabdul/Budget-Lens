@@ -12,7 +12,7 @@ export const authenticateToken = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_TOKEN);
 
         // Look up user by ID from token payload
         const user = await userModel.findById(decoded.id).select("-password");
