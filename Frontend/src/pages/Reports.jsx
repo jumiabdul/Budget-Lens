@@ -25,6 +25,9 @@ export default function Reports() {
         .filter((t) => t.type === "expense")
         .reduce((sum, t) => sum + Number(t.amount), 0);
 
+    const netSavings = totalIncome - totalExpense;
+    const savingsRate = totalIncome > 0 ? Math.round((netSavings / totalIncome) * 100) : 0;
+
     //group transactions by category
     const expenseOnly = transactions.filter((t) => t.type === "expense");
 
@@ -33,7 +36,13 @@ export default function Reports() {
         return obj;
     }, {});
 
-    const categories = Object.entries(categoryTotals).map(([name, amount]) => ({ name, amount }));
+    const categories = Object.entries(categoryTotals).map(([name, amount]) => ({ name, amount })).sort((a, b) => b.amount - a.amount);
+
+    const topCategory = categories[0]?.name || "—";
+    const topAmount = categories[0]?.amount || 0;
+    const avgDailyExp = expenseOnly.length > 0
+        ? Math.round(totalExpense / Math.max(new Set(expenseOnly.map(t => t.date.split("T")[0])).size, 1))
+        : 0;
 
     //PDF Exporting
     const exportPDF = () => {
@@ -95,6 +104,7 @@ export default function Reports() {
     //CSV Data
     const csvData = transactions.map((t) => ({
         Date: new Date(t.date).toLocaleDateString("en-IN"),
+        Type: t.type,
         Category: t.category,
         Description: t.note,
         Amount:
@@ -107,72 +117,197 @@ export default function Reports() {
     return (
         <div className="min-h-screen px-4 sm:px-8 py-8 bg-linear-to-br from-[#0f0c29] via-[#1a1333] to-[#0f0c29] text-gray-300">
 
-            <div className="mb-10">
+            <div className="space-y-4">
 
                 {/* Title */}
-                <h1 className="text-3xl font-bold text-center bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
-                    Reports & Analytics
-                </h1>
+                <div className="relative flex items-center justify-center mb-6">
 
-                {/* Buttons */}
-                <div className="flex justify-end gap-4 mt-6">
+                    <div>
+                        <h1 className="text-3xl font-bold text-center bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                            Reports & Analytics
+                        </h1>
+                        <p className="text-gray-400 text-center text-sm mt-1">Detailed insights into your finances</p>
+                    </div>
 
-                    <CSVLink
-                        data={csvData}
-                        filename="Transactions.csv"
-                        className="px-5 py-2 rounded-lg font-medium bg-linear-to-r from-purple-600 to-indigo-600 hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-600/30">
-                        Download CSV
-                    </CSVLink>
+                    {/* Buttons */}
+                    <div className="absolute right-0 flex gap-3">
 
-                    <button
-                        onClick={exportPDF}
-                        className="px-5 py-2 rounded-lg font-medium bg-linear-to-r from-emerald-400 to-teal-500 text-black hover:scale-105 transition-all duration-300 shadow-lg shadow-emerald-500/30">
-                        Export PDF
-                    </button>
+                        <CSVLink
+                            data={csvData}
+                            filename="Transactions.csv"
+                            className="px-5 py-2 rounded-lg font-medium bg-linear-to-r from-purple-600 to-indigo-600 hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-600/30">
+                            Download CSV
+                        </CSVLink>
 
-                </div>
-            </div>
-
-            {/* CHART GRID */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-                {/* Doughnut Chart */}
-                <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
-
-                    <h2 className="text-lg font-medium mb-4 text-gray-200">
-                        Spending Breakdown
-                    </h2>
-
-                    <div className="h-80">
-                        <DoughnutChart ref={doughnutRef} />
+                        <button
+                            onClick={exportPDF}
+                            className="px-5 py-2 rounded-lg font-medium bg-linear-to-r from-emerald-400 to-teal-500 text-black hover:scale-105 transition-all duration-300 shadow-lg shadow-emerald-500/30">
+                            Export PDF
+                        </button>
                     </div>
                 </div>
 
-                {/* Bar Chart */}
-                <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+                {/* Summary Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 
-                    <h2 className="text-lg font-medium mb-4 text-gray-200">
-                        Income vs Expense
-                    </h2>
-
-                    <div className="h-80">
-                        <BarChart ref={barRef} />
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">Total Income</p>
+                        <p className="text-xl font-bold text-emerald-400">₹{totalIncome.toLocaleString("en-IN")}</p>
+                        <p className="text-[10px] text-gray-500 mt-1">{transactions.filter(t => t.type === "income").length} transactions</p>
                     </div>
+
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">Total Expenses</p>
+                        <p className="text-xl font-bold text-pink-400">₹{totalExpense.toLocaleString("en-IN")}</p>
+                        <p className="text-[10px] text-gray-500 mt-1">{transactions.filter(t => t.type === "expense").length} transactions</p>
+                    </div>
+
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">Net Savings</p>
+                        <p className={`text-xl font-bold ${netSavings >= 0 ? "text-indigo-400" : "text-red-400"}`}>
+                            {netSavings >= 0 ? "+" : ""}₹{Math.abs(netSavings).toLocaleString("en-IN")}
+                        </p>
+                        <p className="text-[10px] text-gray-500 mt-1">{netSavings >= 0 ? "✅ Positive savings" : "⚠️ Overspending"}</p>
+                    </div>
+
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">Savings Rate</p>
+                        <p className={`text-xl font-bold ${savingsRate >= 20 ? "text-emerald-400" : savingsRate >= 0 ? "text-yellow-400" : "text-red-400"}`}>
+                            {savingsRate}%
+                        </p>
+                        <div className="mt-2 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                            <div className={`h-full rounded-full transition-all ${savingsRate >= 20 ? "bg-emerald-400" : savingsRate >= 0 ? "bg-yellow-400" : "bg-red-400"}`}
+                                style={{ width: `${Math.max(0, Math.min(savingsRate, 100))}%` }} />
+                        </div>
+                    </div>
+
                 </div>
-            </div>
 
-            {/* Line Chart */}
-            <div className="mt-8 bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+                {/* Insights Row */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                <h2 className="text-lg font-medium mb-4 text-gray-200">
-                    Spending Trend
-                </h2>
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">🔥 Top Spending Category</p>
+                        <p className="text-lg font-bold text-orange-400">{topCategory}</p>
+                        <p className="text-[10px] text-gray-500 mt-1">₹{topAmount.toLocaleString("en-IN")} spent</p>
+                    </div>
 
-                <div className="h-96">
-                    <LineChart ref={lineRef} />
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">📊 Total Transactions</p>
+                        <p className="text-lg font-bold text-purple-400">{transactions.length}</p>
+                        <p className="text-[10px] text-gray-500 mt-1">this month</p>
+                    </div>
+
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">💡 Avg Daily Expense</p>
+                        <p className="text-lg font-bold text-pink-400">₹{avgDailyExp.toLocaleString("en-IN")}</p>
+                        <p className="text-[10px] text-gray-500 mt-1">per day (approx)</p>
+                    </div>
+
                 </div>
-            </div>
 
+                {/* Empty state */}
+                {transactions.length === 0 ? (
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-12 text-center">
+                        <div className="text-5xl mb-3">📊</div>
+                        <p className="font-semibold text-gray-300">No data for displaying Reports</p>
+                        <p className="text-xs text-gray-500 mt-1">Add some transactions to see your reports</p>
+                    </div>
+                ) : (
+                    <>
+                        {/* CHART GRID */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                            {/* Doughnut Chart */}
+                            <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+
+                                <h2 className="text-md font-semibold mb-1 text-gray-200">
+                                    Spending Breakdown
+                                </h2>
+                                <p className="text-[11px] text-gray-500 mb-4">Expenses by category</p>
+
+                                <div className="h-92">
+                                    <DoughnutChart ref={doughnutRef} />
+                                </div>
+                            </div>
+
+                            {/* Bar Chart */}
+                            <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+
+                                <h2 className="text-md font-semibold mb-1 text-gray-200">
+                                    Income vs Expense
+                                </h2>
+                                <p className="text-[11px] text-gray-500 mb-4">Weekly Comparison</p>
+
+                                <div className="h-92">
+                                    <BarChart ref={barRef} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Line Chart */}
+                        <div className="mt-8 bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+
+                            <h2 className="text-md font-semibold mb-1 text-gray-200">
+                                Spending Trend
+                            </h2>
+                            <p className="text-[11px] text-gray-500 mb-4">Over time</p>
+
+                            <div className="h-92">
+                                <LineChart ref={lineRef} />
+                            </div>
+                        </div>
+
+                        {/*  Category Breakdown Table */}
+                        {categories.length > 0 && (
+                            <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+
+                                <div className="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h2 className="text-md font-semibold text-gray-200">Category Breakdown</h2>
+                                        <p className="text-[11px] text-gray-500 mt-0.5">Expenses sorted by amount</p>
+                                    </div>
+
+                                    <span className="text-[11px] text-gray-500 bg-white/5 px-3 py-1 rounded-full border border-purple-900/20">
+                                        {categories.length} categories
+                                    </span>
+                                </div>
+
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm">
+                                        <thead>
+                                            <tr className="border-b border-purple-500/20 text-gray-400 text-xs uppercase tracking-wider">
+                                                <th className="pb-3 text-left w-1/3">Category</th>
+                                                <th className="pb-3 text-left w-1/4">Amount Spent</th>
+                                                <th className="pb-3 text-left w-1/6">% of Total</th>
+                                                <th className="pb-3 text-left w-1/4">Share</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {categories.map((c) => {
+                                                const pct = totalExpense > 0 ? Math.round((c.amount / totalExpense) * 100) : 0;
+                                                return (
+                                                    <tr key={c.name} className="border-b border-purple-900/15 hover:bg-purple-900/10 transition-all">
+                                                        <td className="py-3 font-semibold text-gray-200 w-1/3">{c.name}</td>
+                                                        <td className="py-3 font-bold text-pink-400 w-1/4">₹{c.amount.toLocaleString("en-IN")}</td>
+                                                        <td className="py-3 text-gray-400 text-xs w-1/6">{pct}%</td>
+                                                        <td className="py-3 w-1/4">
+                                                            <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden w-36">
+                                                                <div className="h-full rounded-full bg-linear-to-r from-purple-500 to-pink-500"
+                                                                    style={{ width: `${pct}%` }} />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
         </div>
     );
 }

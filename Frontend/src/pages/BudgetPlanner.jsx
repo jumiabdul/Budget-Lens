@@ -14,6 +14,27 @@ export default function BudgetPlanner() {
 
     const navigate = useNavigate();
 
+    // Summary calculations 
+    const filteredBudgets = viewMode === "monthly"
+        ? budgets.filter(b => !selectedMonth || b.month === selectedMonth)
+        : budgets.filter(b => !selectedYear || b.year === selectedYear);
+
+    const filteredExpenses = transactions.filter((t) => {
+        if (t.type !== "expense") return false;
+        if (viewMode === "monthly") {
+            const month = new Date(t.date).toLocaleString("default", { month: "long" });
+            return !selectedMonth || month === selectedMonth;
+        } else {
+            const year = new Date(t.date).getFullYear().toString();
+            return !selectedYear || year === selectedYear;
+        }
+    });
+
+    const totalBudget = filteredBudgets.reduce((s, b) => s + Number(b.amount), 0);
+    const totalSpent = filteredExpenses.reduce((s, t) => s + Number(t.amount), 0);
+    const remaining = totalBudget - totalSpent;
+    const budgetUsedPct = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
+
     function generateSavingTips(budgets, transactions, viewMode, selectedMonth, selectedYear) {
         const expenseOnly = transactions.filter((t) => t.type === "expense");
 
@@ -89,140 +110,203 @@ export default function BudgetPlanner() {
     }
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-[#0f0c29] via-[#1a1333] to-[#0f0c29] text-gray-200 p-6 space-y-8">
+        <div className="min-h-screen bg-linear-to-br from-[#0f0c29] via-[#1a1333] to-[#0f0c29] text-gray-200 px-4 sm:px-8 py-8">
+            <div className="space-y-4">
 
-            {/* Header */}
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent tracking-wide">
-                    Budget Planner
-                </h1>
+                {/* Header */}
+                <div className="relative flex items-center justify-center mb-6">
+                    <div>
+                        <h1 className="text-3xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent tracking-wide">
+                            Budget Planner
+                        </h1>
+                        <p className="text-gray-400 text-center text-sm ">Track and manage your spending limits</p>
+                    </div>
+                    <button
+                        onClick={() => navigate("/add-budget")}
+                        className="absolute right-0 px-5 py-2 bg-linear-to-r from-purple-600 to-emerald-400 rounded-lg font-semibold shadow-lg hover:scale-105 transition" >
+                        + New Budget
+                    </button>
+                </div>
 
-                <button
-                    onClick={() => navigate("/add-budget")}
-                    className="px-5 py-2 bg-linear-to-r from-purple-600 to-emerald-400 rounded-lg font-semibold shadow-lg hover:scale-105 transition" >
-                    + New Budget
-                </button>
-            </div>
+                {/* Toggle & Filters Card */}
+                <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-5 shadow-xl">
 
-            {/* Toggle & Filters Card */}
-            <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+                    <div className="flex flex-col md:flex-row justify-between gap-4">
 
-                <div className="flex flex-col md:flex-row justify-between gap-6">
+                        {/* Toggle */}
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setViewMode("monthly")}
+                                className={`px-5 py-2 rounded-lg font-medium transition ${viewMode === "monthly"
+                                    ? "bg-purple-600 text-white shadow-lg"
+                                    : "bg-gray-800 text-gray-400"
+                                    }`}
+                            >
+                                Monthly
+                            </button>
 
-                    {/* Toggle */}
-                    <div className="flex gap-3">
-                        <button
-                            onClick={() => setViewMode("monthly")}
-                            className={`px-5 py-2 rounded-lg font-medium transition ${viewMode === "monthly"
-                                ? "bg-purple-600 text-white shadow-lg"
-                                : "bg-gray-800 text-gray-400"
-                                }`}
-                        >
-                            Monthly
-                        </button>
+                            <button
+                                onClick={() => setViewMode("yearly")}
+                                className={`px-5 py-2 rounded-lg font-medium transition ${viewMode === "yearly"
+                                    ? "bg-purple-600 text-white shadow-lg"
+                                    : "bg-gray-800 text-gray-400"
+                                    }`}
+                            >
+                                Yearly
+                            </button>
+                        </div>
 
-                        <button
-                            onClick={() => setViewMode("yearly")}
-                            className={`px-5 py-2 rounded-lg font-medium transition ${viewMode === "yearly"
-                                ? "bg-purple-600 text-white shadow-lg"
-                                : "bg-gray-800 text-gray-400"
-                                }`}
-                        >
-                            Yearly
-                        </button>
+                        {/* Filters */}
+                        <div className="flex gap-4">
+                            {viewMode === "monthly" && (
+                                <select
+                                    value={selectedMonth}
+                                    onChange={(e) => setSelectedMonth(e.target.value)}
+                                    className="bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 focus:ring-2 focus:ring-purple-500"
+                                >
+                                    <option value="">Select Month</option>
+                                    {[
+                                        "January", "February", "March", "April", "May", "June",
+                                        "July", "August", "September", "October", "November", "December"
+                                    ].map((m) => (
+                                        <option key={m} value={m}>{m}</option>
+                                    ))}
+                                </select>
+                            )}
+
+                            {viewMode === "yearly" && (
+                                <select
+                                    value={selectedYear}
+                                    onChange={(e) => setSelectedYear(e.target.value)}
+                                    className="bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 focus:ring-2 focus:ring-purple-500"
+                                >
+                                    <option value="">Select Year</option>
+                                    {["2024", "2025", "2026", "2027"].map((y) => (
+                                        <option key={y} value={y}>{y}</option>
+                                    ))}
+                                </select>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Summary Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">Total Budget</p>
+                        <p className="text-xl font-bold text-purple-400">₹{totalBudget.toLocaleString("en-IN")}</p>
+                        <p className="text-[10px] text-gray-500 mt-1">{filteredBudgets.length} categories</p>
                     </div>
 
-                    {/* Filters */}
-                    <div className="flex gap-4">
-                        {viewMode === "monthly" && (
-                            <select
-                                value={selectedMonth}
-                                onChange={(e) => setSelectedMonth(e.target.value)}
-                                className="bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 focus:ring-2 focus:ring-purple-500"
-                            >
-                                <option value="">Select Month</option>
-                                {[
-                                    "January", "February", "March", "April", "May", "June",
-                                    "July", "August", "September", "October", "November", "December"
-                                ].map((m) => (
-                                    <option key={m} value={m}>{m}</option>
-                                ))}
-                            </select>
-                        )}
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">Total Spent</p>
+                        <p className="text-xl font-bold text-pink-400">₹{totalSpent.toLocaleString("en-IN")}</p>
+                        <p className="text-[10px] text-gray-500 mt-1">{budgetUsedPct}% of budget used</p>
+                    </div>
 
-                        {viewMode === "yearly" && (
-                            <select
-                                value={selectedYear}
-                                onChange={(e) => setSelectedYear(e.target.value)}
-                                className="bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 focus:ring-2 focus:ring-purple-500"
-                            >
-                                <option value="">Select Year</option>
-                                {["2024", "2025", "2026", "2027"].map((y) => (
-                                    <option key={y} value={y}>{y}</option>
-                                ))}
-                            </select>
-                        )}
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">Remaining</p>
+                        <p className={`text-xl font-bold ${remaining >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                            {remaining >= 0 ? "+" : ""}₹{Math.abs(remaining).toLocaleString("en-IN")}
+                        </p>
+                        <p className="text-[10px] text-gray-500 mt-1">
+                            {remaining >= 0 ? "✅ Under budget" : "⚠️ Over budget"}
+                        </p>
+                    </div>
+
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
+                        <p className="text-[11px] text-gray-500 mb-1">Budget Used</p>
+                        <p className={`text-xl font-bold ${budgetUsedPct >= 100 ? "text-red-400" : budgetUsedPct >= 80 ? "text-yellow-400" : "text-emerald-400"}`}>
+                            {budgetUsedPct}%
+                        </p>
+                        <div className="mt-2 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                            <div className={`h-full rounded-full transition-all ${budgetUsedPct >= 100 ? "bg-red-400" : budgetUsedPct >= 80 ? "bg-yellow-400" : "bg-emerald-400"}`}
+                                style={{ width: `${Math.min(budgetUsedPct, 100)}%` }} />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Empty state */}
+                {filteredBudgets.length === 0 ? (
+                    <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-16 text-center">
+                        <div className="text-5xl mb-4">💰</div>
+                        <h3 className="text-lg font-bold text-gray-300 mb-2">No budgets yet</h3>
+                        <p className="text-gray-500 text-sm mb-6">Create your first budget to start tracking</p>
+                        <button onClick={() => navigate("/add-budget")}
+                            className="px-6 py-2.5 bg-linear-to-r from-purple-600 to-emerald-400 rounded-xl font-semibold text-sm hover:scale-105 transition">
+                            + New Budget
+                        </button>
+                    </div>
+                ) : (
+                    <>
+                        {/* Charts Section */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
-                    <h2 className="text-xl font-semibold text-gray-200 mb-4">
-                        Budget Goal
-                    </h2>
-                    <BudgetChart
-                        budgets={budgets}
-                        selectedMonth={selectedMonth}
-                        selectedYear={selectedYear}
-                        viewMode={viewMode}
-                    />
-                </div>
+                            <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+                                <h2 className="text-md font-semibold text-gray-200 mb-1">
+                                    Budget Goal
+                                </h2>
+                                <p className="text-[11px] text-gray-500 mb-4">How budget is split by category</p>
+                                <BudgetChart
+                                    budgets={budgets}
+                                    selectedMonth={selectedMonth}
+                                    selectedYear={selectedYear}
+                                    viewMode={viewMode}
+                                />
+                            </div>
 
-                <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
-                    <h2 className="text-xl font-semibold text-gray-200 mb-4">
-                        Allocation by Category
-                    </h2>
-                    <ProgressBars
-                        budgets={budgets}
-                        transactions={transactions}
-                        selectedMonth={selectedMonth}
-                        selectedYear={selectedYear}
-                        viewMode={viewMode}
-                    />
-                </div>
-            </div>
+                            <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+                                <h2 className="text-md font-semibold text-gray-200 mb-1">
+                                    Allocation by Category
+                                </h2>
+                                <p className="text-[11px] text-gray-500 mb-4">Spending progress per category</p>
+                                <ProgressBars
+                                    budgets={budgets}
+                                    transactions={transactions}
+                                    selectedMonth={selectedMonth}
+                                    selectedYear={selectedYear}
+                                    viewMode={viewMode}
+                                />
+                            </div>
+                        </div>
 
-            {/* Saving Suggestions */}
-            <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
-                <h2 className="text-xl font-semibold text-gray-200 mb-4">
-                    Smart Saving Suggestions
-                </h2>
+                        {/* Saving Suggestions */}
+                        <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
 
-                <ul className="space-y-3">
-                    {generateSavingTips(budgets, transactions, viewMode, selectedMonth, selectedYear).map((tip, i) => (
-                        <li
-                            key={i}
-                            className="bg-gray-900/60 p-3 rounded-lg border border-purple-800 text-gray-300"
-                            style={{
-                                borderLeft: `4px solid ${tip.level === "danger" ? "#ef4444" :
-                                    tip.level === "warning" ? "#f59e0b" :
-                                        tip.level === "success" ? "#10b981" : "#6366f1"
-                                    }`,
-                                borderTop: "1px solid rgba(139, 92, 246, 0.2)",
-                                borderRight: "1px solid rgba(139, 92, 246, 0.2)",
-                                borderBottom: "1px solid rgba(139, 92, 246, 0.2)",
-                            }}
-                        >
-                            {tip.icon} {tip.message}
-                        </li>
-                    ))}
-                </ul>
+                            <div className="flex items-center gap-3 mb-4">
+                                <h2 className="text-md font-semibold text-gray-200 ">
+                                    Smart Saving Suggestions
+                                </h2>
+                                <span className="text-[10px] bg-purple-500/20 text-purple-400 px-2.5 py-0.5 rounded-full border border-purple-500/20">
+                                    AI Powered
+                                </span>
+                            </div>
+
+                            <ul className="space-y-3">
+                                {generateSavingTips(budgets, transactions, viewMode, selectedMonth, selectedYear).map((tip, i) => (
+                                    <li
+                                        key={i}
+                                        className="bg-gray-900/60 p-3 rounded-lg border border-purple-800 text-gray-300 text-sm"
+                                        style={{
+                                            borderLeft: `4px solid ${tip.level === "danger" ? "#ef4444" :
+                                                tip.level === "warning" ? "#f59e0b" :
+                                                    tip.level === "success" ? "#10b981" : "#6366f1"
+                                                }`,
+                                            borderTop: "1px solid rgba(139, 92, 246, 0.2)",
+                                            borderRight: "1px solid rgba(139, 92, 246, 0.2)",
+                                            borderBottom: "1px solid rgba(139, 92, 246, 0.2)",
+                                        }}
+                                    >
+                                        {tip.icon} {tip.message}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
 }
-
 

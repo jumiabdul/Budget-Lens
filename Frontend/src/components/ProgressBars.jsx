@@ -134,17 +134,30 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
             {Object.keys(budgetObj).map((cat) => {
                 const budget = budgetObj[cat];
                 const expense = categoryTotals[cat] || 0;
-                const percentSpent = budget > 0 ? (expense / budget) * 100 : 0;
+                const percentSpent = budget > 0 ? Math.min((expense / budget) * 100) : 0;
+
+                const remaining = budget - expense;
+                const isOver = expense > budget;
+                const isNear = !isOver && percentSpent >= 80;
+
+                const barColor = isOver ? "bg-red-500" : isNear ? "bg-yellow-400" : "bg-emerald-400";
+                const amountColor = isOver ? "text-red-400" : "text-gray-400";
+                const subColor = isOver ? "text-red-400" : isNear ? "text-yellow-400" : "text-gray-500";
+                const subText = isOver
+                    ? `⚠️ Overspent by ₹${Math.abs(remaining).toLocaleString("en-IN")}`
+                    : isNear
+                        ? `⚡ Only ₹${remaining.toLocaleString("en-IN")} remaining`
+                        : `✅ ₹${remaining.toLocaleString("en-IN")} remaining`;
 
                 // find original budget item for edit/delete
                 const budgetItem = filteredBudgets.find((b) => b.category === cat);
 
                 return (
                     <div key={cat}>
-                        <div className="flex justify-between items-center text-sm mb-1 mt-3">
-                            <span className=" text-gray-400 font-medium">{cat}</span>
+                        <div className="flex justify-between items-center mb-1 mt-3">
+                            <span className=" text-gray-400 font-medium text-sm">{cat}</span>
                             <div className="flex items-center gap-3">
-                                <span className=" text-gray-400 font-medium" >₹{expense}/₹{budget}</span>
+                                <span className={`text-xs font-semibold ${amountColor}`}>₹{expense}/₹{budget}</span>
 
                                 {/* edit button */}
                                 {budgetItem && (
@@ -166,11 +179,17 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
 
                             </div>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div className={`h-2 rounded-full ${percentSpent >= 100 ? "bg-red-700" : "bg-green-700"} `}
-                                style={{ width: `${Math.min(percentSpent, 100)}%` }}>
+
+                        <div className="w-full bg-gray-700/50 rounded-full h-2 overflow-hidden">
+                            <div className={`h-2 rounded-full transition-all duration-500 ${barColor} `}
+                                style={{ width: `${percentSpent}%` }}>
                             </div>
                         </div>
+
+                        {/* Sub text */}
+                        <p className={`text-[10px] mt-1 ${subColor}`}>
+                            {subText}
+                        </p>
                     </div>
                 )
             })

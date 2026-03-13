@@ -14,6 +14,22 @@ const INCOME_CATEGORIES = [
     "Salary", "Investment", "Business", "Others"
 ];
 
+const ModeBadge = ({ mode }) => {
+    const styles = {
+        Cash: "bg-yellow-500/15 text-yellow-400 border-yellow-500/25",
+        Card: "bg-purple-500/15 text-purple-400 border-purple-500/25",
+        UPI: "bg-indigo-500/15 text-indigo-400 border-indigo-500/25",
+        NetBanking: "bg-blue-500/15 text-blue-400 border-blue-500/25",
+        Cheque: "bg-gray-500/15 text-gray-400 border-gray-500/25",
+    };
+    const icons = { Cash: "💵", Card: "💳", UPI: "📱", NetBanking: "🌐", Cheque: "📝" };
+    return (
+        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${styles[mode] || styles.Cash}`}>
+            {icons[mode] || "💵"} {mode}
+        </span>
+    );
+};
+
 export default function Transactions() {
     const transactions = useSelector((state) => state.transactions);
 
@@ -22,6 +38,7 @@ export default function Transactions() {
     const [searchCategory, setSearchCategory] = useState("");
     const [filterMonth, setFilterMonth] = useState("");
     const [filterYear, setFilterYear] = useState("");
+    const [filterType, setFilterType] = useState("");
 
     // Edit modal states
     const [editModal, setEditModal] = useState(false);
@@ -100,7 +117,7 @@ export default function Transactions() {
         setFilterYear("");
     }
 
-    const filteredTransactions = transactions.filter((t) => {
+    const filteredTransactions = transactions.slice().reverse().filter((t) => {
         const onlyMonth = new Date(t.date).toLocaleString("default", { month: "long" });
         const onlyYear = new Date(t.date).getFullYear().toString();
 
@@ -109,8 +126,9 @@ export default function Transactions() {
 
         const matchMonth = filterMonth ? onlyMonth === filterMonth : true;
         const matchYear = filterYear ? onlyYear === filterYear : true;
+        const matchType = filterType ? t.type === filterType : true;
 
-        return matchCategory && matchMonth && matchYear;
+        return matchCategory && matchMonth && matchYear && matchType;
     }
     )
 
@@ -118,7 +136,7 @@ export default function Transactions() {
 
         <div className="min-h-screen bg-linear-to-br from-[#0f0c29] via-[#1a1333] to-[#0f0c29] text-gray-200 px-4 sm:px-8 py-8">
 
-            <div className="max-w-7xl mx-auto space-y-8">
+            <div className="space-y-4">
 
                 {/* Header */}
                 <div>
@@ -133,9 +151,9 @@ export default function Transactions() {
                 </div>
 
                 {/* Filter Card */}
-                <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+                <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-5 shadow-xl">
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
 
                         {/* Search */}
                         <input
@@ -143,14 +161,14 @@ export default function Transactions() {
                             onChange={(e) => setSearchCategory(e.target.value)}
                             type="text"
                             placeholder="Search by category..."
-                            className="rounded-xl bg-[#0F0F25] border border-purple-500/30 px-4 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="rounded-xl bg-[#0F0F25] border border-purple-500/30 px-4 py-2.5 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
                         />
 
                         {/* Month */}
                         <select
                             value={filterMonth}
                             onChange={(e) => setFilterMonth(e.target.value)}
-                            className="rounded-xl bg-[#0F0F25] border border-indigo-500/30 px-4 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" >
+                            className="rounded-xl bg-[#0F0F25] border border-indigo-500/30 px-4 py-2.5 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" >
                             <option value="">Select Month</option>
                             {[
                                 "January", "February", "March", "April", "May", "June",
@@ -164,7 +182,7 @@ export default function Transactions() {
                         <select
                             value={filterYear}
                             onChange={(e) => setFilterYear(e.target.value)}
-                            className="rounded-xl bg-[#0F0F25] border border-emerald-500/30 px-4 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            className="rounded-xl bg-[#0F0F25] border border-emerald-500/30 px-4 py-2.5 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                             <option value="">Select Year</option>
                             {[...new Set(transactions.map((t) =>
                                 new Date(t.date).getFullYear()
@@ -173,10 +191,27 @@ export default function Transactions() {
                             ))}
                         </select>
 
+                        {/* Type toggle */}
+                        <div className="flex rounded-xl overflow-hidden border border-purple-500/30">
+                            {[["", "All"], ["income", "Income"], ["expense", "Expense"]].map(([val, label]) => (
+                                <button
+                                    key={val}
+                                    onClick={() => { setFilterType(val); }}
+                                    className={`flex-1 py-2.5 text-xs font-semibold transition-all ${filterType === val
+                                        ? val === "income" ? "bg-emerald-500/30 text-emerald-300"
+                                            : val === "expense" ? "bg-pink-500/30 text-pink-300"
+                                                : "bg-purple-600/40 text-purple-200"
+                                        : "bg-[#0F0F25] text-gray-400 hover:bg-white/5"
+                                        }`}>
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+
                         {/* Clear */}
                         <button
                             onClick={handleClearFilters}
-                            className="bg-linear-to-r  from-[#00f5c4] to-[#8b5cf6] text-black font-semibold rounded-xl py-2 hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-600/30" >
+                            className="bg-linear-to-r  from-[#00f5c4] to-[#8b5cf6] text-black font-semibold rounded-xl py-2.5 text-sm hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-600/30" >
                             Clear Filter
                         </button>
                     </div>
@@ -203,30 +238,34 @@ export default function Transactions() {
                                 <tr
                                     key={t._id}
                                     className="border-b border-purple-900/20 hover:bg-purple-900/10 transition-all">
-                                    <td className="p-3">
+                                    <td className="py-3 pl-2 text-gray-400 text-xs">
                                         {new Date(t.date).toLocaleDateString("en-IN")}
                                     </td>
 
-                                    <td>{t.category}</td>
-                                    <td>{t.note}</td>
+                                    <td className="py-3 font-semibold text-gray-200">{t.category}</td>
+                                    <td className="py-3 text-gray-400 text-xs max-w-35 truncate">{t.note || "—"}</td>
 
-                                    <td className={`font-semibold ${t.type === "income"
+                                    <td className={`py-3 font-semibold ${t.type === "income"
                                         ? "text-emerald-400"
                                         : "text-pink-400"
                                         }`}>
                                         {t.type === "income" ? "+" : "-"}₹ {t.amount}
                                     </td>
 
-                                    <td>{t.mode}</td>
+                                    <td className="py-3">
+                                        <ModeBadge mode={t.mode} />
+                                    </td>
 
-                                    <td className="flex gap-3 p-3">
-                                        {/* ✅ Edit button */}
+                                    <td className="flex gap-3 py-3">
+
+                                        {/* Edit button */}
                                         <button
                                             onClick={() => handleEditOpen(t)}
                                             className="text-blue-400 hover:text-blue-300 cursor-pointer transition duration-200">
                                             ✏️
                                         </button>
 
+                                        {/* Delete button */}
                                         <button
                                             onClick={() => handleDeleteOpen(t._id)}
                                             className="text-red-400 hover:text-red-300 cursor-pointer transition duration-200">
@@ -236,15 +275,17 @@ export default function Transactions() {
                                 </tr>
                             ))}
 
+                            {/* Empty State */}
                             {filteredTransactions.length === 0 && (
                                 <tr>
                                     <td colSpan="6"
-                                        className="text-center py-6 text-gray-400" >
+                                        className="text-center py-6 font-semibold text-gray-400" >
+                                        <div className="text-4xl mb-3">🔍</div>
                                         No Transactions Found
+                                        <p className="text-xs text-gray-500 mt-1">Add some transactions from dashboard</p>
                                     </td>
                                 </tr>
                             )}
-
                         </tbody>
                     </table>
                 </div>
