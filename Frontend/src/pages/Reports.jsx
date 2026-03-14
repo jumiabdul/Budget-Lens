@@ -120,9 +120,9 @@ export default function Reports() {
             <div className="space-y-4">
 
                 {/* Title */}
-                <div className="relative flex items-center justify-center mb-6">
+                <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-center gap-4 mb-6">
 
-                    <div>
+                    <div className="text-center">
                         <h1 className="text-3xl font-bold text-center bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
                             Reports & Analytics
                         </h1>
@@ -130,7 +130,7 @@ export default function Reports() {
                     </div>
 
                     {/* Buttons */}
-                    <div className="absolute right-0 flex gap-3">
+                    <div className="flex gap-3 justify-center lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2">
 
                         <CSVLink
                             data={csvData}

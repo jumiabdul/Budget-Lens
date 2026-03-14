@@ -1,10 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-const protectedRoutes = ({ children }) => {
+const ProtectedRoutes = ({ children }) => {
     const token = localStorage.getItem("token");
-    const navigate = useNavigate();
+    console.log(token);
 
-    if (!token) navigate("/");
+    if (!token) {
+        return <Navigate to="/" />;
+    }
 
     return (
         <>
@@ -13,4 +15,4 @@ const protectedRoutes = ({ children }) => {
     )
 }
 
-export default protectedRoutes;
+export default ProtectedRoutes;

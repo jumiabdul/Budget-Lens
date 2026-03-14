@@ -253,7 +253,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* Quick Actions */}
-                        <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+                        <div className="hidden sm:block bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl">
                             <h3 className="text-base sm:text-lg font-semibold text-gray-200 mb-5">
                                 Quick Actions
                             </h3>

@@ -114,27 +114,30 @@ export default function BudgetPlanner() {
             <div className="space-y-4">
 
                 {/* Header */}
-                <div className="relative flex items-center justify-center mb-6">
-                    <div>
+                <div className="relative mb-6">
+                    <div className="text-center ">
                         <h1 className="text-3xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent tracking-wide">
                             Budget Planner
                         </h1>
                         <p className="text-gray-400 text-center text-sm ">Track and manage your spending limits</p>
                     </div>
-                    <button
-                        onClick={() => navigate("/add-budget")}
-                        className="absolute right-0 px-5 py-2 bg-linear-to-r from-purple-600 to-emerald-400 rounded-lg font-semibold shadow-lg hover:scale-105 transition" >
-                        + New Budget
-                    </button>
+                    <div className="mt-3 flex justify-center sm:mt-0 sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
+
+                        <button
+                            onClick={() => navigate("/add-budget")}
+                            className=" px-5 py-2 bg-linear-to-r from-purple-600 to-emerald-400 rounded-lg font-semibold shadow-lg hover:scale-105 transition" >
+                            + New Budget
+                        </button>
+                    </div>
                 </div>
 
                 {/* Toggle & Filters Card */}
                 <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-5 shadow-xl">
 
-                    <div className="flex flex-col md:flex-row justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
                         {/* Toggle */}
-                        <div className="flex gap-3">
+                        <div className="flex gap-3 justify-center sm:justify-start">
                             <button
                                 onClick={() => setViewMode("monthly")}
                                 className={`px-5 py-2 rounded-lg font-medium transition ${viewMode === "monthly"
@@ -157,12 +160,12 @@ export default function BudgetPlanner() {
                         </div>
 
                         {/* Filters */}
-                        <div className="flex gap-4">
+                        <div className="flex gap-4 ">
                             {viewMode === "monthly" && (
                                 <select
                                     value={selectedMonth}
                                     onChange={(e) => setSelectedMonth(e.target.value)}
-                                    className="bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 focus:ring-2 focus:ring-purple-500"
+                                    className="w-full sm:w-auto bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 text-sm focus:ring-2 focus:ring-purple-500"
                                 >
                                     <option value="">Select Month</option>
                                     {[
@@ -178,7 +181,7 @@ export default function BudgetPlanner() {
                                 <select
                                     value={selectedYear}
                                     onChange={(e) => setSelectedYear(e.target.value)}
-                                    className="bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 focus:ring-2 focus:ring-purple-500"
+                                    className="w-full sm:w-auto bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 text-sm focus:ring-2 focus:ring-purple-500"
                                 >
                                     <option value="">Select Year</option>
                                     {["2024", "2025", "2026", "2027"].map((y) => (

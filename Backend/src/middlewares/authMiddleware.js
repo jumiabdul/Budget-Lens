@@ -9,7 +9,7 @@ export const authenticateToken = async (req, res, next) => {
         return res.status(400).json({ message: "Invalid token!!", success: false });
     }
 
-    const token = authHeader.split(" ")[1];
+    const token =req.cookies?.token ||  authHeader.split(" ")[1];
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_TOKEN);
