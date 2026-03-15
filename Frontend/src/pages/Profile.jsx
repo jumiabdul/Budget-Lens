@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axiosInstance from "../utils/axiosInstance";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { resetTransactions } from "../store/slices/transactionSlice";
 import { resetBudgets } from "../store/slices/budgetSlice";
+import { resetUser } from "../store/slices/userSlice";
 import toast from "react-hot-toast"
 
 export default function Profile() {
-    const [userDetails, setUserDetails] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const userDetails = useSelector(state => state.user);
+
     const [errors, setErrors] = useState({});
 
     // Change password states
@@ -20,21 +21,6 @@ export default function Profile() {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    // Fetch user from MongoDB
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await axiosInstance.get("/users/get-user");
-                setUserDetails(res.data.user);
-            } catch (err) {
-                toast.error("Failed to load profile");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchUser();
-    }, []);
 
     const handleChangePassword = async () => {
         if (!currentPassword || !newPassword || !confirmPassword) {
@@ -74,12 +60,13 @@ export default function Profile() {
             localStorage.removeItem("token");
             dispatch(resetTransactions());
             dispatch(resetBudgets());
+            dispatch(resetUser());
             toast.success("Logged out successfully!");
             navigate("/");
         }
     }
 
-    if (loading) return (
+    if (!userDetails) return (
         <div className="min-h-screen flex items-center justify-center bg-[#0f0c29]">
             <p className="text-gray-400"> 🔄 Loading...</p>
         </div>
@@ -98,6 +85,7 @@ export default function Profile() {
                     </p>
                 )}
 
+                {/* User Details */}
                 {userDetails && (
                     <div>
                         <div className="space-y-6">
@@ -129,7 +117,7 @@ export default function Profile() {
                     </div>
                 )}
             </div>
-            
+
             {/* Change Password Form */}
             {showForm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">

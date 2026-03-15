@@ -1,35 +1,16 @@
 import { useSelector, useDispatch } from "react-redux";
 import DoughnutChart from "../components/DoughnutChart";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { setTransactions } from "../store/slices/transactionSlice";
-import { setBudgets } from "../store/slices/budgetSlice";
-import axiosInstance from "../utils/axiosInstance";
-import toast from "react-hot-toast"
 
 export default function Dashboard() {
     const transactions = useSelector((state) => state.transactions);
     const budgets = useSelector((state) => state.budgets);
+    const user = useSelector(state => state.user);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
     const isNewUser = transactions.length === 0;
-
-    // Load data from MongoDB on startup
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const txRes = await axiosInstance.get("/transactions/get-all-transactions");
-                dispatch(setTransactions(txRes.data.data));
-
-                const budgetRes = await axiosInstance.get("/budgets/get-all-budgets");
-                dispatch(setBudgets(budgetRes.data.data));
-            } catch (error) {
-                toast.error("Failed to load data. Please refresh !!");
-            }
-        };
-        loadData();
-    }, [dispatch]);
 
     const income = transactions
         .filter((t) => t.type === "income")
@@ -85,8 +66,8 @@ export default function Dashboard() {
             <div>
                 <h1 className="text-2xl p-1 text-center font-bold text-white">
                     {isNewUser
-                        ? `Welcome to Budget Lens ! 👋`
-                        : `Welcome back ! 👋`}
+                        ? `Welcome to Budget Lens, ${user.name} ! 👋`
+                        : `Welcome back, ${user.name} ! 👋`}
                 </h1>
                 <p className="text-gray-500 text-center text-sm ">
                     {isNewUser

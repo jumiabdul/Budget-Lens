@@ -47,6 +47,12 @@ const transactionSchema = new Schema({
     { timestamps: true }
 );
 
+// Indexes
+transactionSchema.index({ userId: 1 });              // filter by user
+transactionSchema.index({ userId: 1, type: 1 });     // filter by user + type
+transactionSchema.index({ userId: 1, date: -1 });    // sort by date
+transactionSchema.index({ userId: 1, category: 1 }); // filter by category
+
 const transactionModel = mongoose.model("Transaction", transactionSchema);
 
 export default transactionModel;

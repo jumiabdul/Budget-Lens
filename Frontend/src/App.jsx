@@ -16,6 +16,16 @@ import Footer from "./components/Footer"
 import Support from './pages/Support'
 import ProtectedRoutes from "./components/ProtectedRoutes"
 import { Toaster } from "react-hot-toast"
+import { useDispatch } from "react-redux";
+import { setTransactions } from './store/slices/transactionSlice'
+import { setBudgets } from './store/slices/budgetSlice'
+import { useEffect, useState } from "react";
+import axiosInstance from './utils/axiosInstance'
+import toast from "react-hot-toast"
+import LoadingSpinner from './components/LoadingSpinner'
+import NotFound from './pages/NotFound'
+import PublicRoute from './components/PublicRoute'
+import { setUser } from './store/slices/userSlice'
 
 function GlobalComponent({ children }) {
   return (
@@ -30,11 +40,15 @@ function GlobalComponent({ children }) {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: <PublicRoute>
+      <Login />
+    </PublicRoute>
   },
   {
     path: "/signup",
-    element: <Signup />,
+    element: <PublicRoute>
+      <Signup />
+    </PublicRoute>
   },
   {
     path: "/dashboard",
@@ -95,10 +109,52 @@ const router = createBrowserRouter([
     element: <ProtectedRoutes>
       <GlobalComponent><Support /></GlobalComponent>
     </ProtectedRoutes>,
+  },
+  {
+    path: "*",
+    element: <NotFound />
   }
+
 ]);
 
+// Load data from MongoDB on startup
 function App() {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      const token = localStorage.getItem("token");
+      // console.log("TOKEN:", token);
+
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const [txRes, budgetRes, userRes] = await Promise.all([
+          axiosInstance.get("/transactions/get-all-transactions"),
+          axiosInstance.get("/budgets/get-all-budgets"),
+          axiosInstance.get("/users/get-user"),
+        ]);
+
+        dispatch(setTransactions(txRes.data.data));
+        dispatch(setBudgets(budgetRes.data.data));
+        dispatch(setUser(userRes.data.user)); 
+
+      } catch (error) {
+        toast.error("Failed to load user data, Please Refresh..!!");
+        localStorage.removeItem("token");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUserData();
+  }, [dispatch]);
+
+  if (loading) return <LoadingSpinner />
 
   return (
     <>

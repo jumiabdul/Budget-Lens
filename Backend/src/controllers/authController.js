@@ -43,7 +43,6 @@ export const registerUser = async (req, res, next) => {
             httpOnly: true, // Prevents client-side JavaScript from reading the cookie
             secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
             maxAge: 3600000 // Cookie expires in 1 hour (in milliseconds)
-
         });
 
         return res.json({ success: true, user, accessToken, message: "Registration Successful", });
@@ -81,7 +80,6 @@ export const loginUser = async (req, res, next) => {
             httpOnly: true, // Prevents client-side JavaScript from reading the cookie
             secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
             maxAge: 3600000 // Cookie expires in 1 hour (in milliseconds)
-
         });
 
         return res.json({ success: true, message: "Login Successful", email, accessToken, });

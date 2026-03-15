@@ -1,18 +1,15 @@
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoutes = ({ children }) => {
+export default function PublicRoute({ children }) {
     const token = localStorage.getItem("token");
-    //console.log(token);
 
-    if (!token) {
-        return <Navigate to="/" />;
+    if (token) {
+        return <Navigate to="/dashboard" replace />;
     }
-
+    
     return (
         <>
             {children}
         </>
     )
 }
-
-export default ProtectedRoutes;

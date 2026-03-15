@@ -30,6 +30,11 @@ const budgetSchema = new Schema({
     { timestamps: true }
 );
 
+// Indexes
+budgetSchema.index({ userId: 1 });                        // filter by user
+budgetSchema.index({ userId: 1, month: 1, year: 1 });     // filter by month/year
+budgetSchema.index({ userId: 1, category: 1 });           // filter by category
+
 const budgetModel = mongoose.model("Budget", budgetSchema);
 
 export default budgetModel;
