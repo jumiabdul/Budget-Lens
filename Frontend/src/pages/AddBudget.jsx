@@ -1,10 +1,11 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { addBudget } from "../store/slices/budgetSlice"
-//import { v4 as uuidv4 } from "uuid"
 import axiosInstance from "../utils/axiosInstance.js";
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+
+const QUICK_AMOUNTS = [1000, 5000, 10000, 25000];
 
 export default function AddBudget() {
     const [category, setCategory] = useState("");
@@ -23,7 +24,6 @@ export default function AddBudget() {
         try {
             setLoading(true);
             const newBudget = {
-                // id: uuidv4(),
                 amount: Number(amount),
                 category,
                 month,
@@ -58,10 +58,18 @@ export default function AddBudget() {
                 className="w-full max-w-md backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl shadow-2xl p-8 space-y-6 text-white">
 
                 {/* Header */}
-                <h1 className="text-3xl text-center font-bold">
-                    Add Budget
-                </h1>
-
+                <div className="flex items-center gap-3 mb-2">
+                    <button type="button" onClick={() => navigate(-1)}
+                        className="text-gray-400 hover:text-white transition text-sm">
+                        ← Back
+                    </button>
+                </div>
+                <div className="text-center">
+                    <h1 className="text-3xl text-center font-bold">
+                        Add Budget
+                    </h1>
+                    <p className="text-gray-400 text-sm mt-1">Set spending limits by category.</p>
+                </div>
                 {/* Error display */}
                 {errors && (
                     <p className="text-red-400 text-sm text-center bg-red-500/10 rounded-xl p-3">
@@ -75,7 +83,7 @@ export default function AddBudget() {
                         Category</label>
                     <select value={category}
                         onChange={(e) => setCategory(e.target.value)}
-                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 transition">
+                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400 transition">
                         <option value="" className="bg-gray-900 text-white">Select Category</option>
                         <option value="Food" className="bg-gray-900 text-white">🍕 Food</option>
                         <option value="Housing" className="bg-gray-900 text-white">🏠 Housing</option>
@@ -96,7 +104,7 @@ export default function AddBudget() {
                         Month</label>
                     <select value={month}
                         onChange={(e) => setMonth(e.target.value)}
-                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 transition">
+                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400 transition">
                         <option value="" className="bg-gray-900 text-white">Select Month</option>
                         <option value="January" className="bg-gray-900 text-white">January</option>
                         <option value="February" className="bg-gray-900 text-white">February</option>
@@ -119,11 +127,11 @@ export default function AddBudget() {
                         Year</label>
                     <select value={year}
                         onChange={(e) => setYear(e.target.value)}
-                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 transition">
+                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400 transition">
                         <option value="" className="bg-gray-900 text-white">Select Year</option>
-                        <option value="2024" className="bg-gray-900 text-white">2024</option>
                         <option value="2025" className="bg-gray-900 text-white">2025</option>
                         <option value="2026" className="bg-gray-900 text-white">2026</option>
+                        <option value="2027" className="bg-gray-900 text-white">2027</option>
                     </select>
                 </div>
 
@@ -131,21 +139,33 @@ export default function AddBudget() {
                 <div>
                     <label className="text-sm text-gray-300 block mb-1">
                         Amount</label>
-                    <input required value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        type="number"
-                        placeholder="₹0.00"
-                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition"
-                    />
+                    <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold">₹</span>
+                        <input required value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            type="number"
+                            placeholder="0.00"
+                            className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 pl-8 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
+                        />
+                    </div>
+                    {/* Quick amounts */}
+                    <div className="flex gap-2 mt-2">
+                        {QUICK_AMOUNTS.map(q => (
+                            <button key={q} type="button" onClick={() => setAmount(q.toString())}
+                                className="flex-1 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-gray-300 hover:bg-purple-500/20 hover:text-purple-300 hover:border-purple-500/30 transition">
+                                ₹{q >= 1000 ? `${q / 1000}k` : q}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/*Save Button */}
                 <button type="submit"
                     disabled={loading}
-                    className="w-full py-3 rounded-xl font-semibold bg-linear-to-r from-[#00f5c4] to-[#8b5cf6] text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-emerald-500/30 disabled:opacity-50" >
+                    className="w-full py-3 rounded-xl font-semibold bg-linear-to-r from-purple-600 to-indigo-500 text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-purple-500/30 disabled:opacity-50" >
                     {loading ? "Saving..." : "Save Budget →"}
                 </button>
-                
+
             </form >
         </div >
     )

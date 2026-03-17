@@ -1,10 +1,18 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { addTransaction } from "../store/slices/transactionSlice"
-//import { v4 as uuidv4 } from "uuid"
 import axiosInstance from "../utils/axiosInstance.js";
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+
+const QUICK_AMOUNTS = [500, 1000, 5000, 10000];
+const MODES = [
+    { value: "Cash", label: "Cash", icon: "💵" },
+    { value: "Card", label: "Card", icon: "💳" },
+    { value: "UPI", label: "UPI", icon: "📱" },
+    { value: "NetBanking", label: "Net Banking", icon: "🌐" },
+    { value: "Cheque", label: "Cheque", icon: "📝" },
+];
 
 export default function AddExpense() {
     const [amount, setAmount] = useState("");
@@ -24,7 +32,6 @@ export default function AddExpense() {
         try {
             setLoading(true);
             const newExpense = {
-                // id: uuidv4(),
                 amount: Number(amount),
                 category,
                 date,
@@ -53,7 +60,7 @@ export default function AddExpense() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#0f0c29] via-[#1a1240] to-[#0a0f2c] px-4">
+        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#0f0c29] via-[#1a1240] to-[#0a0f2c] px-4 py-8">
 
             {/*Form to add expense*/}
             <form
@@ -61,6 +68,13 @@ export default function AddExpense() {
                 className="w-full max-w-md backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl shadow-2xl p-8 space-y-6 text-white">
 
                 {/* Header */}
+                <div className="flex items-center gap-3 mb-2">
+                    <button type="button" onClick={() => navigate(-1)}
+                        className="text-gray-400 hover:text-white transition text-sm">
+                        ← Back
+                    </button>
+                </div>
+
                 <div className="text-center">
                     <h1 className="text-3xl font-bold">
                         Add Expense
@@ -82,14 +96,26 @@ export default function AddExpense() {
                     <label className="text-sm text-gray-300 block mb-1">
                         Amount
                     </label>
-                    <input
-                        type="number"
-                        placeholder="₹ 0.00"
-                        required
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition"
-                    />
+                    <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold">₹</span>
+                        <input
+                            type="number"
+                            placeholder="0.00"
+                            required
+                            value={amount}
+                            onChange={(e) => { setAmount(e.target.value); setErrors(p => ({ ...p, amount: "" })); }}
+                            className={`w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 pl-8 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400 transition${errors.amount ? "border-red-500" : "border-white/20"}`}
+                        />
+                    </div>
+                    {/* Quick amounts */}
+                    <div className="flex gap-2 mt-2">
+                        {QUICK_AMOUNTS.map(q => (
+                            <button key={q} type="button" onClick={() => setAmount(q.toString())}
+                                className="flex-1 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-gray-300 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/30 transition">
+                                ₹{q >= 1000 ? `${q / 1000}k` : q}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Category */}
@@ -101,7 +127,7 @@ export default function AddExpense() {
                         required
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
-                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 transition" >
+                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-400 transition" >
                         <option value="Food" className="bg-gray-900 text-white">🍕 Food</option>
                         <option value="Housing" className="bg-gray-900 text-white">🏠 Housing</option>
                         <option value="Savings" className="bg-gray-900 text-white">💰 Savings</option>
@@ -120,17 +146,17 @@ export default function AddExpense() {
                     <label className="text-sm text-gray-300 block mb-1">
                         Mode of Transaction
                     </label>
-                    <select
-                        required
-                        value={mode}
-                        onChange={(e) => setMode(e.target.value)}
-                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 transition" >
-                        <option value="Cash" className="bg-gray-900 text-white">💵 Cash</option>
-                        <option value="Card" className="bg-gray-900 text-white">💳 Credit / Debit Card</option>
-                        <option value="UPI" className="bg-gray-900 text-white">📱 UPI</option>
-                        <option value="NetBanking" className="bg-gray-900 text-white">🌐 Net Banking</option>
-                        <option value="Cheque" className="bg-gray-900 text-white">📝 Cheque</option>
-                    </select>
+                    <div className="flex gap-2 flex-wrap">
+                        {MODES.map(m => (
+                            <button key={m.value} type="button" onClick={() => setMode(m.value)}
+                                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs transition ${mode === m.value
+                                        ? "bg-red-500/20 border-red-500/50 text-red-300"
+                                        : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10"
+                                    }`}>
+                                {m.icon} {m.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Date */}
@@ -143,7 +169,7 @@ export default function AddExpense() {
                         required
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
-                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 transition"
+                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-400 transition"
                     />
                 </div>
 
@@ -157,7 +183,7 @@ export default function AddExpense() {
                         placeholder="Add a note..."
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
-                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition"
+                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400 transition"
                     />
                 </div>
 
@@ -165,10 +191,10 @@ export default function AddExpense() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 rounded-xl font-semibold bg-linear-to-r from-[#00f5c4] to-[#8b5cf6] text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-emerald-500/30 disabled:opacity-50">
+                    className="w-full py-3 rounded-xl font-semibold bg-linear-to-r from-red-700 to-pink-400 text-white transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-red-500/30 disabled:opacity-50">
                     {loading ? "Saving..." : "Save Expense →"}
                 </button>
-                
+
             </form>
         </div>
     );

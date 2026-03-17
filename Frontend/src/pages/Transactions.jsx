@@ -14,6 +14,8 @@ const INCOME_CATEGORIES = [
     "Salary", "Investment", "Business", "Others"
 ];
 
+const ITEMS_PER_PAGE = 8;
+
 const ModeBadge = ({ mode }) => {
     const styles = {
         Cash: "bg-yellow-500/15 text-yellow-400 border-yellow-500/25",
@@ -39,6 +41,7 @@ export default function Transactions() {
     const [filterMonth, setFilterMonth] = useState("");
     const [filterYear, setFilterYear] = useState("");
     const [filterType, setFilterType] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Edit modal states
     const [editModal, setEditModal] = useState(false);
@@ -132,6 +135,17 @@ export default function Transactions() {
     }
     )
 
+    //Pagination
+    const totalPages = Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE);
+    const paginated = filteredTransactions.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) setCurrentPage(page);
+    };
+
     return (
 
         <div className="min-h-screen bg-linear-to-br from-[#0f0c29] via-[#1a1333] to-[#0f0c29] text-gray-200 px-4 sm:px-8 py-8">
@@ -220,6 +234,18 @@ export default function Transactions() {
                 {/* Table displaying transactions */}
                 <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-6 shadow-xl overflow-x-auto">
 
+                    {/* Result count */}
+                    <div className="flex justify-between items-center mb-4">
+                        <p className="text-xs text-gray-500">
+                            Showing <span className="text-purple-400 font-semibold">{filteredTransactions.length}</span> transaction{filteredTransactions.length !== 1 ? "s" : ""}
+                        </p>
+                        {(searchCategory || filterMonth || filterYear || filterType) && (
+                            <span className="text-xs text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
+                                Filters active
+                            </span>
+                        )}
+                    </div>
+
                     <table className="w-full text-sm">
 
                         <thead>
@@ -234,7 +260,7 @@ export default function Transactions() {
                         </thead>
 
                         <tbody>
-                            {filteredTransactions.slice().reverse().map((t) => (
+                            {paginated.map((t) => (
                                 <tr
                                     key={t._id}
                                     className="border-b border-purple-900/20 hover:bg-purple-900/10 transition-all">
@@ -288,125 +314,174 @@ export default function Transactions() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                        <div className="flex justify-between items-center mt-5 pt-4 border-t border-purple-900/20">
+                            <p className="text-xs text-gray-500">
+                                Page <span className="text-purple-400 font-semibold">{currentPage}</span> of{" "}
+                                <span className="text-purple-400 font-semibold">{totalPages}</span>
+                                {" "}· {filteredTransactions.length} results
+                            </p>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="px-3 py-1.5 rounded-lg bg-white/5 border border-purple-500/20 text-xs text-gray-400 hover:bg-purple-500/10 disabled:opacity-30 transition">
+                                    ← Prev
+                                </button>
+
+                                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                                    .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                                    .reduce((acc, p, i, arr) => {
+                                        if (i > 0 && p - arr[i - 1] > 1) acc.push("...");
+                                        acc.push(p);
+                                        return acc;
+                                    }, [])
+                                    .map((p, i) =>
+                                        p === "..." ? (
+                                            <span key={`dot-${i}`} className="px-2 py-1.5 text-gray-500 text-xs">…</span>
+                                        ) : (
+                                            <button key={p} onClick={() => handlePageChange(p)}
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${currentPage === p
+                                                    ? "bg-purple-600 text-white shadow-lg shadow-purple-500/30"
+                                                    : "bg-white/5 border border-purple-500/20 text-gray-400 hover:bg-purple-500/10"
+                                                    }`}>
+                                                {p}
+                                            </button>
+                                        )
+                                    )}
+
+                                <button
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className="px-3 py-1.5 rounded-lg bg-white/5 border border-purple-500/20 text-xs text-gray-400 hover:bg-purple-500/10 disabled:opacity-30 transition">
+                                    Next →
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            </div>
+            </div >
 
             {/* Edit Modal */}
-            {editModal && editData && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-                    <div className="bg-[#1a1333] border border-purple-700/40 rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4 text-white">
+            {
+                editModal && editData && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+                        <div className="bg-[#1a1333] border border-purple-700/40 rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4 text-white">
 
-                        {/* Modal Header */}
-                        <div className="flex justify-between items-center">
-                            <h2 className="text-xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
-                                Edit Transaction
-                            </h2>
-                            <button onClick={() => setEditModal(false)}
-                                className="text-gray-400 hover:text-white text-xl transition">✕</button>
-                        </div>
+                            {/* Modal Header */}
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                                    Edit Transaction
+                                </h2>
+                                <button onClick={() => setEditModal(false)}
+                                    className="text-gray-400 hover:text-white text-xl transition">✕</button>
+                            </div>
 
-                        {/* Error */}
-                        {editError && (
-                            <p className="text-red-400 text-sm bg-red-500/10 rounded-xl p-3">
-                                {editError}
-                            </p>
-                        )}
+                            {/* Error */}
+                            {editError && (
+                                <p className="text-red-400 text-sm bg-red-500/10 rounded-xl p-3">
+                                    {editError}
+                                </p>
+                            )}
 
-                        {/* Type */}
-                        <div>
-                            <label className="text-sm text-gray-300 block mb-1">Type</label>
-                            <select
-                                value={editData.type}
-                                onChange={(e) => setEditData({
-                                    ...editData, type: e.target.value,
-                                    category: e.target.value === "income" ? "Salary" : "Food"
-                                })}
-                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                <option value="expense" className="bg-gray-900">Expense</option>
-                                <option value="income" className="bg-gray-900">Income</option>
-                            </select>
-                        </div>
+                            {/* Type */}
+                            <div>
+                                <label className="text-sm text-gray-300 block mb-1">Type</label>
+                                <select
+                                    value={editData.type}
+                                    onChange={(e) => setEditData({
+                                        ...editData, type: e.target.value,
+                                        category: e.target.value === "income" ? "Salary" : "Food"
+                                    })}
+                                    className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option value="expense" className="bg-gray-900">Expense</option>
+                                    <option value="income" className="bg-gray-900">Income</option>
+                                </select>
+                            </div>
 
-                        {/* Category */}
-                        <div>
-                            <label className="text-sm text-gray-300 block mb-1">Category</label>
-                            <select
-                                value={editData.category}
-                                onChange={(e) => setEditData({ ...editData, category: e.target.value })}
-                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            {/* Category */}
+                            <div>
+                                <label className="text-sm text-gray-300 block mb-1">Category</label>
+                                <select
+                                    value={editData.category}
+                                    onChange={(e) => setEditData({ ...editData, category: e.target.value })}
+                                    className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
 
-                                {(editData.type === "income" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES).map((c) => (
-                                    <option key={c} value={c} className="bg-gray-900">{c}</option>
-                                ))}
-                            </select>
-                        </div>
+                                    {(editData.type === "income" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES).map((c) => (
+                                        <option key={c} value={c} className="bg-gray-900">{c}</option>
+                                    ))}
+                                </select>
+                            </div>
 
-                        {/* Amount */}
-                        <div>
-                            <label className="text-sm text-gray-300 block mb-1">Amount</label>
-                            <input
-                                type="number"
-                                value={editData.amount}
-                                onChange={(e) => setEditData({ ...editData, amount: e.target.value })}
-                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                            />
-                        </div>
+                            {/* Amount */}
+                            <div>
+                                <label className="text-sm text-gray-300 block mb-1">Amount</label>
+                                <input
+                                    type="number"
+                                    value={editData.amount}
+                                    onChange={(e) => setEditData({ ...editData, amount: e.target.value })}
+                                    className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                                />
+                            </div>
 
-                        {/* Date */}
-                        <div>
-                            <label className="text-sm text-gray-300 block mb-1">Date</label>
-                            <input
-                                type="date"
-                                value={editData.date}
-                                onChange={(e) => setEditData({ ...editData, date: e.target.value })}
-                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                            />
-                        </div>
+                            {/* Date */}
+                            <div>
+                                <label className="text-sm text-gray-300 block mb-1">Date</label>
+                                <input
+                                    type="date"
+                                    value={editData.date}
+                                    onChange={(e) => setEditData({ ...editData, date: e.target.value })}
+                                    className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                                />
+                            </div>
 
-                        {/* Mode */}
-                        <div>
-                            <label className="text-sm text-gray-300 block mb-1">Mode</label>
-                            <select
-                                value={editData.mode}
-                                onChange={(e) => setEditData({ ...editData, mode: e.target.value })}
-                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                <option value="Cash" className="bg-gray-900">💵 Cash</option>
-                                <option value="Card" className="bg-gray-900">💳 Card</option>
-                                <option value="UPI" className="bg-gray-900">📱 UPI</option>
-                                <option value="NetBanking" className="bg-gray-900">🌐 Net Banking</option>
-                                <option value="Cheque" className="bg-gray-900">📝 Cheque</option>
-                            </select>
-                        </div>
+                            {/* Mode */}
+                            <div>
+                                <label className="text-sm text-gray-300 block mb-1">Mode</label>
+                                <select
+                                    value={editData.mode}
+                                    onChange={(e) => setEditData({ ...editData, mode: e.target.value })}
+                                    className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option value="Cash" className="bg-gray-900">💵 Cash</option>
+                                    <option value="Card" className="bg-gray-900">💳 Card</option>
+                                    <option value="UPI" className="bg-gray-900">📱 UPI</option>
+                                    <option value="NetBanking" className="bg-gray-900">🌐 Net Banking</option>
+                                    <option value="Cheque" className="bg-gray-900">📝 Cheque</option>
+                                </select>
+                            </div>
 
-                        {/* Note */}
-                        <div>
-                            <label className="text-sm text-gray-300 block mb-1">Note (Optional)</label>
-                            <input
-                                type="text"
-                                value={editData.note || ""}
-                                onChange={(e) => setEditData({ ...editData, note: e.target.value })}
-                                placeholder="Add a note..."
-                                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            />
-                        </div>
+                            {/* Note */}
+                            <div>
+                                <label className="text-sm text-gray-300 block mb-1">Note (Optional)</label>
+                                <input
+                                    type="text"
+                                    value={editData.note || ""}
+                                    onChange={(e) => setEditData({ ...editData, note: e.target.value })}
+                                    placeholder="Add a note..."
+                                    className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                />
+                            </div>
 
-                        {/* Buttons */}
-                        <div className="flex gap-3 pt-2">
-                            <button
-                                onClick={() => setEditModal(false)}
-                                className="flex-1 py-3 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition font-medium">
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleEditSave}
-                                disabled={editLoading}
-                                className="flex-1 py-3 rounded-xl bg-linear-to-r from-purple-600 to-emerald-400 text-white font-semibold hover:scale-105 transition shadow-lg disabled:opacity-50">
-                                {editLoading ? "Saving..." : "Save Changes"}
-                            </button>
+                            {/* Buttons */}
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    onClick={() => setEditModal(false)}
+                                    className="flex-1 py-3 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition font-medium">
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleEditSave}
+                                    disabled={editLoading}
+                                    className="flex-1 py-3 rounded-xl bg-linear-to-r from-purple-600 to-emerald-400 text-white font-semibold hover:scale-105 transition shadow-lg disabled:opacity-50">
+                                    {editLoading ? "Saving..." : "Save Changes"}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
             {/*Delete Modal*/}
             <ConfirmModal
@@ -420,7 +495,7 @@ export default function Transactions() {
                 loading={deleteLoading}
             />
 
-        </div>
+        </div >
     );
 }
 
