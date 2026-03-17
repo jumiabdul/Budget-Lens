@@ -16,7 +16,7 @@ export default function BudgetChart({ budgets, selectedMonth, selectedYear, view
     const [gradient, setGradient] = useState(null);
 
     // Filtered Budget
-    const filteredBudgets = [];
+    let filteredBudgets = [];
 
     if (viewMode === "monthly") {
         filteredBudgets = budgets.filter(
@@ -35,7 +35,7 @@ export default function BudgetChart({ budgets, selectedMonth, selectedYear, view
     }, {});
 
     // Filetered Transactions
-    const filteredTransactions = [];
+    let filteredTransactions = [];
 
     if (viewMode === "monthly") {
         filteredTransactions = transactions.filter((t) => {

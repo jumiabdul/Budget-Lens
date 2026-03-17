@@ -75,7 +75,7 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
     };
 
     //filter budgets based on viewmode
-    const filteredBudgets = [];
+    let filteredBudgets = [];
     if (viewMode == "monthly") {
         filteredBudgets = budgets.filter((b) =>
             !selectedMonth || b.month === selectedMonth
@@ -92,7 +92,7 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
     }, {});
 
     //filter transactions based on viewmode
-    const filteredTransactions = [];
+    let filteredTransactions = [];
     if (viewMode === "monthly") {
         filteredTransactions = transactions.filter((t) => {
             const onlyMonth = new Date(t.date).toLocaleString("default", { month: "long" });
