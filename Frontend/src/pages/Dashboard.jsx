@@ -66,8 +66,8 @@ export default function Dashboard() {
             <div>
                 <h1 className="text-2xl p-1 text-center font-bold text-white">
                     {isNewUser
-                        ? `Welcome to Budget Lens, ${user.name} ! 👋`
-                        : `Welcome back, ${user.name} ! 👋`}
+                        ? `Welcome to Budget Lens, ${user?.name || "User"}! 👋`
+                        : `Welcome back, ${user?.name || "User"} ! 👋`}
                 </h1>
                 <p className="text-gray-500 text-center text-sm ">
                     {isNewUser

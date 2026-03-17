@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import axiosInstance from "../utils/axiosInstance.js";
 import toast from "react-hot-toast"
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/slices/userSlice";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -11,6 +13,7 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -42,6 +45,8 @@ const Login = () => {
             if (response.data && response.data.accessToken) {
                 //console.log("Logged in successfully..!!", response.data.token);
                 localStorage.setItem("token", response.data.accessToken);
+                dispatch(setUser(response.data.user));
+
                 toast.success("Welcome back! 👋");
 
                 setEmail("");
