@@ -22,7 +22,7 @@ export const authenticateToken = async (req, res, next) => {
 
         req.user = user; // attach full user document
         next();
-    } catch (err) {
+    } catch (error) {
         return res.status(403).json({ message: "Token not valid", success: false });
     }
 };

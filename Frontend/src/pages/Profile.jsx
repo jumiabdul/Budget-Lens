@@ -101,14 +101,14 @@ export default function Profile() {
 
                         <div className="flex justify-around items-center">
 
-                            <button type="submit"
+                            <button type="button"
                                 onClick={() => setShowForm(!showForm)}
                                 className=" mt-7 w-1/2 py-3 rounded-xl font-semibold bg-linear-to-r from-[#00f5c4] to-[#8b5cf6] text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-emerald-500/30">
                                 {showForm ? "Cancel" : "Change Password 🔐"}
                             </button>
 
 
-                            <button type="submit" onClick={handleLogout}
+                            <button type="button" onClick={handleLogout}
                                 className=" mt-7 w-1/3 py-3 rounded-xl font-semibold bg-linear-to-r from-[#00f5c4] to-[#8b5cf6] text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-emerald-500/30">
                                 Log Out 🚪
                             </button>

@@ -16,13 +16,12 @@ export default function BudgetChart({ budgets, selectedMonth, selectedYear, view
     const [gradient, setGradient] = useState(null);
 
     // Filtered Budget
-    let filteredBudgets = [];
+    const filteredBudgets = [];
 
     if (viewMode === "monthly") {
         filteredBudgets = budgets.filter(
             (b) =>
                 (!selectedMonth || b.month === selectedMonth)
-            // && (!selectedYear || b.year === selectedYear)
         );
     } else if (viewMode === "yearly") {
         filteredBudgets = budgets.filter(
@@ -36,17 +35,16 @@ export default function BudgetChart({ budgets, selectedMonth, selectedYear, view
     }, {});
 
     // Filetered Transactions
-    let filteredTransactions = [];
+    const filteredTransactions = [];
 
     if (viewMode === "monthly") {
         filteredTransactions = transactions.filter((t) => {
             const onlyMonth = new Date(t.date).toLocaleString("default", {
                 month: "long",
             });
-            //  const onlyYear = new Date(t.date).getFullYear().toString();
+            
             return (
                 (!selectedMonth || onlyMonth === selectedMonth) &&
-                // (!selectedYear || onlyYear === selectedYear) &&
                 t.type === "expense"
             );
         });

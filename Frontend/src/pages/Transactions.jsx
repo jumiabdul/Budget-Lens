@@ -265,7 +265,11 @@ export default function Transactions() {
                                     key={t._id}
                                     className="border-b border-purple-900/20 hover:bg-purple-900/10 transition-all">
                                     <td className="py-3 pl-2 text-gray-400 text-xs">
-                                        {new Date(t.date).toLocaleDateString("en-IN")}
+                                        {new Date(t.date).toLocaleDateString("en-IN", {
+                                            day: "2-digit",
+                                            month: "short",
+                                            year: "numeric"
+                                        })}
                                     </td>
 
                                     <td className="py-3 font-semibold text-gray-200">{t.category}</td>

@@ -33,7 +33,7 @@ const Navbar = () => {
                 Budget<span className="text-[#2dfbd4]"> Lens</span></div>
 
             {/*Hamburger toggle for mobile */}
-            <button onClick={() => setIsOpen(!isOpen)}
+            <button type="button" onClick={() => setIsOpen(!isOpen)}
                 className="md:hidden focus:outline-none text-[#2dfbd4]">
                 {isOpen ? (<XMarkIcon className="w-6 h-6" />) : (<Bars3Icon className="w-6 h-6" />)}
             </button>

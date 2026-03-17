@@ -13,7 +13,7 @@ export const getAllTransactions = async (req, res, next) => {
 // Add
 export const addTransaction = async (req, res, next) => {
     const { type, category, amount, date, mode, description } = req.body;
-    //console.log({ type, category, amount, date, mode, description});
+    
     try {
         if (!type || !category || !amount || !date || !mode) {
             return res.status(400).json({ message: "All fields are required", success: false })

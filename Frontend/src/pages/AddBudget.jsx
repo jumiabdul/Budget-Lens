@@ -6,6 +6,13 @@ import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 
 const QUICK_AMOUNTS = [1000, 5000, 10000, 25000];
+const currentYear = new Date().getFullYear();
+const YEARS = [
+    (currentYear - 1).toString(),
+    currentYear.toString(),
+    (currentYear + 1).toString(),
+    (currentYear + 2).toString(),
+];
 
 export default function AddBudget() {
     const [category, setCategory] = useState("");
@@ -129,9 +136,9 @@ export default function AddBudget() {
                         onChange={(e) => setYear(e.target.value)}
                         className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400 transition">
                         <option value="" className="bg-gray-900 text-white">Select Year</option>
-                        <option value="2025" className="bg-gray-900 text-white">2025</option>
-                        <option value="2026" className="bg-gray-900 text-white">2026</option>
-                        <option value="2027" className="bg-gray-900 text-white">2027</option>
+                        {YEARS.map(y => (
+                            <option key={y} value={y} className="bg-gray-900 text-white">{y}</option>
+                        ))}
                     </select>
                 </div>
 

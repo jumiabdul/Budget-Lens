@@ -40,7 +40,6 @@ export default function AddIncome() {
         try {
             setLoading(true);
             const newIncome = {
-                //id: uuidv4(),
                 amount: Number(amount),
                 category,
                 date,

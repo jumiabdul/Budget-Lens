@@ -13,7 +13,10 @@ router.post("/login-user", loginUser);
 // Get User
 router.get("/get-user", authenticateToken, getUser);
 
+//log-out user
 router.post("/logout-user", authenticateToken, logoutUser);
+
+//changing password
 router.put("/change-password", authenticateToken, changePassword);
 
 

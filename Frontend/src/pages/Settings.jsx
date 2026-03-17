@@ -35,7 +35,7 @@ export default function Settings() {
                     Settings</h1>
 
                 <div className="flex items-center justify-center">
-                    <button type="submit" onClick={() => setResetModal(true)}
+                    <button type="button" onClick={() => setResetModal(true)}
                         className=" mt-7 w-50 py-3 rounded-xl font-semibold bg-linear-to-r from-[#00f5c4] to-[#8b5cf6] text-black transform hover:scale-105 cursor-pointer hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2">
                         Reset Data
                         <ArrowPathIcon className="w-5 h-5 items-center" /> {/*  reset icon */}

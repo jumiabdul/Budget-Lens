@@ -45,7 +45,7 @@ const Login = () => {
                 password: password
             });
             if (response.data && response.data.accessToken) {
-                //console.log("Logged in successfully..!!", response.data.token);
+                
                 localStorage.setItem("token", response.data.accessToken);
                 const [txRes, budgetRes, userRes] = await Promise.all([
                     axiosInstance.get("/api/transactions/get-all-transactions"),

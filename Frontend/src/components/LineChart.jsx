@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Line } from "react-chartjs-2";
 import {
     Chart as ChartJS,

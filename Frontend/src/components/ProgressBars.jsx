@@ -75,11 +75,10 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
     };
 
     //filter budgets based on viewmode
-    let filteredBudgets = [];
+    const filteredBudgets = [];
     if (viewMode == "monthly") {
         filteredBudgets = budgets.filter((b) =>
             !selectedMonth || b.month === selectedMonth
-            // && (!selectedYear || b.year === selectedYear)
         );
     } else if (viewMode == "yearly") {
         filteredBudgets = budgets.filter((b) =>
@@ -93,14 +92,12 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
     }, {});
 
     //filter transactions based on viewmode
-    let filteredTransactions = [];
+    const filteredTransactions = [];
     if (viewMode === "monthly") {
         filteredTransactions = transactions.filter((t) => {
             const onlyMonth = new Date(t.date).toLocaleString("default", { month: "long" });
-            //  const onlyYear = new Date(t.date).getFullYear().toString();
             return (
                 (!selectedMonth || onlyMonth === selectedMonth) && t.type === "expense"
-                // && (!selectedYear || onlyYear === selectedYear) 
             )
         }
         )
@@ -124,6 +121,9 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
         obj[cat] = planned - spent;
         return obj;
     }, {});
+
+    //getting current year
+    const currentYear = new Date().getFullYear();
 
     return (
         <div>
@@ -259,7 +259,12 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
                             <select value={editData.year}
                                 onChange={(e) => setEditData({ ...editData, year: e.target.value })}
                                 className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                {["2024", "2025", "2026", "2027"].map((y) => (
+                                {[
+                                    (currentYear - 1).toString(),
+                                    currentYear.toString(),
+                                    (currentYear + 1).toString(),
+                                    (currentYear + 2).toString(),
+                                ].map((y) => (
                                     <option key={y} value={y} className="bg-gray-900">{y}</option>
                                 ))}
                             </select>

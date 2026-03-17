@@ -13,7 +13,7 @@ export const getAllBudgets = async (req, res, next) => {
 // Add
 export const addBudget = async (req, res, next) => {
     const { category, amount, month, year } = req.body;
-    //console.log({ category, amount, month, year });
+    
     try {
         if (!category || !amount || !month || !year) {
             return res.status(400).json({ message: "All fields are required", success: false })
