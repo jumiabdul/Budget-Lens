@@ -189,9 +189,9 @@ const Signup = () => {
                         />
                         <button
                             type="button"
-                            onClick={() => setShowPassword(!showPassword)}
+                            onClick={() => setShowConfirm(!showConfirm)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition text-sm">
-                            {showPassword ? "🙈" : "👁️"}
+                            {showConfirm ? "🙈" : "👁️"}
                         </button>
                     </div>
 
