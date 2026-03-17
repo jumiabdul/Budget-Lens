@@ -14,7 +14,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import Support from './pages/Support'
-import ProtectedRoutes from "./components/ProtectedRoutes.jsx"
+import ProtectedRoutes from "./components/ProtectedRoutes"
 import { Toaster } from "react-hot-toast"
 import { useDispatch } from "react-redux";
 import { setTransactions } from './store/slices/transactionSlice'
@@ -24,7 +24,7 @@ import axiosInstance from './utils/axiosInstance'
 import toast from "react-hot-toast"
 import LoadingSpinner from './components/LoadingSpinner'
 import NotFound from './pages/NotFound'
-import PublicRoute from './components/PublicRoute.jsx'
+import PublicRoute from './components/PublicRoute'
 import { setUser } from './store/slices/userSlice'
 
 function GlobalComponent({ children }) {
