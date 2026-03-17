@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast"
+import { useDispatch } from "react-redux";
+import { setTransactions } from "../store/slices/transactionSlice";
+import { setBudgets } from "../store/slices/budgetSlice";
+import { setUser } from "../store/slices/userSlice";
 
 const Signup = () => {
     const [name, setName] = useState("");
@@ -15,6 +19,7 @@ const Signup = () => {
     const [showConfirm, setShowConfirm] = useState(false);
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -54,7 +59,18 @@ const Signup = () => {
 
         try {
             setLoading(true);
-            await axiosInstance.post("/api/users/register-user", { name, email, password });
+            const response = await axiosInstance.post("/api/users/register-user", { name, email, password });
+            localStorage.setItem("token", response.data.accessToken);
+            const [txRes, budgetRes, userRes] = await Promise.all([
+                axiosInstance.get("/transactions/get-all-transactions"),
+                axiosInstance.get("/budgets/get-all-budgets"),
+                axiosInstance.get("/users/get-user"),
+            ]);
+
+            dispatch(setTransactions(txRes.data.data));
+            dispatch(setBudgets(budgetRes.data.data));
+            dispatch(setUser(userRes.data.user));
+
             toast.success("Account created successfully! 🎉");
 
             setName("");
@@ -63,7 +79,7 @@ const Signup = () => {
             setConfirmPassword("");
             setAgree(false);
             setErrors({});
-            navigate("/")
+            navigate("/dashboard")
 
         } catch (error) {
             toast.error(error.response?.data?.message || "Registration failed");

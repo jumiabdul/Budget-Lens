@@ -4,6 +4,8 @@ import axiosInstance from "../utils/axiosInstance.js";
 import toast from "react-hot-toast"
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
+import { setTransactions } from "../store/slices/transactionSlice";
+import { setBudgets } from "../store/slices/budgetSlice";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -45,7 +47,14 @@ const Login = () => {
             if (response.data && response.data.accessToken) {
                 //console.log("Logged in successfully..!!", response.data.token);
                 localStorage.setItem("token", response.data.accessToken);
-                const userRes = await axiosInstance.get("/api/users/get-user");
+                const [txRes, budgetRes, userRes] = await Promise.all([
+                    axiosInstance.get("/transactions/get-all-transactions"),
+                    axiosInstance.get("/budgets/get-all-budgets"),
+                    axiosInstance.get("/users/get-user"),
+                ]);
+
+                dispatch(setTransactions(txRes.data.data));
+                dispatch(setBudgets(budgetRes.data.data));
                 dispatch(setUser(userRes.data.user));
 
                 toast.success("Welcome back! 👋");

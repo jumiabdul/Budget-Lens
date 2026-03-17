@@ -59,11 +59,6 @@ export default function Dashboard() {
         ? Math.round(expense / Math.max(new Set(expenseOnly.map(t => t.date?.split("T")[0])).size, 1))
         : 0;
 
-    //loading state
-    const isLoading = transactions === null; 
-
-    if (isLoading) return <LoadingSpinner />;
-
     return (
         <div className="min-h-screen bg-linear-to-br from-[#0f0c29] via-[#141033] to-[#0b0720] text-gray-200">
 

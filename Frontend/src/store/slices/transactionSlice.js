@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const transactionSlice = createSlice({
     name: "transactions",
-    initialState: null,
+    initialState: [],
     reducers: {
         setTransactions: (state, action) => {
             return action.payload;
