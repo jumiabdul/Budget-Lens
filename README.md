@@ -9,13 +9,13 @@ A comprehensive full-stack budget management dashboard built with **React, Redux
 ---
 
 ## ✨ Features
-- - **Transaction Management**: Add, delete, and filter transactions by category, month, and year.
-- - **Interactive Charts**: Visualize spending with Doughnut, Bar, and Line charts powered by Chart.js.
-- - **Budget Planning**: Set monthly budgets, track allocations and and monitor progress with visual indicators
-- - **User Authentication**: Secure login and registration with JWT tokens
-- - **Data Persistence**: All transactions and budgets saved to MongoDB database
-- - **Recent Activity**: Snapshot of the latest transactions for instant visibility.
-- - **Responsive design**: Optimized for mobile, tablet, and desktop devices
+- **Transaction Management**: Add, delete, and filter transactions by category, month, and year.
+- **Interactive Charts**: Visualize spending with Doughnut, Bar, and Line charts powered by Chart.js.
+- **Budget Planning**: Set monthly budgets, track allocations and and monitor progress with visual indicators
+- **User Authentication**: Secure login and registration with JWT tokens
+- **Data Persistence**: All transactions and budgets saved to MongoDB database
+- **Recent Activity**: Snapshot of the latest transactions for instant visibility.
+- **Responsive design**: Optimized for mobile, tablet, and desktop devices
 
 ### Advanced Features
 - **Reports Export**: Download financial summaries as CSV or styled PDF with embedded charts
