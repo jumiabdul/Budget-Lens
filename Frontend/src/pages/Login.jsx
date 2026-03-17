@@ -48,9 +48,9 @@ const Login = () => {
                 //console.log("Logged in successfully..!!", response.data.token);
                 localStorage.setItem("token", response.data.accessToken);
                 const [txRes, budgetRes, userRes] = await Promise.all([
-                    axiosInstance.get("/transactions/get-all-transactions"),
-                    axiosInstance.get("/budgets/get-all-budgets"),
-                    axiosInstance.get("/users/get-user"),
+                    axiosInstance.get("/api/transactions/get-all-transactions"),
+                    axiosInstance.get("/api/budgets/get-all-budgets"),
+                    axiosInstance.get("/api/users/get-user"),
                 ]);
 
                 dispatch(setTransactions(txRes.data.data));

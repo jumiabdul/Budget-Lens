@@ -62,9 +62,9 @@ const Signup = () => {
             const response = await axiosInstance.post("/api/users/register-user", { name, email, password });
             localStorage.setItem("token", response.data.accessToken);
             const [txRes, budgetRes, userRes] = await Promise.all([
-                axiosInstance.get("/transactions/get-all-transactions"),
-                axiosInstance.get("/budgets/get-all-budgets"),
-                axiosInstance.get("/users/get-user"),
+                axiosInstance.get("/api/transactions/get-all-transactions"),
+                axiosInstance.get("/api/budgets/get-all-budgets"),
+                axiosInstance.get("/api/users/get-user"),
             ]);
 
             dispatch(setTransactions(txRes.data.data));
