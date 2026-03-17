@@ -40,7 +40,7 @@ export default function AddExpense() {
                 type: "expense",
             }
 
-            const response = await axiosInstance.post("/transactions/add-transaction", newExpense);
+            const response = await axiosInstance.post("/api/transactions/add-transaction", newExpense);
 
             dispatch(addTransaction(response.data.data));
             toast.success("Expense saved! 💸");

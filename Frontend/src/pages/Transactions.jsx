@@ -64,7 +64,7 @@ export default function Transactions() {
     const handleDeleteConfirm = async () => {
         try {
             setDeleteLoading(true);
-            await axiosInstance.delete(`/transactions/delete-transaction/${deleteId}`);
+            await axiosInstance.delete(`/api/transactions/delete-transaction/${deleteId}`);
 
             dispatch(deleteTransaction(deleteId));
             toast.success("Transaction deleted!");
@@ -91,7 +91,7 @@ export default function Transactions() {
         try {
             setEditLoading(true);
             const response = await axiosInstance.put(
-                `/transactions/edit-transaction/${editData._id}`,
+                `/api/transactions/edit-transaction/${editData._id}`,
                 {
                     type: editData.type,
                     category: editData.category,

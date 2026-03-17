@@ -31,7 +31,7 @@ export default function AddBudget() {
             }
 
             // save to MongoDB
-            const response = await axiosInstance.post("/budgets/add-budget", newBudget);
+            const response = await axiosInstance.post("/api/budgets/add-budget", newBudget);
 
             // update Redux with response from backend
             dispatch(addBudget(response.data.data));

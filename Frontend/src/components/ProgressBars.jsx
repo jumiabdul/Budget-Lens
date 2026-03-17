@@ -30,7 +30,7 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
     const handleDeleteConfirm = async () => {
         try {
             setDeleteLoading(true);
-            await axiosInstance.delete(`/budgets/delete-budget/${deleteId}`);
+            await axiosInstance.delete(`/api/budgets/delete-budget/${deleteId}`);
 
             dispatch(deleteBudget(deleteId));
             toast.success("Budget deleted!");
@@ -56,7 +56,7 @@ export default function ProgressBars({ budgets = [], selectedMonth, selectedYear
         if (!editData.category || !editData.amount) return;
         try {
             setEditLoading(true);
-            const response = await axiosInstance.put(`/budgets/edit-budget/${editData._id}`, {
+            const response = await axiosInstance.put(`/api/budgets/edit-budget/${editData._id}`, {
                 category: editData.category,
                 amount: Number(editData.amount),
                 month: editData.month,

@@ -35,7 +35,7 @@ const Login = () => {
 
         try {
             setLoading(true);
-            const response = await axiosInstance.post("/users/login-user", {
+            const response = await axiosInstance.post("/api/users/login-user", {
                 email: email,
                 password: password
             });

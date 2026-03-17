@@ -14,8 +14,8 @@ export default function Settings() {
 
     const handleReset = async () => {
         try {
-            await axiosInstance.delete("/transactions/delete-all");
-            await axiosInstance.delete("/budgets/delete-all");
+            await axiosInstance.delete("/api/transactions/delete-all");
+            await axiosInstance.delete("/api/budgets/delete-all");
 
             dispatch(resetTransactions());
             dispatch(resetBudgets());

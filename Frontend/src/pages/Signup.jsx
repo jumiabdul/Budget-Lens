@@ -54,7 +54,7 @@ const Signup = () => {
 
         try {
             setLoading(true);
-            await axiosInstance.post("/users/register-user", { name, email, password });
+            await axiosInstance.post("/api/users/register-user", { name, email, password });
             toast.success("Account created successfully! 🎉");
 
             setName("");

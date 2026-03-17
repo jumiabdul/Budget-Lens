@@ -34,7 +34,7 @@ export default function Profile() {
         }
         try {
             setPassLoading(true);
-            const res = await axiosInstance.put("/users/change-password", {
+            const res = await axiosInstance.put("/api/users/change-password", {
                 currentPassword,
                 newPassword,
             });
@@ -53,7 +53,7 @@ export default function Profile() {
     // Logout
     const handleLogout = async () => {
         try {
-            await axiosInstance.post("/users/logout-user"); // clears cookie
+            await axiosInstance.post("/api/users/logout-user"); // clears cookie
         } catch (error) {
             console.error("Logout error:", error);
         } finally {

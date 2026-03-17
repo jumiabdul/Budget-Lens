@@ -49,7 +49,7 @@ export default function AddIncome() {
                 type: "income",
             }
 
-            const response = await axiosInstance.post("/transactions/add-transaction", newIncome);
+            const response = await axiosInstance.post("/api/transactions/add-transaction", newIncome);
 
             dispatch(addTransaction(response.data.data));
             toast.success("Income saved! 💰");
