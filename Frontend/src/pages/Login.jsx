@@ -45,7 +45,8 @@ const Login = () => {
             if (response.data && response.data.accessToken) {
                 //console.log("Logged in successfully..!!", response.data.token);
                 localStorage.setItem("token", response.data.accessToken);
-                dispatch(setUser(response.data.user));
+                const userRes = await axiosInstance.get("/api/users/get-user");
+                dispatch(setUser(userRes.data.user));
 
                 toast.success("Welcome back! 👋");
 

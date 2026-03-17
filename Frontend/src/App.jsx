@@ -141,11 +141,12 @@ function App() {
 
         dispatch(setTransactions(txRes.data.data));
         dispatch(setBudgets(budgetRes.data.data));
-        dispatch(setUser(userRes.data.user)); 
+        dispatch(setUser(userRes.data.user));
 
       } catch (error) {
-        toast.error("Failed to load user data, Please Refresh..!!");
+        toast.error("Session expired, please login again");
         localStorage.removeItem("token");
+        dispatch(setUser(null)); 
       } finally {
         setLoading(false);
       }
