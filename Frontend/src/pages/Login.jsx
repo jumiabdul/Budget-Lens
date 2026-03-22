@@ -48,8 +48,7 @@ const Login = () => {
 
                 localStorage.setItem("token", response.data.accessToken);
 
-                const userRes = await axiosInstance.get("/api/users/get-user");
-                const user = userRes.data.user;
+                const user = response.data.user;
                 dispatch(setUser(user));
 
                 const [txRes, budgetRes] = await Promise.all([
