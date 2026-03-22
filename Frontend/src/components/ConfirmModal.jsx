@@ -8,8 +8,27 @@ export default function ConfirmModal({
     confirmText = "Confirm",
     confirmColor = "red",
     loading = false,
+    actionType
 }) {
+
+    const [reason, setReason] = useState("");
+    const [error, setError] = useState("");
+
     if (!isOpen) return null;
+
+    const handleConfirm = () => {
+        // Only validate for deactivate
+        if (actionType === "deactivate") {
+            if (!reason.trim()) {
+                setError("Reason is required");
+                return;
+            }
+        }
+
+        setError("");
+        onConfirm(reason); //  send reason
+        setReason(""); // reset
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
@@ -29,6 +48,23 @@ export default function ConfirmModal({
                 <p className="text-gray-400 text-sm">
                     {message}
                 </p>
+
+                {/* Reason Input (ONLY for deactivate) */}
+                {actionType === "deactivate" && (
+                    <div className="text-left">
+                        <textarea
+                            placeholder="Enter reason for deactivation..."
+                            value={reason}
+                            onChange={(e) => setReason(e.target.value)}
+                            className="w-full mt-2 p-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
+                        />
+                        {error && (
+                            <p className="text-red-400 text-xs mt-1">
+                                {error}
+                            </p>
+                        )}
+                    </div>
+                )}
 
                 {/* Buttons */}
                 <div className="flex gap-3 pt-2">

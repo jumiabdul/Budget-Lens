@@ -45,24 +45,32 @@ const Login = () => {
                 password: password
             });
             if (response.data && response.data.accessToken) {
-                
+
                 localStorage.setItem("token", response.data.accessToken);
-                const [txRes, budgetRes, userRes] = await Promise.all([
+
+                const userRes = await axiosInstance.get("/api/users/get-user");
+                const user = userRes.data.user;
+                dispatch(setUser(user));
+
+                const [txRes, budgetRes] = await Promise.all([
                     axiosInstance.get("/api/transactions/get-all-transactions"),
                     axiosInstance.get("/api/budgets/get-all-budgets"),
-                    axiosInstance.get("/api/users/get-user"),
                 ]);
 
                 dispatch(setTransactions(txRes.data.data));
                 dispatch(setBudgets(budgetRes.data.data));
-                dispatch(setUser(userRes.data.user));
 
-                toast.success("Welcome back! 👋");
+                if (user.role === "admin") {
+                    toast.success("Welcome Admin 👑");
+                    navigate("/admin-dashboard");
+                } else {
+                    toast.success("Welcome back! 👋");
+                    navigate("/dashboard");
+                }
 
                 setEmail("");
                 setPassword("");
                 setErrors({});
-                navigate("/dashboard")
             }
         } catch (error) {
             toast.error(error.response?.data?.message || "Invalid email or password");

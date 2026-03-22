@@ -26,6 +26,7 @@ import LoadingSpinner from './components/LoadingSpinner'
 import NotFound from './pages/NotFound'
 import PublicRoute from './components/PublicRoute'
 import { setUser } from './store/slices/userSlice'
+import AdminDashboard from './pages/AdminDashboard'
 
 function GlobalComponent({ children }) {
   return (
@@ -49,6 +50,13 @@ const router = createBrowserRouter([
     element: <PublicRoute>
       <Signup />
     </PublicRoute>
+  },
+  {
+    path: "/admin-dashboard",
+    element:
+      <ProtectedRoutes role="admin">
+        <AdminDashboard />
+      </ProtectedRoutes>
   },
   {
     path: "/dashboard",
@@ -146,7 +154,7 @@ function App() {
       } catch (error) {
         toast.error("Session expired, please login again");
         localStorage.removeItem("token");
-        dispatch(setUser(null)); 
+        dispatch(setUser(null));
       } finally {
         setLoading(false);
       }

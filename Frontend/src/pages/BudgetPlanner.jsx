@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import React, { useState } from "react";
+import { useState } from "react";
 import BudgetChart from "../components/BudgetChart";
 import ProgressBars from "../components/ProgressBars";
 import { useNavigate } from "react-router-dom";
