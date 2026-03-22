@@ -9,6 +9,10 @@ const ProtectedRoutes = ({ children, role }) => {
         return <Navigate to="/" />;
     }
 
+    if (!user) {
+        return <div className="text-white text-center mt-20">Loading...</div>;
+    }
+
     if (role && user?.role !== role) {
         return <Navigate to="/dashboard" />;
     }
