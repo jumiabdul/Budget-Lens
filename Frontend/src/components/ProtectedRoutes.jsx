@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import LoadingSpinner from "./LoadingSpinner";
 
 const ProtectedRoutes = ({ children, role }) => {
     const token = localStorage.getItem("token");
@@ -10,7 +11,7 @@ const ProtectedRoutes = ({ children, role }) => {
     }
 
     if (!user) {
-        return <div className="text-white text-center mt-20">Loading...</div>;
+        return <LoadingSpinner />; 
     }
 
     if (role && user?.role !== role) {

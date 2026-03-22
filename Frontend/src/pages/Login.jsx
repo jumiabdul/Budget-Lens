@@ -66,6 +66,7 @@ const Login = () => {
                     toast.success("Welcome back! 👋");
                     navigate("/dashboard");
                 }
+                console.log("Redux user:", user);
 
                 setEmail("");
                 setPassword("");
