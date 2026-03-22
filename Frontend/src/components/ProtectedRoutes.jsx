@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 const ProtectedRoutes = ({ children, role }) => {
     const token = localStorage.getItem("token");
-    const { user } = useSelector((state) => state.user);
+    const user = useSelector((state) => state.user);
 
     if (!token) {
         return <Navigate to="/" />;
