@@ -73,7 +73,7 @@ export const loginUser = async (req, res, next) => {
             return res.status(400).json({ message: "User not found!!", success: false })
         }
 
-        const validPassword = await bcrypt.compare(password, userInfo.password);
+        const validPassword = await bcrypt.compare(password, user.password);
 
         if (!validPassword) {
             return res.status(400).json({ message: "Invalid Credentials", success: false });
@@ -91,7 +91,7 @@ export const loginUser = async (req, res, next) => {
         user.lastLogin = new Date();
         await user.save();
 
-        const accessToken = jwt.sign({ id: userInfo._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_EXPIRE, });
+        const accessToken = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_EXPIRE, });
 
         res.cookie("token", accessToken, cookieOptions);
 
