@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import User from '../models/userModel.js';
 import dotenv from 'dotenv';
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
@@ -18,11 +19,14 @@ async function createAdmin() {
             process.exit(0);
         }
 
+        //Hash the passowrd
+        const hashedPassword = await bcrypt.hash('AdminPassword123!', 10);
+
         // Create admin user
         const admin = new User({
             name: 'Admin',
             email: 'admin@budgetlens.com',
-            password: 'AdminPassword123!',
+            password: hashedPassword,
             role: 'admin',
             isActive: true
         });
