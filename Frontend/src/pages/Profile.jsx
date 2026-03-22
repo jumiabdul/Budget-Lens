@@ -57,7 +57,7 @@ export default function Profile() {
         } catch (error) {
             console.error("Logout error:", error);
         } finally {
-            localStorage.removeItem("token");
+        
             dispatch(resetTransactions());
             dispatch(resetBudgets());
             dispatch(resetUser());

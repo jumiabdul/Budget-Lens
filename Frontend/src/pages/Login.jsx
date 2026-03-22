@@ -44,9 +44,7 @@ const Login = () => {
                 email: email,
                 password: password
             });
-            if (response.data && response.data.accessToken) {
-
-                localStorage.setItem("token", response.data.accessToken);
+            if (response.data && response.data.success) {
 
                 const user = response.data.user;
                 dispatch(setUser(user));
@@ -66,7 +64,6 @@ const Login = () => {
                     toast.success("Welcome back! 👋");
                     navigate("/dashboard");
                 }
-                console.log("Redux user:", user);
 
                 setEmail("");
                 setPassword("");

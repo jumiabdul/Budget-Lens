@@ -60,27 +60,27 @@ const Signup = () => {
         try {
             setLoading(true);
             const response = await axiosInstance.post("/api/users/register-user", { name, email, password });
-            localStorage.setItem("token", response.data.accessToken);
-            const [txRes, budgetRes, userRes] = await Promise.all([
-                axiosInstance.get("/api/transactions/get-all-transactions"),
-                axiosInstance.get("/api/budgets/get-all-budgets"),
-                axiosInstance.get("/api/users/get-user"),
-            ]);
+            if (response.data && response.data.success) {
+                const [txRes, budgetRes, userRes] = await Promise.all([
+                    axiosInstance.get("/api/transactions/get-all-transactions"),
+                    axiosInstance.get("/api/budgets/get-all-budgets"),
+                    axiosInstance.get("/api/users/get-user"),
+                ]);
 
-            dispatch(setTransactions(txRes.data.data));
-            dispatch(setBudgets(budgetRes.data.data));
-            dispatch(setUser(userRes.data.user));
+                dispatch(setTransactions(txRes.data.data));
+                dispatch(setBudgets(budgetRes.data.data));
+                dispatch(setUser(userRes.data.user));
 
-            toast.success("Account created successfully! 🎉");
+                toast.success("Account created successfully! 🎉");
 
-            setName("");
-            setEmail("");
-            setPassword("");
-            setConfirmPassword("");
-            setAgree(false);
-            setErrors({});
-            navigate("/dashboard")
-
+                setName("");
+                setEmail("");
+                setPassword("");
+                setConfirmPassword("");
+                setAgree(false);
+                setErrors({});
+                navigate("/dashboard")
+            }
         } catch (error) {
             toast.error(error.response?.data?.message || "Registration failed");
         } finally {
