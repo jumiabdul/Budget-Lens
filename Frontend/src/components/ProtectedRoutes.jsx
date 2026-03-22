@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const ProtectedRoutes = ({ children }) => {
+const ProtectedRoutes = ({ children, role }) => {
     const token = localStorage.getItem("token");
     const { user } = useSelector((state) => state.user);
 
