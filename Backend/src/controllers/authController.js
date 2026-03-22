@@ -14,6 +14,7 @@ const cookieOptions = {
 export const registerUser = async (req, res, next) => {
     const { name, email, password } = req.body;
     console.log({ email, password, name });
+    email = email.toLowerCase().trim();
 
     try {
         //validation
@@ -60,7 +61,8 @@ export const registerUser = async (req, res, next) => {
 // Login
 export const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
-    console.log(email, password)
+    console.log(email, password);
+    email = email.toLowerCase().trim();
 
     try {
         if (!email || !password) {
