@@ -53,19 +53,20 @@ const Login = () => {
                     axiosInstance.get("/api/transactions/get-all-transactions"),
                     axiosInstance.get("/api/budgets/get-all-budgets"),
                 ]);
-                console.log("Transaction Response:", txRes.data);
-                console.log("Budget Response:", budgetRes.data);
 
                 dispatch(setTransactions(txRes.data.data));
                 dispatch(setBudgets(budgetRes.data.data));
 
-                if (user.role === "admin") {
-                    toast.success("Welcome Admin 👑");
-                    navigate("/admin-dashboard");
-                } else {
-                    toast.success("Welcome back! 👋");
-                    navigate("/dashboard");
-                }
+                //  Small delay to ensure Redux updates before navigation
+                setTimeout(() => {
+                    if (user.role === "admin") {
+                        toast.success("Welcome Admin 👑");
+                        navigate("/admin-dashboard");
+                    } else {
+                        toast.success("Welcome back! 👋");
+                        navigate("/dashboard");
+                    }
+                }, 100);
 
                 setEmail("");
                 setPassword("");
