@@ -50,7 +50,7 @@ export const registerUser = async (req, res, next) => {
 
         res.cookie("token", accessToken, cookieOptions);
 
-        return res.json({ success: true, user, accessToken, message: "Registration Successful", });
+        return res.json({ success: true, user, message: "Registration Successful", });
 
     } catch (error) {
         next(error);

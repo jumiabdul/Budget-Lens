@@ -3,13 +3,11 @@ import userModel from "../models/userModel.js";
 
 export const authenticateToken = async (req, res, next) => {
 
-    const authHeader = req.headers.authorization;
+    const token = req.cookies?.token;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(400).json({ message: "Invalid token!!", success: false });
+    if (!token) {
+        return res.status(401).json({ message: "No token provided", success: false });
     }
-
-    const token =req.cookies?.token ||  authHeader.split(" ")[1];
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_TOKEN);
