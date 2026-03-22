@@ -12,7 +12,7 @@ const cookieOptions = {
 
 // Register
 export const registerUser = async (req, res, next) => {
-    const { name, email, password } = req.body;
+    let { name, email, password } = req.body;
     console.log({ email, password, name });
     email = email.toLowerCase().trim();
 
@@ -60,7 +60,7 @@ export const registerUser = async (req, res, next) => {
 
 // Login
 export const loginUser = async (req, res, next) => {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
     console.log(email, password);
     email = email.toLowerCase().trim();
 
