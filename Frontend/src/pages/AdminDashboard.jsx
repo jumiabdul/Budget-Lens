@@ -3,6 +3,16 @@ import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
 
+// STAT CARD COMPONENT
+const Card = ({ title, value, color }) => (
+    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+        <p className="text-gray-400 text-sm">{title}</p>
+        <h2 className={`text-2xl font-bold mt-2 ${color}`}>
+            {value}
+        </h2>
+    </div>
+);
+
 const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
     const [stats, setStats] = useState(null);
@@ -270,12 +280,3 @@ const AdminDashboard = () => {
 
 export default AdminDashboard;
 
-// STAT CARD COMPONENT
-const Card = ({ title, value, color }) => (
-    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-        <p className="text-gray-400 text-sm">{title}</p>
-        <h2 className={`text-2xl font-bold mt-2 ${color}`}>
-            {value}
-        </h2>
-    </div>
-);
