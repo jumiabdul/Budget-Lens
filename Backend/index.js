@@ -7,6 +7,7 @@ import dotenv from "dotenv"
 import cors from "cors"
 import handleGenericErrors from "./src/middlewares/errorMiddleware.js";
 import cookieParser from "cookie-parser";
+import adminRoutes from "./src/routes/adminRoutes.js"
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ dbConnect();
 app.use("/api/users", userRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/budgets", budgetRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Default route
 app.get("/", (req, res) => {

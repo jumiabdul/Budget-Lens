@@ -41,7 +41,9 @@ export const registerUser = async (req, res, next) => {
         const user = await userModel.create({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role: 'user',
+            isActive: true
         });
 
         const accessToken = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_EXPIRE, });
@@ -65,9 +67,9 @@ export const loginUser = async (req, res, next) => {
             return res.status(400).json({ message: "Email and Password are required", success: false });
         }
 
-        const userInfo = await userModel.findOne({ email })
+        const user = await userModel.findOne({ email })
 
-        if (!userInfo) {
+        if (!user) {
             return res.status(400).json({ message: "User not found!!", success: false })
         }
 
@@ -77,11 +79,34 @@ export const loginUser = async (req, res, next) => {
             return res.status(400).json({ message: "Invalid Credentials", success: false });
         }
 
+        // check if user is active
+        if (!user.isActive) {
+            return res.status(403).json({
+                error: 'Account inactive',
+                message: `Your account has been deactivated. Reason: ${user.deactivationReason}`
+            });
+        }
+
+        // Update last login
+        user.lastLogin = new Date();
+        await user.save();
+
         const accessToken = jwt.sign({ id: userInfo._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_EXPIRE, });
 
         res.cookie("token", accessToken, cookieOptions);
 
-        return res.json({ success: true, message: "Login Successful", email, accessToken, });
+        return res.json({
+            success: true,
+            message: "Login Successful",
+            accessToken,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                isActive: user.isActive
+            }
+        });
 
     } catch (error) {
         next(error);

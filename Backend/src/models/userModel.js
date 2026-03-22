@@ -14,10 +14,46 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    createdOn: {
+    
+    // Admin Fields
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
+
+    // Active Status
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+
+    deactivatedAt: {
+        type: Date,
+        default: null
+    },
+
+    deactivationReason: {
+        type: String,
+        default: null
+    },
+
+    // Activity Tracking
+    lastLogin: {
+        type: Date,
+        default: null
+    },
+
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+
+    updatedAt: {
         type: Date,
         default: Date.now
     }
+
 });
 
 const userModel = mongoose.model("User", userSchema);
