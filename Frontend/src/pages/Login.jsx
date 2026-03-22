@@ -53,6 +53,8 @@ const Login = () => {
                     axiosInstance.get("/api/transactions/get-all-transactions"),
                     axiosInstance.get("/api/budgets/get-all-budgets"),
                 ]);
+                console.log("Transaction Response:", txRes.data);
+                console.log("Budget Response:", budgetRes.data);
 
                 dispatch(setTransactions(txRes.data.data));
                 dispatch(setBudgets(budgetRes.data.data));
