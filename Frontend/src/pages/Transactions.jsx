@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux"
-import { useState } from "react";
 import { deleteTransaction, editTransaction } from "../store/slices/transactionSlice"
 import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast";
