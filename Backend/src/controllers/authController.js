@@ -5,8 +5,8 @@ import validator from "validator";
 
 const cookieOptions = {
     httpOnly: true, // Prevents client-side JavaScript from reading the cookie
-    secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
-    sameSite: "strict", // CSRF protection
+    secure: true, // Only send over HTTPS in production
+    sameSite: "none", // CSRF protection
     maxAge: 7 * 24 * 60 * 60 * 1000  // Cookie expires in 7 days (in milliseconds)
 }
 
@@ -98,7 +98,6 @@ export const loginUser = async (req, res, next) => {
         return res.json({
             success: true,
             message: "Login Successful",
-            accessToken,
             user: {
                 id: user._id,
                 name: user.name,
