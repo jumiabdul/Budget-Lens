@@ -132,13 +132,6 @@ function App() {
 
   useEffect(() => {
     const loadUserData = async () => {
-      const token = localStorage.getItem("token");
-      // console.log("TOKEN:", token);
-
-      if (!token) {
-        setLoading(false);
-        return;
-      }
 
       try {
         const [txRes, budgetRes, userRes] = await Promise.all([
@@ -153,7 +146,6 @@ function App() {
 
       } catch (error) {
         toast.error("Session expired, please login again");
-        localStorage.removeItem("token");
         dispatch(setUser(null));
       } finally {
         setLoading(false);
