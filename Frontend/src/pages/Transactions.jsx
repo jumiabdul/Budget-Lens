@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux"
 import { deleteTransaction, editTransaction } from "../store/slices/transactionSlice"
 import axiosInstance from "../utils/axiosInstance";
