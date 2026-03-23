@@ -340,7 +340,7 @@ export default function Reports() {
                                 <p className="text-[11px] text-gray-500 mb-4">Expenses by category</p>
 
                                 <div className="h-92">
-                                    <DoughnutChart ref={doughnutRef} />
+                                    <DoughnutChart ref={doughnutRef} transactions={filteredTransactions} />
                                 </div>
                             </div>
 
@@ -353,7 +353,7 @@ export default function Reports() {
                                 <p className="text-[11px] text-gray-500 mb-4">Weekly Comparison</p>
 
                                 <div className="h-92">
-                                    <BarChart ref={barRef} />
+                                    <BarChart ref={barRef} transactions={filteredTransactions} />
                                 </div>
                             </div>
                         </div>
@@ -367,7 +367,7 @@ export default function Reports() {
                             <p className="text-[11px] text-gray-500 mb-4">Over time</p>
 
                             <div className="h-92">
-                                <LineChart ref={lineRef} />
+                                <LineChart ref={lineRef} transactions={filteredTransactions} />
                             </div>
                         </div>
 

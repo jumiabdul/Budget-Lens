@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { forwardRef } from "react";
 import { Line } from "react-chartjs-2";
+import { isCurrentMonth } from "../utils/dateFilter";
 import {
     Chart as ChartJS,
     LineElement,
@@ -29,10 +30,12 @@ function getWeek(dateString) {
     return Math.ceil(day / 7);
 }
 
-const LineChart = forwardRef((props, ref) => {
-    const transactions = useSelector((state) => state.transactions);
+const LineChart = forwardRef(({ transactions }, ref) => {
+    // Use the transactions prop passed from parent
+    // If no prop provided, fall back to empty array
+    const chartTransactions = transactions || [];
 
-    const weeklyTotals = transactions.reduce((obj, t) => {
+    const weeklyTotals = chartTransactions.reduce((obj, t) => {
         const week = `Week ${getWeek(t.date)}`;
 
         if (!obj[week]) obj[week] = { income: 0, expense: 0 };

@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { forwardRef } from "react";
 import { Doughnut } from "react-chartjs-2";
+import { isCurrentMonth } from "../utils/dateFilter";
 import {
     Chart as ChartJS,
     ArcElement,
@@ -14,11 +15,13 @@ ChartJS.register(
     Legend
 );
 
-const DoughnutChart = forwardRef((props, ref) => {
-    const transactions = useSelector((state) => state.transactions);
+const DoughnutChart = forwardRef(({transactions}, ref) => {
+    // Use the transactions prop passed from parent
+    // If no prop provided, fall back to empty array
+    const chartTransactions = transactions || [];
 
     // Group transactions by category (expense only)
-    const expenseOnly = transactions.filter((t) => t.type === "expense");
+    const expenseOnly = chartTransactions.filter((t) => t.type === "expense");
 
     const categoryTotals = expenseOnly.reduce((obj, t) => {
         obj[t.category] = (obj[t.category] || 0) + Number(t.amount);

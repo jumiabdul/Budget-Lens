@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { forwardRef } from "react";
 import { Bar } from "react-chartjs-2";
+import { isCurrentMonth } from "../utils/dateFilter";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -25,11 +26,13 @@ function getWeek(dateString) {
     return Math.ceil(day / 7);
 }
 
-const BarChart = forwardRef((props, ref) => {
-    const transactions = useSelector((state) => state.transactions);
+const BarChart = forwardRef(({ transactions }, ref) => {
+    // Use the transactions prop passed from parent
+    // If no prop provided, fall back to empty array
+    const chartTransactions = transactions || [];
 
     // group transactions by week
-    const weeklyTotals = transactions.reduce((obj, t) => {
+    const weeklyTotals = chartTransactions.reduce((obj, t) => {
         const week = `Week ${getWeek(t.date)}`;
 
         if (!obj[week]) obj[week] = { income: 0, expense: 0 };

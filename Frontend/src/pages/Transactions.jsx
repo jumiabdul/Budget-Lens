@@ -4,6 +4,7 @@ import { deleteTransaction, editTransaction } from "../store/slices/transactionS
 import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
+import { getCurrentMonthYear } from "../utils/dateFilters";
 
 const EXPENSE_CATEGORIES = [
     "Food", "Housing", "Savings", "Utilities", "Transport",
@@ -35,11 +36,13 @@ const ModeBadge = ({ mode }) => {
 export default function Transactions() {
     const transactions = useSelector((state) => state.transactions);
 
+    const { month: currentMonth, year: currentYear } = getCurrentMonthYear();
+
     const dispatch = useDispatch();
 
     const [searchCategory, setSearchCategory] = useState("");
-    const [filterMonth, setFilterMonth] = useState("");
-    const [filterYear, setFilterYear] = useState("");
+    const [filterMonth, setFilterMonth] = useState(currentMonth);
+    const [filterYear, setFilterYear] = useState(currentYear.toString());
     const [filterType, setFilterType] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -118,7 +121,7 @@ export default function Transactions() {
         setSearchCategory("");
         setFilterMonth("");
         setFilterYear("");
-        setFilterType("");  
+        setFilterType("");
     }
 
     const filteredTransactions = transactions.slice().reverse().filter((t) => {
