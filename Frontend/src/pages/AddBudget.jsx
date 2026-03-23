@@ -4,15 +4,9 @@ import { addBudget } from "../store/slices/budgetSlice"
 import axiosInstance from "../utils/axiosInstance.js";
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+import { getCurrentMonthYear } from "../utils/dateFilter.js";
 
 const QUICK_AMOUNTS = [1000, 5000, 10000, 25000];
-const currentYear = new Date().getFullYear();
-const YEARS = [
-    (currentYear - 1).toString(),
-    currentYear.toString(),
-    (currentYear + 1).toString(),
-    (currentYear + 2).toString(),
-];
 
 export default function AddBudget() {
     const [category, setCategory] = useState("");
@@ -24,6 +18,40 @@ export default function AddBudget() {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    // Get current date info
+    const { month: currentMonth, year: currentYear } = getCurrentMonthYear();
+    const currentMonthIndex = new Date().getMonth(); // 0-11
+
+    // All months
+    const allMonths = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    // Available years (current + next 3)
+    const availableYears = [
+        currentYear,
+        currentYear + 1,
+        currentYear + 2,
+        currentYear + 3
+    ];
+
+    // Get available months based on selected year
+    const getAvailableMonths = () => {
+        if (!year) return allMonths;
+
+        if (parseInt(year) === currentYear) {
+            // For current year, only show current month onwards
+            return allMonths.slice(currentMonthIndex);
+        } else if (parseInt(year) > currentYear) {
+            // For future years, show all months
+            return allMonths;
+        } else {
+            // For past years, show no months (shouldn't happen)
+            return [];
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -105,29 +133,6 @@ export default function AddBudget() {
                     </select>
                 </div>
 
-                {/*Month field*/}
-                <div>
-                    <label className="text-sm text-gray-300 block mb-1">
-                        Month</label>
-                    <select value={month}
-                        onChange={(e) => setMonth(e.target.value)}
-                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400 transition">
-                        <option value="" className="bg-gray-900 text-white">Select Month</option>
-                        <option value="January" className="bg-gray-900 text-white">January</option>
-                        <option value="February" className="bg-gray-900 text-white">February</option>
-                        <option value="March" className="bg-gray-900 text-white">March</option>
-                        <option value="April" className="bg-gray-900 text-white">April</option>
-                        <option value="May" className="bg-gray-900 text-white">May</option>
-                        <option value="June" className="bg-gray-900 text-white">June</option>
-                        <option value="July" className="bg-gray-900 text-white">July</option>
-                        <option value="August" className="bg-gray-900 text-white">August</option>
-                        <option value="September" className="bg-gray-900 text-white">September</option>
-                        <option value="October" className="bg-gray-900 text-white">October</option>
-                        <option value="November" className="bg-gray-900 text-white">November</option>
-                        <option value="December" className="bg-gray-900 text-white">December</option>
-                    </select>
-                </div>
-
                 {/*Year field*/}
                 <div>
                     <label className="text-sm text-gray-300 block mb-1">
@@ -136,10 +141,28 @@ export default function AddBudget() {
                         onChange={(e) => setYear(e.target.value)}
                         className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400 transition">
                         <option value="" className="bg-gray-900 text-white">Select Year</option>
-                        {YEARS.map(y => (
+                        {availableYears.map(y => (
                             <option key={y} value={y} className="bg-gray-900 text-white">{y}</option>
                         ))}
                     </select>
+                </div>
+
+                {/*Month field*/}
+                <div>
+                    <label className="text-sm text-gray-300 block mb-1">
+                        Month</label>
+                    <select value={month}
+                        onChange={(e) => setMonth(e.target.value)}
+                        disabled={!year}
+                        className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400 transition">
+                        <option value="" className="bg-gray-900 text-white">Select Month</option>
+                        {getAvailableMonths().map(m => (
+                            <option key={m} value={m} className="bg-gray-900 text-white">{m}</option>
+                        ))}
+                    </select>
+                    {!year && (
+                        <p className="text-xs text-gray-400 mt-1">Select a year first</p>
+                    )}
                 </div>
 
                 {/*Amount field */}

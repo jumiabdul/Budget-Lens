@@ -19,17 +19,17 @@ export default function BudgetPlanner() {
 
     // Summary calculations 
     const filteredBudgets = viewMode === "monthly"
-        ? budgets.filter(b => !selectedMonth || b.month === selectedMonth)
-        : budgets.filter(b => !selectedYear || b.year === selectedYear);
+        ? budgets.filter(b => selectedMonth ? b.month === selectedMonth : true)
+        : budgets.filter(b => selectedYear ? b.year === selectedYear : true);
 
     const filteredExpenses = transactions.filter((t) => {
         if (t.type !== "expense") return false;
         if (viewMode === "monthly") {
             const month = new Date(t.date).toLocaleString("default", { month: "long" });
-            return !selectedMonth || month === selectedMonth;
+            return selectedMonth ? month === selectedMonth : true;
         } else {
             const year = new Date(t.date).getFullYear().toString();
-            return !selectedYear || year === selectedYear;
+            return selectedYear ? year === selectedYea : true;
         }
     });
 
@@ -170,7 +170,7 @@ export default function BudgetPlanner() {
                                     onChange={(e) => setSelectedMonth(e.target.value)}
                                     className="w-full sm:w-auto bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 text-sm focus:ring-2 focus:ring-purple-500"
                                 >
-                                    <option value="">Select Month</option>
+                                    <option value="">All Months</option>
                                     {[
                                         "January", "February", "March", "April", "May", "June",
                                         "July", "August", "September", "October", "November", "December"
@@ -186,8 +186,9 @@ export default function BudgetPlanner() {
                                     onChange={(e) => setSelectedYear(e.target.value)}
                                     className="w-full sm:w-auto bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 text-sm focus:ring-2 focus:ring-purple-500"
                                 >
-                                    <option value="">Select Year</option>
-                                    {["2024", "2025", "2026", "2027"].map((y) => (
+                                    <option value="">All Years</option>
+                                    {/* Dynamically get all unique years from budgets, sorted newest first */}
+                                    {[...new Set(budgets.map(b => b.year))].sort((a, b) => b - a).map((y) => (
                                         <option key={y} value={y}>{y}</option>
                                     ))}
                                 </select>
