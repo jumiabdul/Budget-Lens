@@ -173,6 +173,7 @@ const AdminDashboard = () => {
                             <th className="text-center">Email</th>
                             <th className="text-center">Status</th>
                             <th className="text-center">Role</th>
+                            <th className="text-center">Last Login</th>
                             <th className="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -206,6 +207,27 @@ const AdminDashboard = () => {
                                 </td>
 
                                 <td className="text-center align-middle">{user.role}</td>
+
+                                <td className="text-center align-middle">
+                                    {user.lastLogin ? (
+                                        <span className="text-xs text-gray-400">
+                                            {new Date(user.lastLogin).toLocaleDateString("en-IN", {
+                                                day: "2-digit",
+                                                month: "short",
+                                                year: "numeric"
+                                            })}
+                                            <br />
+                                            <span className="text-[10px] text-gray-500">
+                                                {new Date(user.lastLogin).toLocaleTimeString("en-IN", {
+                                                    hour: "2-digit",
+                                                    minute: "2-digit"
+                                                })}
+                                            </span>
+                                        </span>
+                                    ) : (
+                                        <span className="text-xs text-gray-500">Never</span>
+                                    )}
+                                </td>
 
                                 <td className="text-center align-middle">
                                     <div className="inline-flex gap-2">
