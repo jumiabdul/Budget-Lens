@@ -124,7 +124,7 @@ export default function Transactions() {
         setFilterType("");
     }
 
-    const filteredTransactions = transactions.slice().reverse().filter((t) => {
+    const filteredTransactions = transactions.filter((t) => {
         const onlyMonth = new Date(t.date).toLocaleString("default", { month: "long" });
         const onlyYear = new Date(t.date).getFullYear().toString();
 
@@ -136,8 +136,8 @@ export default function Transactions() {
         const matchType = filterType ? t.type === filterType : true;
 
         return matchCategory && matchMonth && matchYear && matchType;
-    }
-    )
+    }).sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date (newest first)
+
 
     //Pagination
     const totalPages = Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE);

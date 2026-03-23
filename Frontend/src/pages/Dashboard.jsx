@@ -293,32 +293,34 @@ export default function Dashboard() {
                                 </div>
                             ) : (
                                 <ul className="space-y-3">
-                                    {transactions.slice(-5).reverse().map((t) => (
-                                        <li
-                                            key={t._id}
-                                            className="flex items-center justify-between border-b border-white/10 pb-2"
-                                        >
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-300">
-                                                    {t.category}
-                                                </p>
-                                                <p className="text-xs text-gray-500">
-                                                    {new Date(t.date).toLocaleDateString("en-IN", {
-                                                        day: "2-digit", month: "short", year: "numeric"
-                                                    })
-                                                    }
-                                                </p>
-                                            </div>
+                                    {transactions.sort((a, b) => new Date(b.date) - new Date(a.date))  // Sort by date (newest first)
+                                        .slice(0, 5)  // Take first 5
+                                        .map((t) => (
+                                            <li
+                                                key={t._id}
+                                                className="flex items-center justify-between border-b border-white/10 pb-2"
+                                            >
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-300">
+                                                        {t.category}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {new Date(t.date).toLocaleDateString("en-IN", {
+                                                            day: "2-digit", month: "short", year: "numeric"
+                                                        })
+                                                        }
+                                                    </p>
+                                                </div>
 
-                                            <p className={`text-sm font-semibold ${t.type === "income"
-                                                ? "text-emerald-400"
-                                                : "text-red-400"
-                                                }`}>
-                                                {t.type === "income" ? "+" : "-"}₹
-                                                {t.amount.toLocaleString("en-IN")}
-                                            </p>
-                                        </li>
-                                    ))}
+                                                <p className={`text-sm font-semibold ${t.type === "income"
+                                                    ? "text-emerald-400"
+                                                    : "text-red-400"
+                                                    }`}>
+                                                    {t.type === "income" ? "+" : "-"}₹
+                                                    {t.amount.toLocaleString("en-IN")}
+                                                </p>
+                                            </li>
+                                        ))}
                                 </ul>
                             )}
                         </div>
