@@ -3,7 +3,7 @@ import { useState } from "react";
 import BudgetChart from "../components/BudgetChart";
 import ProgressBars from "../components/ProgressBars";
 import { useNavigate } from "react-router-dom";
-import { getCurrentMonthYear } from "../utils/dateFilters.js";
+import { getCurrentMonthYear } from "../utils/dateFilter.js";
 
 export default function BudgetPlanner() {
     const budgets = useSelector((state) => state.budgets);
