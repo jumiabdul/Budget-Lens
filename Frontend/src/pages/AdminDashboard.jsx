@@ -149,7 +149,11 @@ const AdminDashboard = () => {
                                 <p className="text-xs text-gray-500">{u.email}</p>
                             </div>
                             <span className="text-xs text-gray-400">
-                                {new Date(u.createdAt).toLocaleDateString("en-IN")}
+                                {new Date(u.createdAt).toLocaleDateString("en-IN", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric"
+                                })}
                             </span>
                         </div>
                     ))}
@@ -157,10 +161,41 @@ const AdminDashboard = () => {
 
                 {/* Health */}
                 <div className="bg-white/5 p-6 rounded-2xl border border-purple-900/30 text-center">
-                    <p className="text-3xl font-bold text-indigo-400">
-                        {totalUsers ? Math.round((activeUsers / totalUsers) * 100) : 0}%
-                    </p>
-                    <p className="text-xs text-gray-500">Active Ratio</p>
+                    {(() => {
+                        const ratio = totalUsers ? Math.round((activeUsers / totalUsers) * 100) : 0 ;
+
+                        let icon = "⚡";
+                        let iconBg = "bg-indigo-500/20";
+
+                        if (ratio >= 80) {
+                            icon = "✅";
+                            iconBg = "bg-emerald-500/20";
+                        } else if (ratio >= 60) {
+                            icon = "⚡";
+                            iconBg = "bg-indigo-500/20";
+                        } else if (ratio >= 40) {
+                            icon = "⚠️";
+                            iconBg = "bg-yellow-500/20";
+                        } else {
+                            icon = "❌";
+                            iconBg = "bg-red-500/20";
+                        }
+
+                        return (
+                            <>
+                                <div className="flex justify-center mb-3">
+                                    <div className={`${iconBg} p-3 rounded-full`}>
+                                        <span className="text-2xl">{icon}</span>
+                                    </div>
+                                </div>
+                                <p className="text-4xl font-bold bg-linear-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                                    {ratio}%
+                                </p>
+                            </>
+                        );
+                    })()}
+
+                    <p className="text-xs text-gray-400 mt-2 font-medium">Active Ratio</p>
                 </div>
             </div>
 
