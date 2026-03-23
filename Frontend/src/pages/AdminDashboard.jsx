@@ -169,11 +169,11 @@ const AdminDashboard = () => {
                 <table className="w-full text-sm">
                     <thead className="bg-white/10 text-gray-300">
                         <tr>
-                            <th className="p-3 text-left">Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Role</th>
-                            <th>Actions</th>
+                            <th className="p-3 text-center">Name</th>
+                            <th className="text-center">Email</th>
+                            <th className="text-center">Status</th>
+                            <th className="text-center">Role</th>
+                            <th className="text-center">Actions</th>
                         </tr>
                     </thead>
 
@@ -181,53 +181,57 @@ const AdminDashboard = () => {
                         {users.map((user) => (
                             <tr key={user._id} className="border-t border-white/10 hover:bg-white/5 transition">
 
-                                <td className="p-3 align-middle">
+                                <td className="p-3 text-center align-middle">
                                     {user.name}
                                 </td>
 
-                                <td className="align-middle">{user.email}</td>
+                                <td className="text-center align-middle">{user.email}</td>
 
-                                <td className="align-middle">
-                                    <span className={`px-2 py-1 rounded text-xs ${user.isActive
-                                        ? "bg-green-500/20 text-green-400"
-                                        : "bg-red-500/20 text-red-400"
-                                        }`}>
-                                        {user.isActive ? "Active" : "Inactive"}
-                                    </span>
+                                <td className="text-center align-middle">
+                                    <div className="flex flex-col items-center">
+                                        <span className={`px-2 py-1 rounded text-xs ${user.isActive
+                                            ? "bg-green-500/20 text-green-400"
+                                            : "bg-red-500/20 text-red-400"
+                                            }`}>
+                                            {user.isActive ? "Active" : "Inactive"}
+                                        </span>
 
-                                    {/* Show reason */}
-                                    {!user.isActive && user.deactivationReason && (
-                                        <p className="text-xs text-red-400 mt-1">
-                                            Reason: {user.deactivationReason}
-                                        </p>
-                                    )}
+                                        {/* Show reason */}
+                                        {!user.isActive && user.deactivationReason && (
+                                            <p className="text-xs text-red-400 mt-1">
+                                                Reason: {user.deactivationReason}
+                                            </p>
+                                        )}
+                                    </div>
                                 </td>
 
-                                <td className="align-middle">{user.role}</td>
+                                <td className="text-center align-middle">{user.role}</td>
 
-                                <td className="space-x-2 align-middle">
-                                    {user.isActive ? (
-                                        <button
-                                            onClick={() => openModal(user, "deactivate")}
-                                            className="text-yellow-400 hover:underline"
-                                        >
-                                            Deactivate
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => handleActivate(user._id)}
-                                            className="text-green-400 hover:underline"
-                                        >
-                                            Activate
-                                        </button>
-                                    )}
+                                <td className="text-center align-middle">
+                                    <div className="inline-flex gap-2">
+                                        {user.isActive ? (
+                                            <button
+                                                onClick={() => openModal(user, "deactivate")}
+                                                className="text-yellow-400 hover:underline"
+                                            >
+                                                Deactivate
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={() => handleActivate(user._id)}
+                                                className="text-green-400 hover:underline"
+                                            >
+                                                Activate
+                                            </button>
+                                        )}
 
-                                    <button
-                                        onClick={() => openModal(user, "delete")}
-                                        className="text-red-400 hover:underline"
-                                    >
-                                        Delete
-                                    </button>
+                                        <button
+                                            onClick={() => openModal(user, "delete")}
+                                            className="text-red-400 hover:underline"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
