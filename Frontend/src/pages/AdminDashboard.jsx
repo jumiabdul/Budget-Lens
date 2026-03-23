@@ -215,8 +215,8 @@ const AdminDashboard = () => {
                         }
 
                         return (
-                            <>
-                                <div className="flex justify-center mb-3">
+                            <div className="flex flex-col justify-center items-center">
+                                <div className="flex justify-center items-center mb-3">
                                     <div className={`${iconBg} p-3 rounded-full`}>
                                         <span className="text-2xl">{icon}</span>
                                     </div>
@@ -224,11 +224,10 @@ const AdminDashboard = () => {
                                 <p className="text-4xl font-bold bg-linear-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
                                     {ratio}%
                                 </p>
-                            </>
+                                <p className="text-xs text-gray-400 mt-2 font-medium">Active Ratio</p>
+                            </div>
                         );
                     })()}
-
-                    <p className="text-xs text-gray-400 mt-2 font-medium">Active Ratio</p>
                 </div>
             </div>
 
