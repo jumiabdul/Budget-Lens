@@ -145,8 +145,9 @@ const AdminDashboard = () => {
             <div className="relative mb-6">
 
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
-                    <p className="text-gray-500 text-sm">Manage users & platform</p>
+                    <h1 className="text-3xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent tracking-wide">
+                        Admin Dashboard</h1>
+                    <p className="text-gray-400 text-center text-sm">Manage users & platform</p>
                 </div>
                 <div className="mt-3 flex justify-center sm:mt-0 sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
 
