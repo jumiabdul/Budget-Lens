@@ -68,11 +68,11 @@ export default function Reports() {
     });
 
     //totals
-    const totalIncome = transactions
+    const totalIncome = filteredTransactions
         .filter((t) => t.type === "income")
         .reduce((sum, t) => sum + Number(t.amount), 0);
 
-    const totalExpense = transactions
+    const totalExpense = filteredTransactions
         .filter((t) => t.type === "expense")
         .reduce((sum, t) => sum + Number(t.amount), 0);
 
@@ -80,7 +80,7 @@ export default function Reports() {
     const savingsRate = totalIncome > 0 ? Math.round((netSavings / totalIncome) * 100) : 0;
 
     //group transactions by category
-    const expenseOnly = transactions.filter((t) => t.type === "expense");
+    const expenseOnly = filteredTransactions.filter((t) => t.type === "expense");
 
     const categoryTotals = expenseOnly.reduce((obj, t) => {
         obj[t.category] = (obj[t.category] || 0) + Number(t.amount);
@@ -161,7 +161,7 @@ export default function Reports() {
     }
 
     //CSV Data
-    const csvData = transactions.map((t) => ({
+    const csvData = filteredTransactions.map((t) => ({
         Date: new Date(t.date).toLocaleDateString("en-IN"),
         Type: t.type,
         Category: t.category,
@@ -266,13 +266,13 @@ export default function Reports() {
                     <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
                         <p className="text-[11px] text-gray-500 mb-1">Total Income</p>
                         <p className="text-xl font-bold text-emerald-400">₹{totalIncome.toLocaleString("en-IN")}</p>
-                        <p className="text-[10px] text-gray-500 mt-1">{transactions.filter(t => t.type === "income").length} transactions</p>
+                        <p className="text-[10px] text-gray-500 mt-1">{filteredTransactions.filter(t => t.type === "income").length} transactions</p>
                     </div>
 
                     <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
                         <p className="text-[11px] text-gray-500 mb-1">Total Expenses</p>
                         <p className="text-xl font-bold text-pink-400">₹{totalExpense.toLocaleString("en-IN")}</p>
-                        <p className="text-[10px] text-gray-500 mt-1">{transactions.filter(t => t.type === "expense").length} transactions</p>
+                        <p className="text-[10px] text-gray-500 mt-1">{filteredTransactions.filter(t => t.type === "expense").length} transactions</p>
                     </div>
 
                     <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
@@ -307,8 +307,8 @@ export default function Reports() {
 
                     <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
                         <p className="text-[11px] text-gray-500 mb-1">📊 Total Transactions</p>
-                        <p className="text-lg font-bold text-purple-400">{transactions.length}</p>
-                        <p className="text-[10px] text-gray-500 mt-1">this month</p>
+                        <p className="text-lg font-bold text-purple-400">{filteredTransactions.length}</p>
+                        <p className="text-[10px] text-gray-500 mt-1">this selected period</p>
                     </div>
 
                     <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
@@ -320,7 +320,7 @@ export default function Reports() {
                 </div>
 
                 {/* Empty state */}
-                {transactions.length === 0 ? (
+                {filteredTransactions.length === 0 ? (
                     <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-12 text-center">
                         <div className="text-5xl mb-3">📊</div>
                         <p className="font-semibold text-gray-300">No data for displaying Reports</p>
