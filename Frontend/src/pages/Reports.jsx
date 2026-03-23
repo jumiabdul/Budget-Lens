@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useSelector } from "react-redux";
-import { getCurrentMonthYear } from "../utils/dateFilter";
+import { getCurrentMonthYear } from "../utils/dateFilter.js";
 
 export default function Reports() {
     const transactions = useSelector((state) => state.transactions);

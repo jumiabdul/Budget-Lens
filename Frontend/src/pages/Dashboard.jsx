@@ -1,11 +1,19 @@
 import { useSelector, useDispatch } from "react-redux";
 import DoughnutChart from "../components/DoughnutChart";
 import { useNavigate } from "react-router-dom";
+import { isCurrentMonth } from "../utils/dateFilter.js";
 
 export default function Dashboard() {
-    const transactions = useSelector((state) => state.transactions);
-    const budgets = useSelector((state) => state.budgets);
+    const allTransactions = useSelector((state) => state.transactions);
+    const allBudgets = useSelector((state) => state.budgets);
     const user = useSelector(state => state.user);
+
+    // Filter to current month only
+    const transactions = allTransactions.filter(t => isCurrentMonth(t.date));
+    const budgets = allBudgets.filter(b => {
+        const { month, year } = getCurrentMonthYear();
+        return b.month === month && b.year === year.toString();
+    });
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
