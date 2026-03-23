@@ -29,7 +29,7 @@ export default function BudgetPlanner() {
             return selectedMonth ? month === selectedMonth : true;
         } else {
             const year = new Date(t.date).getFullYear().toString();
-            return selectedYear ? year === selectedYea : true;
+            return selectedYear ? year === selectedYear : true;
         }
     });
 
