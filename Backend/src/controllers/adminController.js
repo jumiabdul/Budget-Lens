@@ -49,7 +49,7 @@ export const deactivateUser = async (req, res) => {
             return res.status(400).json({ message: "Invalid user ID" });
         }
 
-        if (userId === req.userId.toString()) {
+        if (userId === req.userId) {
             return res.status(400).json({
                 error: 'Invalid action',
                 message: 'You cannot deactivate your own account'
@@ -112,7 +112,7 @@ export const activateUser = async (req, res) => {
             return res.status(400).json({ message: "Invalid user ID" });
         }
 
-        if (userId === req.userId.toString()) {
+        if (userId === req.userId) {
             return res.status(400).json({
                 message: "You cannot modify your own account"
             });
@@ -161,7 +161,7 @@ export const deleteUser = async (req, res) => {
     try {
         const userId = req.params.userId;
 
-        if (userId === req.userId.toString()) {
+        if (userId === req.userId) {
             return res.status(400).json({
                 error: 'Invalid action',
                 message: 'You cannot delete your own account'
