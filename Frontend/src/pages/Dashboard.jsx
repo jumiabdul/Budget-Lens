@@ -152,7 +152,7 @@ export default function Dashboard() {
                                 </div>
                             ) : (
                                 <div className="flex-1 h-72 sm:h-87.5">
-                                    <DoughnutChart />
+                                    <DoughnutChart transactions={transactions} />
                                 </div>
                             )}
                         </div>
