@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux"; 
-import { resetUser } from "../store/slices/userSlice"; 
+import { useDispatch } from "react-redux";
+import { resetUser } from "../store/slices/userSlice";
 import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
@@ -17,7 +17,7 @@ const Card = ({ title, value, color }) => (
 );
 
 const AdminDashboard = () => {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [users, setUsers] = useState([]);
@@ -142,18 +142,22 @@ const AdminDashboard = () => {
         <div className="min-h-screen bg-linear-to-br from-[#0f0c29] via-[#141033] to-[#0b0720] text-gray-200 p-6 space-y-8">
 
             {/* HEADER */}
-            <div className="text-center">
-                <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
-                <p className="text-gray-500 text-sm">Manage users & platform</p>
+            <div className="relative mb-6">
+
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
+                    <p className="text-gray-500 text-sm">Manage users & platform</p>
+                </div>
+                <div className="mt-3 flex justify-center sm:mt-0 sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
+
+                    {/* Logout Button */}
+                    <button
+                        onClick={handleLogout}
+                        className="px-5 py-2 bg-linear-to-r from-purple-600 to-emerald-400 rounded-lg font-semibold shadow-lg hover:scale-105 transition" >
+                        Logout
+                    </button>
+                </div>
             </div>
-            {/* Logout Button */}
-            <button
-                onClick={handleLogout}
-                className="px-5 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 hover:scale-105"
-            >
-                <span className="text-lg">🚪</span>
-                <span>Logout</span>
-            </button>
 
             {/* STATS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
