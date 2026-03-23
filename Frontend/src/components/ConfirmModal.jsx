@@ -31,6 +31,12 @@ export default function ConfirmModal({
         setReason(""); // reset
     };
 
+    const handleClose = () => {
+        setReason("");
+        setError("");
+        onClose();
+    };
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
             <div className="bg-[#1a1333] border border-purple-700/40 rounded-2xl p-6 w-full max-w-sm shadow-2xl text-white text-center space-y-4">
@@ -56,7 +62,7 @@ export default function ConfirmModal({
                         <textarea
                             placeholder="Enter reason for deactivation..."
                             value={reason}
-                            onChange={(e) => setReason(e.target.value)}
+                            onChange={(e) => { setReason(e.target.value); setError(""); }}
                             className="w-full mt-2 p-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400"
                         />
                         {error && (
@@ -70,13 +76,13 @@ export default function ConfirmModal({
                 {/* Buttons */}
                 <div className="flex gap-3 pt-2">
                     <button
-                        onClick={onClose}
+                        onClick={handleClose}
                         disabled={loading}
                         className="flex-1 py-3 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition font-medium">
                         Cancel
                     </button>
                     <button
-                        onClick={onConfirm}
+                        onClick={handleConfirm}
                         disabled={loading}
                         className={`flex-1 py-3 rounded-xl font-semibold hover:scale-105 transition shadow-lg disabled:opacity-50 ${confirmColor === "red"
                             ? "bg-red-500 hover:bg-red-600 text-white"
