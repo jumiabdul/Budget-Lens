@@ -4,7 +4,7 @@ import { deleteTransaction, editTransaction } from "../store/slices/transactionS
 import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
-import { getCurrentMonthYear } from "../utils/dateFilters";
+import { getCurrentMonthYear } from "../utils/dateFilter.js";
 
 const EXPENSE_CATEGORIES = [
     "Food", "Housing", "Savings", "Utilities", "Transport",
