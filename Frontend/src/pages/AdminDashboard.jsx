@@ -193,7 +193,7 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Health */}
-                <div className="bg-white/5 p-6 rounded-2xl border border-purple-900/30 text-center">
+                <div className="bg-white/5 p-6 rounded-2xl border border-purple-900/30 flex justify-center items-center">
                     {(() => {
                         const ratio = totalUsers ? Math.round((activeUsers / totalUsers) * 100) : 0;
 
