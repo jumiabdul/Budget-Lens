@@ -361,9 +361,9 @@ const AdminDashboard = () => {
                     if (!selectedUser) return;
 
                     if (actionType === "deactivate") {
-                        handleDeactivate(selectedUser._id, reason);
+                        await handleDeactivate(selectedUser._id, reason);
                     } else {
-                        handleDelete(selectedUser._id);
+                        await handleDelete(selectedUser._id);
                     }
                     closeModal();
                 }}
