@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import DoughnutChart from "../components/DoughnutChart";
 import { useNavigate } from "react-router-dom";
-import { isCurrentMonth } from "../utils/dateFilter.js";
+import { isCurrentMonth, getCurrentMonthYear } from "../utils/dateFilter.js";
 
 export default function Dashboard() {
     const allTransactions = useSelector((state) => state.transactions);
