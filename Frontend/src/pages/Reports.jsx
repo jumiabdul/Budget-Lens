@@ -6,14 +6,17 @@ import { useRef, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useSelector } from "react-redux";
+import { getCurrentMonthYear } from "../utils/dateFilter";
 
 export default function Reports() {
     const transactions = useSelector((state) => state.transactions);
     const budgets = useSelector((state) => state.budgets);
 
+    const { month: defaultMonth, year: defaultYear } = getCurrentMonthYear();
+
     // Filter states
-    const [selectedMonth, setSelectedMonth] = useState("");
-    const [selectedYear, setSelectedYear] = useState("");
+    const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
+    const [selectedYear, setSelectedYear] = useState(defaultYear.toString());
 
     //refs for chart
     const doughnutRef = useRef(null);
@@ -22,9 +25,8 @@ export default function Reports() {
 
     // Get current date info
     const currentDate = new Date();
-    const currentMonth = currentDate.toLocaleString("default", { month: "long" });
     const currentMonthIndex = currentDate.getMonth(); // 0-11
-    const currentYear = currentDate.getFullYear();
+    const currentYearValue = currentDate.getFullYear();
 
     // All months
     const allMonths = [
@@ -36,10 +38,10 @@ export default function Reports() {
     const getAvailableMonths = () => {
         if (!selectedYear) return allMonths;
 
-        if (parseInt(selectedYear) === currentYear) {
+        if (parseInt(selectedYear) === currentYearValue) {
             // For current year, only show months up to current month
             return allMonths.slice(0, currentMonthIndex + 1);
-        } else if (parseInt(selectedYear) < currentYear) {
+        } else if (parseInt(selectedYear) < currentYearValue) {
             // For past years, show all months
             return allMonths;
         } else {
@@ -52,7 +54,7 @@ export default function Reports() {
     const getAvailableYears = () => {
         const years = [...new Set(transactions.map(t => new Date(t.date).getFullYear()))];
         // Filter to only include current year and past years
-        return years.filter(y => y <= currentYear).sort((a, b) => b - a);
+        return years.filter(y => y <= currentYearValue).sort((a, b) => b - a);
     };
 
     // Filter transactions based on selected month/year
