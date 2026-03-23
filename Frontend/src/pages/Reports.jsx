@@ -2,7 +2,7 @@ import BarChart from "../components/BarChart";
 import DoughnutChart from "../components/DoughnutChart";
 import LineChart from "../components/LineChart";
 import { CSVLink } from "react-csv";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useSelector } from "react-redux";
@@ -11,10 +11,61 @@ export default function Reports() {
     const transactions = useSelector((state) => state.transactions);
     const budgets = useSelector((state) => state.budgets);
 
+    // Filter states
+    const [selectedMonth, setSelectedMonth] = useState("");
+    const [selectedYear, setSelectedYear] = useState("");
+
     //refs for chart
     const doughnutRef = useRef(null);
     const lineRef = useRef(null);
     const barRef = useRef(null);
+
+    // Get current date info
+    const currentDate = new Date();
+    const currentMonth = currentDate.toLocaleString("default", { month: "long" });
+    const currentMonthIndex = currentDate.getMonth(); // 0-11
+    const currentYear = currentDate.getFullYear();
+
+    // All months
+    const allMonths = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    // Get available months based on selected year
+    const getAvailableMonths = () => {
+        if (!selectedYear) return allMonths;
+
+        if (parseInt(selectedYear) === currentYear) {
+            // For current year, only show months up to current month
+            return allMonths.slice(0, currentMonthIndex + 1);
+        } else if (parseInt(selectedYear) < currentYear) {
+            // For past years, show all months
+            return allMonths;
+        } else {
+            // For future years, show no months (shouldn't happen with year filter)
+            return [];
+        }
+    };
+
+    // Get available years (only past and current years from transactions)
+    const getAvailableYears = () => {
+        const years = [...new Set(transactions.map(t => new Date(t.date).getFullYear()))];
+        // Filter to only include current year and past years
+        return years.filter(y => y <= currentYear).sort((a, b) => b - a);
+    };
+
+    // Filter transactions based on selected month/year
+    const filteredTransactions = transactions.filter((t) => {
+        const transactionDate = new Date(t.date);
+        const transactionMonth = transactionDate.toLocaleString("default", { month: "long" });
+        const transactionYear = transactionDate.getFullYear();
+
+        const matchMonth = selectedMonth ? transactionMonth === selectedMonth : true;
+        const matchYear = selectedYear ? transactionYear === parseInt(selectedYear) : true;
+
+        return matchMonth && matchYear;
+    });
 
     //totals
     const totalIncome = transactions
@@ -48,6 +99,14 @@ export default function Reports() {
     const exportPDF = () => {
         const doc = new jsPDF();
 
+        const periodText = selectedMonth && selectedYear
+            ? `${selectedMonth} ${selectedYear}`
+            : selectedYear
+                ? selectedYear
+                : selectedMonth
+                    ? selectedMonth
+                    : "All Time";
+
         //title
         doc.setFontSize(22)
         doc.setTextColor(233, 30, 99);
@@ -55,7 +114,7 @@ export default function Reports() {
 
         doc.setFontSize(14)
         doc.setTextColor(63, 81, 181);
-        doc.text("Monthly Financial Summary", 14, 30)
+        doc.text(`Financial Summary - ${periodText}`, 14, 30)
 
         //summary
         doc.setFontSize(12)
@@ -144,6 +203,60 @@ export default function Reports() {
                             className="px-5 py-2 rounded-lg font-medium bg-linear-to-r from-emerald-400 to-teal-500 text-black hover:scale-105 transition-all duration-300 shadow-lg shadow-emerald-500/30">
                             Export PDF
                         </button>
+                    </div>
+                </div>
+
+                {/* Filter Card */}
+                <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-5 shadow-xl">
+                    <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+
+                        {/* Year Filter */}
+                        <select
+                            value={selectedYear}
+                            onChange={(e) => {
+                                setSelectedYear(e.target.value);
+                                setSelectedMonth(""); // Reset month when year changes
+                            }}
+                            className="w-full sm:w-auto bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 text-sm focus:ring-2 focus:ring-purple-500"
+                        >
+                            <option value="">All Years</option>
+                            {getAvailableYears().map((y) => (
+                                <option key={y} value={y}>{y}</option>
+                            ))}
+                        </select>
+
+                        {/* Month Filter */}
+                        <select
+                            value={selectedMonth}
+                            onChange={(e) => setSelectedMonth(e.target.value)}
+                            disabled={!selectedYear}
+                            className="w-full sm:w-auto bg-gray-900 border border-purple-700 rounded-lg px-4 py-2 text-gray-200 text-sm focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <option value="">All Months</option>
+                            {getAvailableMonths().map((m) => (
+                                <option key={m} value={m}>{m}</option>
+                            ))}
+                        </select>
+
+                        {/* Clear Filter */}
+                        {(selectedMonth || selectedYear) && (
+                            <button
+                                onClick={() => {
+                                    setSelectedMonth("");
+                                    setSelectedYear("");
+                                }}
+                                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-sm font-medium transition"
+                            >
+                                Clear Filters
+                            </button>
+                        )}
+
+                        {/* Active Filter Indicator */}
+                        {(selectedMonth || selectedYear) && (
+                            <span className="text-xs text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
+                                Filtered: {selectedMonth || "All"} {selectedYear || "All"}
+                            </span>
+                        )}
                     </div>
                 </div>
 

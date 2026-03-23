@@ -118,6 +118,7 @@ export default function Transactions() {
         setSearchCategory("");
         setFilterMonth("");
         setFilterYear("");
+        setFilterType("");  
     }
 
     const filteredTransactions = transactions.slice().reverse().filter((t) => {
