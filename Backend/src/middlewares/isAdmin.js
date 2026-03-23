@@ -4,7 +4,7 @@ import User from '../models/userModel.js';
 
 export const isAdmin = async (req, res, next) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
 
         const user = await User.findById(userId);
 
