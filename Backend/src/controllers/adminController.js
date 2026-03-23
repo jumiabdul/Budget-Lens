@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import User from '../models/userModel.js';
 import Transaction from '../models/transactionModel.js';
 import Budget from '../models/budgetModel.js';
@@ -208,9 +209,6 @@ export const getStatistics = async (req, res) => {
         const inactiveUsers = await User.countDocuments({ isActive: false });
         const adminCount = await User.countDocuments({ role: 'admin' });
 
-        const totalTransactions = await Transaction.countDocuments();
-        const totalBudgets = await Budget.countDocuments();
-
         const statistics = {
             users: {
                 total: totalUsers,
@@ -218,14 +216,6 @@ export const getStatistics = async (req, res) => {
                 inactive: inactiveUsers,
                 admins: adminCount
             },
-            data: {
-                totalTransactions: totalTransactions,
-                totalBudgets: totalBudgets
-            },
-            platform: {
-                platformHealth: 'Good',
-                lastUpdated: new Date()
-            }
         };
 
         res.json({
@@ -256,20 +246,9 @@ export const getUserDetails = async (req, res) => {
             });
         }
 
-        const transactionCount = await Transaction.countDocuments({ userId });
-        const budgetCount = await Budget.countDocuments({ userId });
-
         res.json({
             success: true,
-            data: {
-                user: {
-                    ...user.toObject(),
-                    dataCount: {
-                        transactions: transactionCount,
-                        budgets: budgetCount
-                    }
-                }
-            },
+            data: { user },
             message: 'User details retrieved successfully'
         });
 
