@@ -71,6 +71,14 @@ export const deactivateUser = async (req, res) => {
             });
         }
 
+        //  Can't deactivate any admin
+        if (user.role === 'admin') {
+            return res.status(403).json({
+                error: 'Forbidden',
+                message: 'Cannot deactivate admin accounts'
+            });
+        }
+
         user.isActive = false;
         user.deactivatedAt = new Date();
         user.deactivationReason = reason;
@@ -126,6 +134,14 @@ export const activateUser = async (req, res) => {
             });
         }
 
+        //  Can't modify any admin
+        if (user.role === 'admin') {
+            return res.status(403).json({
+                error: 'Forbidden',
+                message: 'Cannot modify admin accounts'
+            });
+        }
+
         user.isActive = true;
         user.deactivatedAt = null;
         user.deactivationReason = null;
@@ -173,6 +189,14 @@ export const deleteUser = async (req, res) => {
             return res.status(404).json({
                 error: 'Not found',
                 message: 'User not found'
+            });
+        }
+
+        // Can't delete any admin
+        if (user.role === 'admin') {
+            return res.status(403).json({
+                error: 'Forbidden',
+                message: 'Cannot delete admin accounts'
             });
         }
 
