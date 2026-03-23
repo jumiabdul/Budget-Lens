@@ -181,13 +181,13 @@ const AdminDashboard = () => {
                         {users.map((user) => (
                             <tr key={user._id} className="border-t border-white/10 hover:bg-white/5 transition">
 
-                                <td className="p-3">
+                                <td className="p-3 align-middle">
                                     {user.name}
                                 </td>
 
-                                <td>{user.email}</td>
+                                <td className="align-middle">{user.email}</td>
 
-                                <td>
+                                <td className="align-middle">
                                     <span className={`px-2 py-1 rounded text-xs ${user.isActive
                                         ? "bg-green-500/20 text-green-400"
                                         : "bg-red-500/20 text-red-400"
@@ -203,9 +203,9 @@ const AdminDashboard = () => {
                                     )}
                                 </td>
 
-                                <td>{user.role}</td>
+                                <td className="align-middle">{user.role}</td>
 
-                                <td className="space-x-2">
+                                <td className="space-x-2 align-middle">
                                     {user.isActive ? (
                                         <button
                                             onClick={() => openModal(user, "deactivate")}
