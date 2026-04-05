@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux"
 import { resetTransactions } from "../store/slices/transactionSlice"
 import { resetBudgets } from "../store/slices/budgetSlice"
+import { resetGoals } from "../store/slices/goalSlice";
 import ConfirmModal from "../components/ConfirmModal";
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
@@ -16,9 +17,12 @@ export default function Settings() {
         try {
             await axiosInstance.delete("/api/transactions/delete-all");
             await axiosInstance.delete("/api/budgets/delete-all");
+            await axiosInstance.delete("/api/goals/delete-all");
 
             dispatch(resetTransactions());
             dispatch(resetBudgets());
+            dispatch(resetGoals());
+
             toast.success("All data reset done!");
             setResetModal(false);
 

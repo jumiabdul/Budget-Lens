@@ -7,6 +7,7 @@ export default function Dashboard() {
     const allTransactions = useSelector((state) => state.transactions);
     const allBudgets = useSelector((state) => state.budgets);
     const user = useSelector(state => state.user);
+    const goals = useSelector(state => state.goals);
 
     // Filter to current month only
     const transactions = allTransactions.filter(t => isCurrentMonth(t.date));
@@ -18,7 +19,7 @@ export default function Dashboard() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const isNewUser = transactions.length === 0;
+    const isNewUser = allTransactions.length === 0;
 
     const income = transactions
         .filter((t) => t.type === "income")
@@ -66,6 +67,11 @@ export default function Dashboard() {
     const avgDaily = expenseOnly.length > 0
         ? Math.round(expense / Math.max(new Set(expenseOnly.map(t => t.date?.split("T")[0])).size, 1))
         : 0;
+
+    // Get top 2 active goals
+    const activeGoals = goals
+        .filter(g => g.savedAmount < g.targetAmount)
+        .slice(0, 2);
 
     return (
         <div className="min-h-screen bg-linear-to-br from-[#0f0c29] via-[#141033] to-[#0b0720] text-gray-200">
@@ -184,6 +190,71 @@ export default function Dashboard() {
                                 </p>
                             </div>
                         </div>
+
+                        {/* Goals Widget */}
+                        {activeGoals.length > 0 && !isNewUser && (
+                            <div className="bg-white/5 backdrop-blur-xl border border-purple-900/30 rounded-2xl p-5 shadow-xl">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h4 className="text-sm font-semibold text-gray-200">🎯 Active Goals</h4>
+                                    <button onClick={() => navigate("/goals")}
+                                        className="text-xs px-3 py-1 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 transition">
+                                        View All
+                                    </button>
+                                </div>
+
+                                {/* Two goals side by side */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    {activeGoals.map(goal => {
+                                        const pct = goal.targetAmount > 0
+                                            ? Math.min(Math.round((goal.savedAmount / goal.targetAmount) * 100), 100)
+                                            : 0;
+                                        return (
+                                            <div key={goal._id}
+                                                className="bg-white/5 border border-purple-900/20 rounded-xl p-3 space-y-2">
+
+                                                {/* Icon + Title */}
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xl">{goal.icon}</span>
+                                                    <span className="text-xs font-semibold text-gray-200 truncate">
+                                                        {goal.title}
+                                                    </span>
+                                                </div>
+
+                                                {/* Progress bar */}
+                                                <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                                                    <div className={`h-full rounded-full transition-all duration-500 ${pct >= 80 ? "bg-yellow-400" : "bg-purple-500"
+                                                        }`} style={{ width: `${pct}%` }} />
+                                                </div>
+
+                                                {/* Amount + % */}
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-[10px] text-gray-500">
+                                                        ₹{goal.savedAmount.toLocaleString("en-IN")}
+                                                    </span>
+                                                    <span className={`text-[10px] font-semibold ${pct >= 80 ? "text-yellow-400" : "text-purple-400"
+                                                        }`}>
+                                                        {pct}%
+                                                    </span>
+                                                </div>
+
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Show CTA if no goals */}
+                        {activeGoals.length === 0 && !isNewUser && (
+                            <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4 text-center">
+                                <p className="text-xs text-gray-500 mb-2">No active goals</p>
+                                <button onClick={() => navigate("/goals")}
+                                    className="text-xs px-3 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/20 hover:bg-purple-500/30 transition">
+                                    + Create Goal
+                                </button>
+                            </div>
+                        )}
+
                     </div>
 
                     {/*Grid Right Section */}

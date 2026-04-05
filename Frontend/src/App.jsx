@@ -27,6 +27,8 @@ import NotFound from './pages/NotFound'
 import PublicRoute from './components/PublicRoute'
 import { setUser } from './store/slices/userSlice'
 import AdminDashboard from './pages/AdminDashboard'
+import Goals from './pages/Goals'
+import { setGoals } from './store/slices/goalSlice'
 
 function GlobalComponent({ children }) {
   return (
@@ -101,6 +103,12 @@ const router = createBrowserRouter([
     </ProtectedRoutes>,
   },
   {
+    path: "/goals",
+    element: <ProtectedRoutes>
+      <GlobalComponent><Goals /></GlobalComponent>
+    </ProtectedRoutes>,
+  },
+  {
     path: "/profile",
     element: <ProtectedRoutes>
       <GlobalComponent><Profile /></GlobalComponent>
@@ -134,14 +142,16 @@ function App() {
     const loadUserData = async () => {
 
       try {
-        const [txRes, budgetRes, userRes] = await Promise.all([
+        const [txRes, budgetRes, userRes, goalRes] = await Promise.all([
           axiosInstance.get("/api/transactions/get-all-transactions"),
           axiosInstance.get("/api/budgets/get-all-budgets"),
           axiosInstance.get("/api/users/get-user"),
+          axiosInstance.get("/api/goals/get-all-goals"),
         ]);
 
         dispatch(setTransactions(txRes.data.data));
         dispatch(setBudgets(budgetRes.data.data));
+        dispatch(setGoals(goalRes.data.data));
         dispatch(setUser(userRes.data.user));
 
       } catch (error) {

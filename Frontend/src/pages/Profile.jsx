@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { resetTransactions } from "../store/slices/transactionSlice";
 import { resetBudgets } from "../store/slices/budgetSlice";
 import { resetUser } from "../store/slices/userSlice";
+import { resetGoals } from "../store/slices/goalSlice";
 import toast from "react-hot-toast"
 
 export default function Profile() {
@@ -57,9 +58,10 @@ export default function Profile() {
         } catch (error) {
             console.error("Logout error:", error);
         } finally {
-        
+
             dispatch(resetTransactions());
             dispatch(resetBudgets());
+            dispatch(resetGoals());
             dispatch(resetUser());
             toast.success("Logged out successfully!");
             navigate("/");

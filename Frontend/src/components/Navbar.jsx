@@ -44,6 +44,7 @@ const Navbar = () => {
                 <Link to="/transactions" className={linkClass("/transactions")}>Transactions</Link>
                 <Link to="/reports" className={linkClass("/reports")}>Reports</Link>
                 <Link to="/budget-planner" className={linkClass("/budget-planner")}>Budget</Link>
+                <Link to="/goals" className={linkClass("/goals")}>Goals</Link>
                 <Link to="/profile" className={`w-10 h-10 rounded-full text-sm bg-linear-to-r from-purple-500 to-emerald-400 flex items-center justify-center font-bold text-black shadow-lg hover:scale-105 transition duration-300 cursor-pointer 
                      ${isActive("/profile")
                         ? "ring-2 ring-[#2dfbd4] ring-offset-2 ring-offset-[#0b0720]"
@@ -60,6 +61,7 @@ const Navbar = () => {
                     <Link to="/transactions" onClick={() => setIsOpen(false)} className={mobileLinkClass("/transactions")}>Transactions</Link>
                     <Link to="/reports" onClick={() => setIsOpen(false)} className={mobileLinkClass("/reports")}>Reports</Link>
                     <Link to="/budget-planner" onClick={() => setIsOpen(false)} className={mobileLinkClass("/budget-planner")}>Budget</Link>
+                    <Link to="/goals" onClick={() => setIsOpen(false)} className={mobileLinkClass("/goals")}>Goals</Link>
                     <Link to="/profile" onClick={() => setIsOpen(false)} className={`w-10 h-10 text-sm font-bold rounded-full bg-linear-to-r from-purple-500 to-emerald-400 flex items-center justify-center text-black shadow-lg hover:scale-105 transition duration-300 cursor-pointer
                                              ${isActive("/profile")
                             ? "ring-2 ring-[#2dfbd4] ring-offset-2 ring-offset-[#0b0720]"

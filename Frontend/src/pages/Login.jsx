@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
 import { setTransactions } from "../store/slices/transactionSlice";
 import { setBudgets } from "../store/slices/budgetSlice";
+import { setGoals } from "../store/slices/goalSlice.js";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -49,13 +50,15 @@ const Login = () => {
                 const user = response.data.user;
                 dispatch(setUser(user));
 
-                const [txRes, budgetRes] = await Promise.all([
+                const [txRes, budgetRes, goalRes] = await Promise.all([
                     axiosInstance.get("/api/transactions/get-all-transactions"),
                     axiosInstance.get("/api/budgets/get-all-budgets"),
+                    axiosInstance.get("/api/goals/get-all-goals"),
                 ]);
 
                 dispatch(setTransactions(txRes.data.data));
                 dispatch(setBudgets(budgetRes.data.data));
+                dispatch(setGoals(goalRes.data.data));
 
                 //  Small delay to ensure Redux updates before navigation
                 setTimeout(() => {
