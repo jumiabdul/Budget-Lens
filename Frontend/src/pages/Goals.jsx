@@ -210,7 +210,7 @@ export default function Goals() {
 
     return (
         <div className="min-h-screen bg-linear-to-br from-[#0f0c29] via-[#1a1333] to-[#0f0c29] text-gray-200 px-4 sm:px-8 py-8">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="space-y-4">
 
                 {/* ── Header ── */}
                 <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4 mb-2">
@@ -222,7 +222,7 @@ export default function Goals() {
                     </div>
                     <div className="flex justify-center sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
                         <button onClick={() => setAddModal(true)}
-                            className="px-5 py-2 bg-linear-to-r from-purple-600 to-emerald-400 rounded-xl font-semibold shadow-lg hover:scale-105 transition text-sm text-black whitespace-nowrap">
+                            className="px-5 py-2 bg-linear-to-r from-purple-600 to-emerald-400 rounded-xl font-semibold shadow-lg hover:scale-105 transition ">
                             + New Goal
                         </button>
                     </div>
