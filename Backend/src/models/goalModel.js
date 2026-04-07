@@ -25,7 +25,7 @@ const goalSchema = new Schema({
         type: String,
         default: "General"
     },
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true

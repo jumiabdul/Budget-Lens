@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authenticateToken } from "../middlewares/authMiddleware.js";
 import { validate } from "../middlewares/validate.js";
-import { goalSchema } from "../validators/goalValidator.js";
+import { addMoneySchema, goalSchema } from "../validators/goalValidator.js";
 import { getAllGoals, addGoal, editGoal, deleteGoal, addMoneyToGoal, deleteAllGoals } from "../controllers/goalController.js";
 
 const router = Router();
