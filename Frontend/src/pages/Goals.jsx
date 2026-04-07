@@ -100,7 +100,7 @@ export default function Goals() {
         }
         try {
             setMoneyLoading(true);
-            const res = await axiosInstance.put(`/goals/add-money/${moneyGoal._id}`, { 
+            const res = await axiosInstance.put(`/goals/add-money/${moneyGoal._id}`, {
                 amount: Number(moneyAmount)
             });
             dispatch(editGoal(res.data.data));
@@ -213,16 +213,17 @@ export default function Goals() {
             <div className="space-y-4">
 
                 {/* ── Header ── */}
-                <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4 mb-2">
+                <div className="relative mb-6">
                     <div className="text-center">
-                        <h1 className="text-3xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                        <h1 className="text-3xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent tracking-wide">
                             Financial Goals
                         </h1>
-                        <p className="text-gray-400 text-sm mt-1">Track and achieve your financial targets</p>
+                        <p className="text-gray-400 text-center text-sm ">Track and achieve your financial targets</p>
                     </div>
-                    <div className="flex justify-center sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
-                        <button onClick={() => setAddModal(true)}
-                            className="px-5 py-2 bg-linear-to-r from-purple-600 to-emerald-400 rounded-xl font-semibold shadow-lg hover:scale-105 transition ">
+                    <div className="mt-3 flex justify-center sm:mt-0 sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
+                        <button
+                            onClick={() => setAddModal(true)}
+                            className="px-5 py-2 bg-linear-to-r from-purple-600 to-emerald-400 rounded-lg font-semibold shadow-lg hover:scale-105 transition ">
                             + New Goal
                         </button>
                     </div>
@@ -255,7 +256,7 @@ export default function Goals() {
                         <h3 className="text-lg font-bold text-gray-300 mb-2">No goals yet</h3>
                         <p className="text-gray-500 text-sm mb-6">Set your first financial goal and start saving!</p>
                         <button onClick={() => setAddModal(true)}
-                            className="px-6 py-2.5 bg-linear-to-r from-purple-600 to-emerald-400 rounded-xl font-semibold text-sm hover:scale-105 transition text-black">
+                            className="px-6 py-2.5 bg-linear-to-r from-purple-600 to-emerald-400 rounded-xl font-semibold text-sm hover:scale-105 transition ">
                             + Create First Goal
                         </button>
                     </div>
