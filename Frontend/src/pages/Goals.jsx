@@ -129,7 +129,7 @@ export default function Goals() {
         }
         try {
             setAddLoading(true);
-            const res = await axiosInstance.post("/goals/add-goal", {
+            const res = await axiosInstance.post("/api/goals/add-goal", {
                 ...newGoal,
                 targetAmount: Number(newGoal.targetAmount),
                 savedAmount: Number(newGoal.savedAmount) || 0,
@@ -151,7 +151,7 @@ export default function Goals() {
         }
         try {
             setEditLoading(true);
-            const res = await axiosInstance.put(`/goals/edit-goal/${editData._id}`, {
+            const res = await axiosInstance.put(`/api/goals/edit-goal/${editData._id}`, {
                 ...editData,
                 targetAmount: Number(editData.targetAmount),
                 savedAmount: Number(editData.savedAmount),
@@ -170,7 +170,7 @@ export default function Goals() {
     const handleDelete = async () => {
         try {
             setDeleteLoading(true);
-            await axiosInstance.delete(`/goals/delete-goal/${deleteId}`); // ✅
+            await axiosInstance.delete(`/api/goals/delete-goal/${deleteId}`); // ✅
             dispatch(deleteGoal(deleteId));
             toast.success("Goal deleted!");
             setDeleteModal(false);
@@ -188,7 +188,7 @@ export default function Goals() {
         }
         try {
             setMoneyLoading(true);
-            const res = await axiosInstance.put(`/goals/add-money/${moneyGoal._id}`, {
+            const res = await axiosInstance.put(`/api/goals/add-money/${moneyGoal._id}`, {
                 amount: Number(moneyAmount)
             });
             dispatch(editGoal(res.data.data));
