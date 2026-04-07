@@ -33,7 +33,7 @@ export default function Goals() {
     const [moneyAmount, setMoneyAmount] = useState("");
     const [moneyLoading, setMoneyLoading] = useState(false);
 
-    // ── Handlers ──────────────────────────────────────────────
+    // Handlers
 
     const handleAdd = async () => {
         if (!newGoal.title || !newGoal.targetAmount) {
@@ -115,13 +115,13 @@ export default function Goals() {
         }
     };
 
-    // ── Stats ──────────────────────────────────────────────────
+    // Stats
     const totalGoals = goals.length;
     const completedGoals = goals.filter(g => g.savedAmount >= g.targetAmount).length;
     const totalTarget = goals.reduce((s, g) => s + g.targetAmount, 0);
     const totalSaved = goals.reduce((s, g) => s + g.savedAmount, 0);
 
-    // ── Modal Form ─────────────────────────────────────────────
+    // Modal Form
     const GoalForm = ({ data, setData, onSave, onClose, saveLoading, title }) => (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
             <div className="bg-[#1a1333] border border-purple-700/40 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl space-y-4 text-white max-h-[90vh] overflow-y-auto">
@@ -212,7 +212,7 @@ export default function Goals() {
         <div className="min-h-screen bg-linear-to-br from-[#0f0c29] via-[#1a1333] to-[#0f0c29] text-gray-200 px-4 sm:px-8 py-8">
             <div className="space-y-4">
 
-                {/* ── Header ── */}
+                {/* Header */}
                 <div className="relative mb-6">
                     <div className="text-center">
                         <h1 className="text-3xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent tracking-wide">
@@ -222,14 +222,17 @@ export default function Goals() {
                     </div>
                     <div className="mt-3 flex justify-center sm:mt-0 sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
                         <button
-                            onClick={() => setAddModal(true)}
+                            onClick={() => {
+                                setNewGoal({ title: "", targetAmount: "", savedAmount: "", deadline: "", category: "General", icon: "🎯" });
+                                setAddModal(true)
+                            }}
                             className="px-5 py-2 bg-linear-to-r from-purple-600 to-emerald-400 rounded-lg font-semibold shadow-lg hover:scale-105 transition ">
                             + New Goal
                         </button>
                     </div>
                 </div>
 
-                {/* ── Stats ── */}
+                {/* Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-4">
                         <p className="text-[11px] text-gray-500 mb-1">Total Goals</p>
@@ -249,13 +252,16 @@ export default function Goals() {
                     </div>
                 </div>
 
-                {/* ── Empty State ── */}
+                {/* Empty State */}
                 {goals.length === 0 ? (
                     <div className="bg-white/5 border border-purple-900/30 rounded-2xl p-16 text-center">
                         <div className="text-5xl mb-4">🎯</div>
                         <h3 className="text-lg font-bold text-gray-300 mb-2">No goals yet</h3>
                         <p className="text-gray-500 text-sm mb-6">Set your first financial goal and start saving!</p>
-                        <button onClick={() => setAddModal(true)}
+                        <button onClick={() => {
+                            setNewGoal({ title: "", targetAmount: "", savedAmount: "", deadline: "", category: "General", icon: "🎯" });
+                            setAddModal(true)
+                        }}
                             className="px-6 py-2.5 bg-linear-to-r from-purple-600 to-emerald-400 rounded-xl font-semibold text-sm hover:scale-105 transition ">
                             + Create First Goal
                         </button>
@@ -356,7 +362,7 @@ export default function Goals() {
                 )}
             </div>
 
-            {/* ── Add Modal ── */}
+            {/* Add Modal */}
             {addModal && (
                 <GoalForm
                     data={newGoal}
@@ -368,7 +374,7 @@ export default function Goals() {
                 />
             )}
 
-            {/* ── Edit Modal ── */}
+            {/* Edit Modal */}
             {editModal && editData && (
                 <GoalForm
                     data={editData}
@@ -380,7 +386,7 @@ export default function Goals() {
                 />
             )}
 
-            {/* ── Add Money Modal ── */}
+            {/* Add Money Modal */}
             {moneyModal && moneyGoal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
                     <div className="bg-[#1a1333] border border-purple-700/40 rounded-2xl p-6 w-full max-w-sm mx-4 shadow-2xl space-y-4 text-white">
@@ -432,7 +438,7 @@ export default function Goals() {
                 </div>
             )}
 
-            {/* ── Delete Modal ── */}
+            {/* Delete Modal */}
             <ConfirmModal
                 isOpen={deleteModal}
                 onClose={() => { setDeleteModal(false); setDeleteId(null); }}
