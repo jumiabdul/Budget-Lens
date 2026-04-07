@@ -8,6 +8,94 @@ import ConfirmModal from "../components/ConfirmModal";
 const ICONS = ["🎯", "🏠", "🚗", "✈️", "💍", "📱", "💻", "🎓", "💰", "🏋️", "🎸", "🌍"];
 const CATEGORIES = ["General", "Housing", "Transport", "Travel", "Education", "Tech", "Health", "Emergency", "Investment", "Other"];
 
+// Modal Form
+const GoalForm = ({ data, setData, onSave, onClose, saveLoading, title }) => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+        <div className="bg-[#1a1333] border border-purple-700/40 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl space-y-4 text-white max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                    {title}
+                </h2>
+                <button onClick={onClose} className="text-gray-400 hover:text-white text-xl">✕</button>
+            </div>
+
+            {/* Icon picker */}
+            <div>
+                <label className="text-sm text-gray-400 block mb-2">Icon</label>
+                <div className="flex flex-wrap gap-2">
+                    {ICONS.map(icon => (
+                        <button key={icon} type="button" onClick={() => setData(p => ({ ...p, icon }))}
+                            className={`w-10 h-10 rounded-xl text-xl flex items-center justify-center border transition ${data.icon === icon
+                                ? "bg-purple-500/30 border-purple-500/50"
+                                : "bg-white/5 border-white/10 hover:bg-white/10"
+                                }`}>
+                            {icon}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Title */}
+            <div>
+                <label className="text-sm text-gray-400 block mb-1">Goal Title</label>
+                <input type="text" value={data.title} onChange={e => setData({ ...data, title: e.target.value })}
+                    placeholder="e.g. Buy a Car"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
+            </div>
+
+            {/* Target Amount */}
+            <div>
+                <label className="text-sm text-gray-400 block mb-1">Target Amount</label>
+                <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+                    <input type="number" value={data.targetAmount} onChange={e => setData({ ...data, targetAmount: e.target.value })}
+                        placeholder="0.00"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-8 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
+                </div>
+            </div>
+
+            {/* Saved Amount */}
+            <div>
+                <label className="text-sm text-gray-400 block mb-1">Already Saved (Optional)</label>
+                <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+                    <input type="number" value={data.savedAmount} onChange={e => setData({ ...data, savedAmount: e.target.value })}
+                        placeholder="0.00"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-8 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
+                </div>
+            </div>
+
+            {/* Deadline */}
+            <div>
+                <label className="text-sm text-gray-400 block mb-1">Target Date (Optional)</label>
+                <input type="date" value={data.deadline ? data.deadline.split("T")[0] : ""} onChange={e => setData({ ...data, deadline: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500" />
+            </div>
+
+            {/* Category */}
+            <div>
+                <label className="text-sm text-gray-400 block mb-1">Category</label>
+                <select value={data.category} onChange={e => setData({ ...data, category: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500">
+                    {CATEGORIES.map(c => <option key={c} value={c} className="bg-gray-900">{c}</option>)}
+                </select>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+                <button onClick={onClose}
+                    className="flex-1 py-3 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition font-medium">
+                    Cancel
+                </button>
+                <button onClick={onSave} disabled={saveLoading}
+                    className="flex-1 py-3 rounded-xl bg-linear-to-r from-purple-600 to-emerald-400 text-black font-semibold hover:scale-105 transition disabled:opacity-50">
+                    {saveLoading ? "Saving..." : "Save Goal 🎯"}
+                </button>
+            </div>
+        </div>
+    </div>
+);
+
+
 export default function Goals() {
     const goals = useSelector(state => state.goals);
     const dispatch = useDispatch();
@@ -121,92 +209,6 @@ export default function Goals() {
     const totalTarget = goals.reduce((s, g) => s + g.targetAmount, 0);
     const totalSaved = goals.reduce((s, g) => s + g.savedAmount, 0);
 
-    // Modal Form
-    const GoalForm = ({ data, setData, onSave, onClose, saveLoading, title }) => (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-            <div className="bg-[#1a1333] border border-purple-700/40 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl space-y-4 text-white max-h-[90vh] overflow-y-auto">
-                <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-bold bg-linear-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
-                        {title}
-                    </h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white text-xl">✕</button>
-                </div>
-
-                {/* Icon picker */}
-                <div>
-                    <label className="text-sm text-gray-400 block mb-2">Icon</label>
-                    <div className="flex flex-wrap gap-2">
-                        {ICONS.map(icon => (
-                            <button key={icon} type="button" onClick={() => setData(p => ({ ...p, icon }))}
-                                className={`w-10 h-10 rounded-xl text-xl flex items-center justify-center border transition ${data.icon === icon
-                                    ? "bg-purple-500/30 border-purple-500/50"
-                                    : "bg-white/5 border-white/10 hover:bg-white/10"
-                                    }`}>
-                                {icon}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Title */}
-                <div>
-                    <label className="text-sm text-gray-400 block mb-1">Goal Title</label>
-                    <input type="text" value={data.title} onChange={e => setData({ ...data, title: e.target.value })}
-                        placeholder="e.g. Buy a Car"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
-                </div>
-
-                {/* Target Amount */}
-                <div>
-                    <label className="text-sm text-gray-400 block mb-1">Target Amount</label>
-                    <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
-                        <input type="number" value={data.targetAmount} onChange={e => setData({ ...data, targetAmount: e.target.value })}
-                            placeholder="0.00"
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-8 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
-                    </div>
-                </div>
-
-                {/* Saved Amount */}
-                <div>
-                    <label className="text-sm text-gray-400 block mb-1">Already Saved (Optional)</label>
-                    <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
-                        <input type="number" value={data.savedAmount} onChange={e => setData({ ...data, savedAmount: e.target.value })}
-                            placeholder="0.00"
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-8 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
-                    </div>
-                </div>
-
-                {/* Deadline */}
-                <div>
-                    <label className="text-sm text-gray-400 block mb-1">Target Date (Optional)</label>
-                    <input type="date" value={data.deadline ? data.deadline.split("T")[0] : ""} onChange={e => setData({ ...data, deadline: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500" />
-                </div>
-
-                {/* Category */}
-                <div>
-                    <label className="text-sm text-gray-400 block mb-1">Category</label>
-                    <select value={data.category} onChange={e => setData({ ...data, category: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500">
-                        {CATEGORIES.map(c => <option key={c} value={c} className="bg-gray-900">{c}</option>)}
-                    </select>
-                </div>
-
-                <div className="flex gap-3 pt-2">
-                    <button onClick={onClose}
-                        className="flex-1 py-3 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition font-medium">
-                        Cancel
-                    </button>
-                    <button onClick={onSave} disabled={saveLoading}
-                        className="flex-1 py-3 rounded-xl bg-linear-to-r from-purple-600 to-emerald-400 text-black font-semibold hover:scale-105 transition disabled:opacity-50">
-                        {saveLoading ? "Saving..." : "Save Goal 🎯"}
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
 
     return (
         <div className="min-h-screen bg-linear-to-br from-[#0f0c29] via-[#1a1333] to-[#0f0c29] text-gray-200 px-4 sm:px-8 py-8">
