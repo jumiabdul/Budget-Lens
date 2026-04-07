@@ -151,7 +151,7 @@ export default function Goals() {
                 {/* Title */}
                 <div>
                     <label className="text-sm text-gray-400 block mb-1">Goal Title</label>
-                    <input type="text" value={data.title} onChange={e => setData(p => ({ ...p, title: e.target.value }))}
+                    <input type="text" value={data.title} onChange={e => setData({ ...data, title: e.target.value })}
                         placeholder="e.g. Buy a Car"
                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
                 </div>
@@ -161,7 +161,7 @@ export default function Goals() {
                     <label className="text-sm text-gray-400 block mb-1">Target Amount</label>
                     <div className="relative">
                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
-                        <input type="number" value={data.targetAmount} onChange={e => setData(p => ({ ...p, targetAmount: e.target.value }))}
+                        <input type="number" value={data.targetAmount} onChange={e => setData({ ...data, targetAmount: e.target.value })}
                             placeholder="0.00"
                             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-8 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
                     </div>
@@ -172,7 +172,7 @@ export default function Goals() {
                     <label className="text-sm text-gray-400 block mb-1">Already Saved (Optional)</label>
                     <div className="relative">
                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
-                        <input type="number" value={data.savedAmount} onChange={e => setData(p => ({ ...p, savedAmount: e.target.value }))}
+                        <input type="number" value={data.savedAmount} onChange={e => setData({ ...data, savedAmount: e.target.value })}
                             placeholder="0.00"
                             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-8 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
                     </div>
@@ -181,14 +181,14 @@ export default function Goals() {
                 {/* Deadline */}
                 <div>
                     <label className="text-sm text-gray-400 block mb-1">Target Date (Optional)</label>
-                    <input type="date" value={data.deadline ? data.deadline.split("T")[0] : ""} onChange={e => setData(p => ({ ...p, deadline: e.target.value }))}
+                    <input type="date" value={data.deadline ? data.deadline.split("T")[0] : ""} onChange={e => setData({ ...data, deadline: e.target.value })}
                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500" />
                 </div>
 
                 {/* Category */}
                 <div>
                     <label className="text-sm text-gray-400 block mb-1">Category</label>
-                    <select value={data.category} onChange={e => setData(p => ({ ...p, category: e.target.value }))}
+                    <select value={data.category} onChange={e => setData({ ...data, category: e.target.value })}
                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500">
                         {CATEGORIES.map(c => <option key={c} value={c} className="bg-gray-900">{c}</option>)}
                     </select>
