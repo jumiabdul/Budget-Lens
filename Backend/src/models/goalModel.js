@@ -34,6 +34,12 @@ const goalSchema = new Schema({
     { timestamps: true }
 );
 
+// Indexes
+goalSchema.index({ userId: 1 });                  //filter by user
+goalSchema.index({ userId: 1, deadline: 1 });    //filter by deadline
+goalSchema.index({ userId: 1, category: 1 });    //filter by category
+
+
 const goalModel = mongoose.model("Goal", goalSchema);
 
 export default goalModel;

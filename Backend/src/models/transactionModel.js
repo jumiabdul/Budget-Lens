@@ -42,7 +42,14 @@ const transactionSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
-    }
+    },
+
+    goalId: {  
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Goal",
+        default: null,  // Only populated when transaction is for a goal
+    },
+
 },
     { timestamps: true }
 );

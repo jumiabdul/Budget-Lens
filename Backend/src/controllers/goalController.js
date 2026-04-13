@@ -1,4 +1,5 @@
 import goalModel from "../models/goalModel.js"
+import transactionModel from "../models/transactionModel.js";
 
 // Get all
 export const getAllGoals = async (req, res, next) => {
@@ -84,13 +85,25 @@ export const addMoneyToGoal = async (req, res, next) => {
             return res.status(404).json({ message: "Goal not found", success: false });
         }
 
+        // Update goal progress
         goal.savedAmount = Math.min(
             goal.savedAmount + Number(amount),
             goal.targetAmount // can't exceed target
         );
         await goal.save();
 
-        return res.json({ data: goal, message: "Amount added!", success: true });
+        // Create expense transaction
+        const transaction = await transactionModel.create({
+            userId: req.user._id,
+            type: "expense",
+            category: "Savings",
+            amount: Number(amount),  // Negative because it's money going out
+            description: `Saved towards "${goal.title}"`,
+            date: new Date(),
+            goalId: id  // Link to goal
+        });
+
+        return res.json({ data: goal, message: "Amount added and transaction recorded!", success: true });
     } catch (error) {
         next(error);
     }
