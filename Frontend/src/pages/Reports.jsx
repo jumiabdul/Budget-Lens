@@ -167,7 +167,7 @@ export default function Reports() {
         Date: new Date(t.date).toLocaleDateString("en-IN"),
         Type: t.type,
         Category: t.category,
-        Description: t.note,
+        Description: t.description,
         Amount:
             t.type === "income"
                 ? `+${t.amount}`

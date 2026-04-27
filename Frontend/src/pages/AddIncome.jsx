@@ -27,7 +27,7 @@ export default function AddIncome() {
     const [category, setCategory] = useState("Salary");
     const [mode, setMode] = useState("Cash");
     const [date, setDate] = useState("");
-    const [note, setNote] = useState("");
+    const [description, setDescription] = useState("");
     const [errors, setErrors] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -44,7 +44,7 @@ export default function AddIncome() {
                 category,
                 date,
                 mode,
-                note,
+                description,
                 type: "income",
             }
 
@@ -57,7 +57,7 @@ export default function AddIncome() {
             setCategory("Salary");
             setMode("Cash");
             setDate("");
-            setNote("");
+            setDescription("");
             navigate("/dashboard");
 
         } catch (error) {
@@ -179,8 +179,8 @@ export default function AddIncome() {
                         Note(Optional)</label>
                     <input type="text"
                         placeholder="Add a note about this income"
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                         className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition"
                     />
                 </div>

@@ -101,7 +101,7 @@ export default function Transactions() {
                     amount: Number(editData.amount),
                     date: editData.date,
                     mode: editData.mode,
-                    note: editData.note,
+                    description: editData.description,
                 }
             );
             dispatch(editTransaction(response.data.data));
@@ -277,7 +277,7 @@ export default function Transactions() {
                                     </td>
 
                                     <td className="py-3 font-semibold text-gray-200">{t.category}</td>
-                                    <td className="py-3 text-gray-400 text-xs max-w-35 truncate">{t.note || "—"}</td>
+                                    <td className="py-3 text-gray-400 text-xs max-w-35 truncate">{t.description || "—"}</td>
 
                                     <td className={`py-3 font-semibold ${t.type === "income"
                                         ? "text-emerald-400"
@@ -465,8 +465,8 @@ export default function Transactions() {
                                 <label className="text-sm text-gray-300 block mb-1">Note (Optional)</label>
                                 <input
                                     type="text"
-                                    value={editData.note || ""}
-                                    onChange={(e) => setEditData({ ...editData, note: e.target.value })}
+                                    value={editData.description || ""}
+                                    onChange={(e) => setEditData({ ...editData, description: e.target.value })}
                                     placeholder="Add a note..."
                                     className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                                 />

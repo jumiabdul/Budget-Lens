@@ -19,7 +19,7 @@ export default function AddExpense() {
     const [category, setCategory] = useState("Food");
     const [mode, setMode] = useState("Cash");
     const [date, setDate] = useState("");
-    const [note, setNote] = useState("");
+    const [description, setDescription] = useState("");
     const [errors, setErrors] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -36,7 +36,7 @@ export default function AddExpense() {
                 category,
                 date,
                 mode,
-                note,
+                description,
                 type: "expense",
             }
 
@@ -49,7 +49,7 @@ export default function AddExpense() {
             setCategory("Food");
             setMode("Cash");
             setDate("");
-            setNote("");
+            setDescription("");
             navigate("/dashboard");
 
         } catch (error) {
@@ -183,8 +183,8 @@ export default function AddExpense() {
                     <input
                         type="text"
                         placeholder="Add a note..."
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                         className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400 transition"
                     />
                 </div>

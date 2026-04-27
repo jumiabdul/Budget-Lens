@@ -34,6 +34,6 @@ export const transactionSchema = Joi.object({
             "any.required": "Mode is required"
         }),
 
-    note: Joi.string().max(200).allow("").optional()
+    description: Joi.string().max(200).allow("").optional()
         .messages({ "string.max": "Note cannot exceed 200 characters" }),
 });
