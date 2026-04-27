@@ -103,7 +103,7 @@ export const addMoneyToGoal = async (req, res, next) => {
             goalId: id  // Link to goal
         });
 
-        return res.json({ data: goal, message: "Amount added and transaction recorded!", success: true });
+        return res.json({ data: { goal, transaction }, message: "Amount added and transaction recorded!", success: true });
     } catch (error) {
         next(error);
     }

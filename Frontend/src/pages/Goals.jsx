@@ -4,6 +4,7 @@ import { addGoal, editGoal, deleteGoal } from "../store/slices/goalSlice";
 import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
+import { addTransaction } from "../store/slices/transactionSlice";
 
 const ICONS = ["🎯", "🏠", "🚗", "✈️", "💍", "📱", "💻", "🎓", "💰", "🏋️", "🎸", "🌍"];
 const CATEGORIES = ["General", "Housing", "Transport", "Travel", "Education", "Tech", "Health", "Emergency", "Investment", "Other"];
@@ -191,7 +192,13 @@ export default function Goals() {
             const res = await axiosInstance.put(`/api/goals/add-money/${moneyGoal._id}`, {
                 amount: Number(moneyAmount)
             });
-            dispatch(editGoal(res.data.data));
+
+            // Update goal in Redux
+            dispatch(editGoal(res.data.data.goal));
+
+            // Add transaction to Redux
+            dispatch(addTransaction(res.data.data.transaction));
+
             toast.success("Amount added! 💰");
             setMoneyModal(false);
             setMoneyAmount("");
