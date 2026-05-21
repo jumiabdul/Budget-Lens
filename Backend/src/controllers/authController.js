@@ -44,7 +44,8 @@ export const registerUser = async (req, res, next) => {
             email,
             password: hashedPassword,
             role: 'user',
-            isActive: true
+            isActive: true,
+            isPremium: user.isPremium
         });
 
         const accessToken = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_EXPIRE, });
@@ -105,7 +106,8 @@ export const loginUser = async (req, res, next) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                isActive: user.isActive
+                isActive: user.isActive,
+                isPremium: user.isPremium 
             }
         });
 

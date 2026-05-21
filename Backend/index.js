@@ -9,6 +9,7 @@ import handleGenericErrors from "./src/middlewares/errorMiddleware.js";
 import cookieParser from "cookie-parser";
 import adminRoutes from "./src/routes/adminRoutes.js"
 import goalRoutes from "./src/routes/goalRoutes.js"
+import paymentRoutes from "./src/routes/paymentRoutes.js"
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/budgets", budgetRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/goals", goalRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // Default route
 app.get("/", (req, res) => {

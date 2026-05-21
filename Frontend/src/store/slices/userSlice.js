@@ -9,9 +9,12 @@ const userSlice = createSlice({
         },
         resetUser: () => {
             return null;
-        }
+        },
+        setPremium: (state) => {
+            if (state) state.isPremium = true;
+        },
     }
 });
 
-export const { setUser, resetUser } = userSlice.actions;
+export const { setUser, resetUser, setPremium } = userSlice.actions;
 export default userSlice.reducer;

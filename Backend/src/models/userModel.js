@@ -14,7 +14,16 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    
+
+    //Premium features
+    isPremium: {
+        type: Boolean,
+        default: false
+    },
+    premiumSince: {
+        type: Date
+    },
+
     // Admin Fields
     role: {
         type: String,

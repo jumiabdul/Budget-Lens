@@ -29,6 +29,7 @@ import { setUser } from './store/slices/userSlice'
 import AdminDashboard from './pages/AdminDashboard'
 import Goals from './pages/Goals'
 import { setGoals } from './store/slices/goalSlice'
+import PremiumGate from './components/PremiumGate'
 
 function GlobalComponent({ children }) {
   return (
@@ -93,7 +94,11 @@ const router = createBrowserRouter([
   {
     path: "/reports",
     element: <ProtectedRoutes>
-      <GlobalComponent><Reports /></GlobalComponent>
+      <GlobalComponent>
+        <PremiumGate feature="Reports & Analytics">
+          <Reports />
+        </PremiumGate>
+      </GlobalComponent>
     </ProtectedRoutes>,
   },
   {
@@ -105,7 +110,11 @@ const router = createBrowserRouter([
   {
     path: "/goals",
     element: <ProtectedRoutes>
-      <GlobalComponent><Goals /></GlobalComponent>
+      <GlobalComponent>
+        <PremiumGate feature="Financial Goals">
+          <Goals />
+        </PremiumGate>
+      </GlobalComponent>
     </ProtectedRoutes>,
   },
   {
